@@ -85,6 +85,7 @@ This stops emacs adding customised settings to init.el.
 *** Use projectile
 #+BEGIN_SRC emacs-lisp
 (use-package projectile
+  :ensure t
   ;; :defer t
   :diminish projectile-mode
   :config
@@ -207,7 +208,8 @@ This stops emacs adding customised settings to init.el.
 
 #+BEGIN_SRC emacs-lisp
 (use-package company-lsp
-   :ensure
+  :after lsp-mode
+  :ensure
   :config (setq company-lsp-enable-snippet t)
   :init (add-to-list 'company-backends 'company-lsp))
 
@@ -216,6 +218,9 @@ This stops emacs adding customised settings to init.el.
   :config
   (setq lsp-highlight-symbol-at-point nil))
 
+(use-package lsp-ui
+  :ensure
+)
 #+END_SRC
 *** Company mode for python
 
@@ -630,10 +635,11 @@ Works with: statement.
 *** Email for emacs
 #+BEGIN_SRC emacs-lisp
 (add-to-list 'load-path "/usr/local/share/emacs/site-lisp/mu4e")
-(require 'mu4e)                      ; load mu4e
-;; Use mu4e as default mail agent
-(setq mail-user-agent 'mu4e-user-agent)
-;; Mail folder set to ~/Maildir
+(use-package mu4e
+  :config
+  ;; Use mu4e as default mail agent
+  (setq mail-user-agent 'mu4e-user-agent)
+  ;; Mail folder set to ~/Maildir
 (setq mu4e-maildir "~/Mail")         ; NOTE: should not be symbolic link
 ;; Fetch mail by offlineimap
 ;(setq mu4e-get-mail-command "offlineimap")
@@ -771,18 +777,24 @@ Works with: statement.
 (add-hook 'message-mode-hook
           '(lambda () (setq fill-column 72))
           'append)
+)
 
 ;; use helm-mu for search email and contacts etc.
-(require 'helm-mu)
-
+(use-package helm-mu
+  :ensure t
+  :config
+  (setq helm-mu-default-search-string "(maildir:/INBOX OR maildir:/Sent)")
+  (define-key mu4e-main-mode-map "s" 'helm-mu)
+  (define-key mu4e-headers-mode-map "s" 'helm-mu)
+  (define-key mu4e-view-mode-map "s" 'helm-mu))
 #+END_SRC
 
 *** Go(golang) language config
 
 #+BEGIN_SRC emacs-lisp
 
-(with-eval-after-load 'lsp-mode
-(require 'lsp-flycheck))
+;(with-eval-after-load 'lsp-mode
+;(require 'lsp-flycheck))
 
 (use-package go-mode
   :config (progn
@@ -818,6 +830,7 @@ Works with: statement.
 *** Java language support
 #+BEGIN_SRC emacs-lisp
 (use-package lsp-java
+  :ensure
   :init (add-hook 'java-mode-hook #'lsp-java-enable))
 #+END_SRC
 
@@ -831,6 +844,7 @@ Works with: statement.
   :config
 )
 (use-package lsp-rust
+  :ensure
   :init
   (add-hook 'rust-mode-hook #'lsp-rust-enable)
   :after lsp-mode)
@@ -2768,3 +2782,4 @@ Late deadlines first, then scheduled, then non-late deadlines"
 *** [[https://jamiecollinson.com/blog/my-emacs-config/#][Emacs Config]]
 *** [[https://github.com/andresilva/emacs.d/][My Emacs config]]
 *** [[https://emacs.lujianmei.com/][谁说Emacs不好玩？]]
+*** [[https://github.com/tsu-nera/dotfiles][My dotfiles history ]]
