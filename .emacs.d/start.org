@@ -215,6 +215,7 @@ This stops emacs adding customised settings to init.el.
 
 (use-package lsp-mode
   :ensure
+  :init (add-hook 'prog-mode-hook #'lsp-mode)
   :config
   (setq lsp-highlight-symbol-at-point nil))
 
