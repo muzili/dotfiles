@@ -4,11 +4,16 @@
 ** Setup
 *** Configure package sources
   #+BEGIN_SRC emacs-lisp
-    (setq package-archives
-          '(
-            ("gnu"   . "http://elpa.zilongshanren.com/gnu/")
-            ("melpa" . "http://elpa.zilongshanren.com/melpa/")
-            ("org"   . "http://elpa.zilongshanren.com/org/")))
+    ;https://github.com/d12frosted/elpa-mirror
+    ;(setq package-archives
+    ;  '(("melpa" . "https://raw.githubusercontent.com/d12frosted/elpa-mirror/master/melpa/")
+    ;    ("org"   . "https://raw.githubusercontent.com/d12frosted/elpa-mirror/master/org/")
+    ;    ("gnu"   . "https://raw.githubusercontent.com/d12frosted/elpa-mirror/master/gnu/")))
+    ;https://mirror.tuna.tsinghua.edu.cn/help/elpa/
+    (setq package-archives 
+       '(("gnu"   . "http://mirrors.tuna.tsinghua.edu.cn/elpa/gnu/")
+         ("melpa" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/melpa/")
+         ("org" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/org/")))
   #+END_SRC
 *** Bootstrap use-package
 If use-package is not installed, install it.
