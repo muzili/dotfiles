@@ -781,13 +781,13 @@ Works with: statement.
 )
 
 ;; use helm-mu for search email and contacts etc.
-(use-package helm-mu
-  :ensure t
-  :config
-  (setq helm-mu-default-search-string "(maildir:/INBOX OR maildir:/Sent)")
-  (define-key mu4e-main-mode-map "s" 'helm-mu)
-  (define-key mu4e-headers-mode-map "s" 'helm-mu)
-  (define-key mu4e-view-mode-map "s" 'helm-mu))
+;(use-package helm-mu
+;  :ensure t
+;  :config
+;  (setq helm-mu-default-search-string "(maildir:/INBOX OR maildir:/Sent)")
+;  (define-key mu4e-main-mode-map "s" 'helm-mu)
+;  (define-key mu4e-headers-mode-map "s" 'helm-mu)
+;  (define-key mu4e-view-mode-map "s" 'helm-mu))
 #+END_SRC
 
 *** Go(golang) language config
