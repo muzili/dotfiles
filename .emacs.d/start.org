@@ -77,7 +77,6 @@ This stops emacs adding customised settings to init.el.
         helm-semantic-fuzzy-match t)
   :config
   (require 'helm-config)
-  (helm-mode 1)
   (helm-autoresize-mode 1))
 
 ;; fuzzier matching for helm
@@ -244,6 +243,22 @@ This stops emacs adding customised settings to init.el.
   :config
   (add-to-list 'company-backends 'company-irony))
 #+END_SRC
+
+*** flymake
+
+#+BEGIN_SRC emacs-lisp
+
+(use-package flymake
+  :defer t
+  :custom
+  (flymake-proc-compilation-prevents-syntax-check nil)
+  :hook
+  ;; Some modes turn `flymake-mode' on by default, I have to tell these
+  ;; specifically to do it:
+  ((emacs-lisp-mode python-mode). flymake-mode))
+
+#+END_SRC
+
 *** flycheck
 
     #+BEGIN_SRC emacs-lisp
@@ -633,9 +648,78 @@ Works with: statement.
 
 *** Tex/LaTeX mode
 #+BEGIN_SRC emacs-lisp
-(setq tex-compile-commands '(("xelatex %r")))
-(setq tex-command "xelatex")
-(setq-default TeX-engine 'xelatex)
+(use-package auctex
+  :ensure t
+  :mode ("\\.tex\\'" . latex-mode)
+  :defer t
+  :custom
+   (TeX-auto-save t)
+   (TeX-electric-escape nil)
+   (TeX-electric-math '("\\(" . "\\)") "Smart $ behavior")
+   (TeX-electric-sub-and-superscript t)
+   (TeX-parse-self t)
+   (reftex-plug-into-AUCTeX t)
+   (TeX-source-correlate-method 'synctex)
+   (TeX-source-correlate-mode t)
+   (TeX-clean-confirm nil)
+   ;; TeX-command-list by default contains a bunch of stuff I'll never
+   ;; use. I use latexmk, xelatexmk, and View.  That's pretty much it.
+   ;; Maybe one day I'll add "clean" back to the list.
+   (TeX-command-list
+    '(("xelatexmk" "latexmk -synctex=1 -quiet -xelatex %s"
+       TeX-run-compile nil t :help "Process file with xelatexmk")
+      ("View" "%V" TeX-run-discard-or-function nil t :help "Run Viewer")))
+  :hook
+   (LaTeX-mode . LaTeX-math-mode)
+   (LaTeX-mode . reftex-mode)
+   (LaTeX-mode . TeX-PDF-mode)
+   (LaTeX-mode . LaTeX-preview-setup)
+   (LaTeX-mode . flyspell-mode)
+  :config
+  (setq-default TeX-master nil)
+  (setq-default TeX-command-default "xelatexmk")
+  (use-package auctex-latexmk
+    :ensure t
+    :config
+    (auctex-latexmk-setup))
+
+  (use-package company-auctex
+    :ensure t
+    :requires company
+    :config
+    (company-auctex-init))
+  )
+
+(use-package company-math
+  :ensure t
+  :requires company
+  :config
+  (add-hook 'LaTeX-mode-hook (lambda ()
+                               (set (make-local-variable 'company-backends)
+                                     '(company-math-symbols-latex
+                                       company-latex-commands
+                                       company-math-symbols-unicode
+                                       company-files
+                                       company-capf
+                                       company-semantic
+                                       company-dabbrev
+                                       ))
+                               (TeX-fold-mode 1)
+                               (add-hook 'find-file-hook
+                                         'TeX-fold-buffer t t)))
+  (add-hook 'LaTeX-mode-hook #'outline-minor-mode)
+)
+
+(use-package company-reftex
+  :ensure t
+  :config (add-to-list 'company-backends #'company-reftex-labels))
+
+(use-package cdlatex
+  :ensure t
+  :config
+  (add-hook 'org-mode-hook 'turn-on-org-cdlatex)
+  (add-hook 'LaTeX-mode-hook 'turn-on-cdlatex))
+
 #+END_SRC
 
 *** Email for emacs
@@ -2834,6 +2918,7 @@ Late deadlines first, then scheduled, then non-late deadlines"
   (("M-j" . pyim-convert-code-at-point) ;与 pyim-probe-dynamic-english 配合
    ("C-;" . pyim-delete-word-from-personal-buffer)))
 #+END_SRC
+
 ** Reference
 *** [[https://jamiecollinson.com/blog/my-emacs-config/][My Emacs Config]]
 *** [[http://blog.csdn.net/redguardtoo/article/details/7222501][一年成为Emacs高手(像神一样使用编辑器)]]
