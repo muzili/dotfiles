@@ -77,6 +77,7 @@ This stops emacs adding customised settings to init.el.
         helm-semantic-fuzzy-match t)
   :config
   (require 'helm-config)
+  (helm-mode 1)
   (helm-autoresize-mode 1))
 
 ;; fuzzier matching for helm
