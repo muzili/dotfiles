@@ -149,7 +149,7 @@ function start_ibus {
     export XMODIFIERS=@im=ibus
     export QT_IM_MODULE=ibus
 }
-start_emacs
+#start_emacs
 #start_sogou
 remove_caps
 start_ibus
