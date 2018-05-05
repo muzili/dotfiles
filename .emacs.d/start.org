@@ -667,7 +667,7 @@ Works with: statement.
    ;; use. I use latexmk, xelatexmk, and View.  That's pretty much it.
    ;; Maybe one day I'll add "clean" back to the list.
    (TeX-command-list
-    '(("xelatexmk" "latexmk -synctex=1 -quiet -xelatex %s"
+    '(("LaTeXMK" "latexmk -synctex=1 -quiet -xelatex %s"
        TeX-run-compile nil t :help "Process file with xelatexmk")
       ("View" "%V" TeX-run-discard-or-function nil t :help "Run Viewer")))
   :hook
@@ -678,7 +678,9 @@ Works with: statement.
    (LaTeX-mode . flyspell-mode)
   :config
   (setq-default TeX-master nil)
-  (setq-default TeX-command-default "xelatexmk")
+  (setq-default TeX-engine 'xetex)
+  (setq-default TeX-command-default "LaTeXMK")
+  (setq-default TeX-PDF-mode t)
   (use-package auctex-latexmk
     :ensure t
     :config
