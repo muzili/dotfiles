@@ -19,4 +19,4 @@ export GOROOT=`go env GOROOT`
 ## export JAVA_HOME JDK/JRE ##
 export JAVA_HOME=$(dirname $(dirname $(readlink -f /usr/bin/javac)))
 
-export PATH=$PATH:$ANDROID_NDK_ROOT:$ANDROID_SDK_ROOT:$ANDROID_SDK_ROOT/platform-tools:$ANDROID_SDK_ROOT/tools:$ANDROID_SDK_ROOT/tools/bin:$ANDROID_SDK_ROOT/build-tools/25.0.0:${GOPATH}/bin:${HOME}/bin:${HOME}/.local/bin:${HOME}/node_modules/.bin:${JAVA_HOME}/bin:$HOME/.cargo/bin
+export PATH=$PATH:$ANDROID_NDK_ROOT:$ANDROID_SDK_ROOT:$ANDROID_SDK_ROOT/platform-tools:$ANDROID_SDK_ROOT/tools:$ANDROID_SDK_ROOT/tools/bin:$ANDROID_SDK_ROOT/build-tools/27.0.3:${GOPATH}/bin:${HOME}/bin:${HOME}/.local/bin:${HOME}/node_modules/.bin:${JAVA_HOME}/bin:$HOME/.cargo/bin
