@@ -119,10 +119,10 @@ alias mybugs='bugz --connection nbug search -a lizg -r lizg'
 alias busy="cat /dev/urandom | head -c 18K | hexdump -C | grep "ca fe""
 alias sdu "sudo dnf update "
 
-alias ndk-addr2line=`ndk-which addr2line`
-alias ndk-objdump=`ndk-which objdump`
-alias ndk-gcc=`ndk-which gcc`
-alias android-build='docker run -i --privileged -v /dev/bus/usb:/dev/bus/usb -v $(pwd):/app -w /app -u $UID:$GID muzili/android'
+#alias ndk-addr2line=`ndk-which addr2line`
+#alias ndk-objdump=`ndk-which objdump`
+#alias ndk-gcc=`ndk-which gcc`
+#alias android-build='docker run -i --privileged -v /dev/bus/usb:/dev/bus/usb -v $(pwd):/app -w /app -u $UID:$GID muzili/android'
 
 export VAGRANT_DEFAULT_PROVIDER=virtualbox
 
