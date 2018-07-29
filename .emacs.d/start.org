@@ -208,21 +208,35 @@ https://github.com/jacktasia/dumb-jump
 
 #+END_SRC
 *** Auto complete with company
+
+[[https://phenix3443.github.io/notebook/emacs/company-practice.html][company-mode 实践]]
+
+
 #+BEGIN_SRC emacs-lisp
 
 (use-package company
   :ensure t
-  :config
-  (setq company-minimum-prefix-length 2)
-  (setq company-dabbrev-downcase nil)
-  (setq company-idle-delay 0.3)
-  (setq company-echo-delay 0.3)
-  (define-key company-active-map (kbd "M-n") nil)
-  (define-key company-active-map (kbd "M-p") nil)
-  (define-key company-active-map (kbd "C-n") 'company-select-next)
-  (define-key company-active-map (kbd "<tab>") 'company-select-next)
-  (define-key company-active-map (kbd "C-p") 'company-select-previous)
-  (add-hook 'after-init-hook 'global-company-mode))
+  :defer t
+  :diminish company-mode " AC"
+  :init
+  (progn
+    (require 'company)
+    (setq company-minimum-prefix-length 2
+          company-require-match nil
+          company-dabbrev-ignore-case nil
+          company-dabbrev-downcase nil
+          company-backends
+          '((company-files
+             company-keywords
+             company-capf
+             company-yasnippet
+             )
+             (company-abbrev company-dabbrev)))
+     (define-key company-mode-map (kbd "M-/") 'company-complete)
+     (define-key company-active-map (kbd "M-n") nil)
+     (define-key company-active-map (kbd "M-p") nil)
+     (global-company-mode t)))
+
 #+END_SRC
 
 *** Company mode for go(golang)
@@ -269,16 +283,6 @@ https://github.com/jacktasia/dumb-jump
   :config
   (add-to-list 'company-backends 'company-anaconda))
 #+END_SRC
-
-
-*** Company mode for C(irony)
-#+BEGIN_SRC emacs-lisp
-(use-package company-irony
-  :ensure t
-  :config
-  (add-to-list 'company-backends 'company-irony))
-#+END_SRC
-
 *** flymake
 
 #+BEGIN_SRC emacs-lisp
@@ -478,138 +482,44 @@ https://github.com/jacktasia/dumb-jump
 (use-package git-timemachine
   :ensure t)
 #+END_SRC
+
 *** C/C++ mode
+
+irony 提供 company-irony 后端用于代码补全，提供 flycheck-irony 用于语法检查。具体安装方法见文档: [[https://github.com/Sarcasm/irony-mode][A C/C++ minor mode for Emacs powered by libclang]]
+
 #+BEGIN_SRC emacs-lisp
-(use-package irony
+
+(use-package cmake-ide
   :ensure t
-  :hook (c-mode . irony-mode))
+  :config (cmake-ide-setup))
 
-(defun emacs-format-function ()
-  "Format the whole buffer."
-  (setq tab-width 4) ;; change this to taste, this is what K&R uses
-  (setq c-basic-offset tab-width)
-  (c-set-offset 'substatement-open 0)
-  (indent-region (point-min) (point-max) nil)
-  (untabify (point-min) (point-max))
-  (delete-trailing-whitespace (point-min) (point-max))
-  (save-buffer)
-  )
+(use-package irony
+  :diminish irony-mode "IR"
+  :init
+  (progn
+    (setq c-basic-offset 4
+          irony-additional-clang-options '("-std=c++11"))
+    (add-hook 'c-mode-hook 'irony-mode)
+    (add-hook 'c++-mode-hook 'irony-mode)
+    ))
 
-(defun my-c-lineup-for-statement (langelem)
-  "Indent the for statement.
+(use-package company-irony-c-headers
+  :ensure t
+  :after (company irony))
 
-Make a relative offset of 0 for a normal statement, and an offset of 8 for
-the statment in the for-statement.
+(use-package company-irony
+  :after (company irony)
+  :config
+  (add-hook 'c-mode-common-hook
+        (lambda ()
+          (add-to-list (make-local-variable 'company-backends)
+               '(company-irony company-irony-c-headers)))))
 
-For example,
-
-    for (map<string, string>::const_iterator it = m.begin();
-            it != m.end(); ++it) {
-    <------> 2 * c-basic-offset
-
-Works with: statement.
-"
-  (save-excursion
-    (if (c-langelem-pos langelem)
-        (progn
-          ;; Go to the beginning of an earlier line which contains for-statment.
-          (goto-char (c-langelem-pos langelem))
-          (if (looking-at "for\\s *(")
-              0
-            (progn
-              (back-to-indentation)
-              (if (looking-at "for\\s *(")
-                  (progn
-                    (vector (+ (* 2 c-basic-offset) (current-column))))
-                  0))))
-      0)))
-
-(defconst my-c-lineup-maximum-indent 30)
-(defun my-c-lineup-arglist (langelem)
-  (let ((ret (c-lineup-arglist langelem)))
-    (if (< (elt ret 0) my-c-lineup-maximum-indent)
-        ret
-      (save-excursion
-        (goto-char (cdr langelem))
-        (vector (+ (current-column) (* 2 c-basic-offset)))))))
-
-;; For some reason 1) c-backward-syntactic-ws is a macro and 2)  under Emacs 22
-;; bytecode cannot call (unexpanded) macros at run time:
-(eval-when-compile (require 'cc-defs))
-
-(defconst my-c-style
-  `((c-recognize-knr-p . nil)
-    (c-basic-offset . 4)
-    (indent-tabs-mode . nil)
-    (c-comment-only-line-offset . 0)
-    (c-hanging-braces-alist . ((defun-open after)
-                               (defun-close before after)
-                               (class-open after)
-                               (class-close before after)
-                               (inexpr-class-open after)
-                               (inexpr-class-close before)
-                               (namespace-open after)
-                               (inline-open after)
-                               (inline-close before after)
-                               (block-open after)
-                               (block-close . c-snug-do-while)
-                               (extern-lang-open after)
-                               (extern-lang-close after)
-                               (statement-case-open after)
-                               (substatement-open after)))
-    (c-hanging-colons-alist . ((case-label)
-                               (label after)
-                               (access-label after)
-                               (member-init-intro before)
-                               (inher-intro)))
-    (c-hanging-semi&comma-criteria
-     . (c-semi&comma-no-newlines-for-oneline-inliners
-        c-semi&comma-inside-parenlist
-        c-semi&comma-no-newlines-before-nonblanks))
-    (c-indent-comments-syntactically-p . t)
-    (comment-column . 40)
-    (c-indent-comment-alist . ((other . (space . 2))))
-    (c-cleanup-list . (brace-else-brace
-                       brace-elseif-brace
-                       brace-catch-brace
-                       empty-defun-braces
-                       defun-close-semi
-                       list-close-comma
-                       scope-operator))
-    (c-offsets-alist . ((arglist-intro . +)
-                        (func-decl-cont . ++)
-                        (member-init-intro . ++)
-                        (inher-intro . ++)
-                        (comment-intro . 0)
-                        (arglist-close . c-lineup-arglist)
-                        (arglist-cont . +)
-                        (arglist-cont-nonempty . my-c-lineup-arglist)
-                        (topmost-intro . 0)
-                        (block-open . 0)
-                        (inline-open . 0)
-                        (substatement-open . 0)
-                        (statement . 0)
-                        (statement-cont
-                         .
-                         (,(when (fboundp 'c-no-indent-after-java-annotations)
-                             'c-no-indent-after-java-annotations)
-                          ,(when (fboundp 'c-lineup-assignments)
-                             'c-lineup-assignments)
-                          ++))
-                        (label . /)
-                        (case-label . 0)
-                        (statement-case-open . +)
-                        (statement-case-intro . +) ; case w/o {
-                        (access-label . /)
-                        (innamespace . 0))))
-  "My C/C++ Programming Style.")
-
-;; add my personal style.
-(c-add-style "personal" my-c-style)
-
-(add-hook 'c-mode-common-hook
-          (lambda ()
-            (c-set-style "personal")))
+(use-package flycheck-irony
+  :ensure t
+  :after (flycheck irony)
+  :config
+  (flycheck-irony-setup))
 
 ;;http://emacs-fu.blogspot.com/2008/12/quickly-switching-between-header-and.html
 ;;quickly switch between header and source
@@ -857,6 +767,83 @@ Works with: statement.
 ;;  (define-key mu4e-view-mode-map "s" 'helm-mu))
 #+END_SRC
 
+*** ivy
+
+ivy 能够补全emacs的很多东西，如命令等。 需要 ivy swiper counsel 插件共同工作, 见[[https://github.com/abo-abo/swiper][Ivy - a generic completion frontend for Emacs]].
+
+#+BEGIN_SRC emacs-lisp
+
+(use-package ivy
+  :ensure t
+  :diminish ivy-mode
+  :config
+  (progn
+    (setq-default ivy-use-virtual-buffers t)
+    (setq enable-recursive-minibuffers t)
+    (ivy-mode t)
+    ))
+
+(use-package swiper
+  :after ivy
+  :bind ("C-s" . swiper)
+  :config
+  (progn
+    (evil-leader/set-key "s" 'swiper))
+  )
+
+(use-package counsel
+  :bind (("M-x" . counsel-M-x)
+     ("C-x C-f" . counsel-find-file))
+  :init
+)
+#+END_SRC
+
+*** hungry-delete
+
+一次删除连续的空格, 不用按多次删除键
+
+#+BEGIN_SRC emacs-lisp
+(use-package hungry-delete
+  :ensure t
+  :diminish hungry-delete-mode
+  :config
+  (global-hungry-delete-mode t)
+)
+#+END_SRC
+*** Smart parents
+
+输入括号，引号成对出现, 具体见 [[https://github.com/lujun9972/emacs-document/blob/master/emacs-common/Smartparens%25E7%2594%25A8%25E6%25B3%2595%25E8%25AF%25A6%25E8%25A7%25A3.org][Smartparens用法详解]]
+
+#+BEGIN_SRC emacs-lisp
+(use-package smartparens
+  :defer t
+  :config
+  (progn
+    (show-paren-mode t)
+    (smartparens-global-mode t)
+    ;; emacs-lisp-mode 中单引号不要成对显示
+    (sp-local-pair 'emacs-lisp-mode "'" nil :actions nil)
+    (setq show-paren-delay 0.1)
+    ;; 高亮光标层次的括号
+    (define-advice show-paren-function (:around (fn) fix-show-paren-function)
+      "Highlight enclosing parens"
+      (cond ((looking-at-p "\\s(") (funcall fn))
+        (t (save-excursion
+         (ignore-errors (backward-up-list))
+         (funcall fn)))))
+    ))
+#+END_SRC
+
+*** rainbow-delimiters
+不同层次的括号显示不同的颜色
+
+#+BEGIN_SRC emacs-lisp
+(use-package rainbow-delimiters
+  :ensure t
+  :config
+  (add-hook 'prog-mode-hook #'rainbow-delimiters-mode))
+
+#+END_SRC
 *** Go(golang) language config
 
 #+BEGIN_SRC emacs-lisp
@@ -2850,6 +2837,49 @@ Works with: statement.
 ;             'rasmus/condtionally-remove-label)
 ;
 #+END_SRC
+
+** Set theme
+*** Theme
+[[https://www.monokai.pro/][Beautiful functionality for professional developers]]
+
+#+BEGIN_SRC emacs-lisp
+
+(use-package monokai-theme
+  :ensure t
+  :config
+  (load-theme 'monokai t))
+
+#+END_SRC
+
+*** Font
+
+主要是让中英文等宽，参考链接：https://emacs-china.org/t/topic/440
+
+#+BEGIN_SRC
+(defun my-default-font()
+  (interactive)
+
+  ;; english font
+  (set-face-attribute 'default nil :font (format   "%s:pixelsize=%d" "Source Code Pro" 17))
+  ;; chinese font
+  (dolist (charset '(kana han symbol cjk-misc bopomofo))
+    (set-fontset-font (frame-parameter nil 'font)
+    charset
+    (font-spec :family "WenQuanYi Micro Hei Mono" :size 20))))
+
+(add-to-list 'after-make-frame-functions
+   (lambda (new-frame)
+   (select-frame new-frame)
+   (if window-system
+   (my-default-font)
+   )))
+
+(if window-system
+  (my-default-font)
+)
+
+#+END_SRC
+
 ** Chinese input method
 
 Use ibus to replace pyim for 中文输入。
