@@ -784,14 +784,13 @@ ivy 能够补全emacs的很多东西，如命令等。 需要 ivy swiper counsel
     ))
 
 (use-package swiper
+  :ensure t
   :after ivy
   :bind ("C-s" . swiper)
-  :config
-  (progn
-    (evil-leader/set-key "s" 'swiper))
   )
 
 (use-package counsel
+  :ensure t
   :bind (("M-x" . counsel-M-x)
      ("C-x C-f" . counsel-find-file))
   :init
