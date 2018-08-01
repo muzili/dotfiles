@@ -275,14 +275,6 @@ https://github.com/jacktasia/dumb-jump
         lsp-ui-sideline-update-mode 'point))
 #+END_SRC
 
-*** Company mode for python
-
-#+BEGIN_SRC emacs-lisp
-(use-package company-anaconda
-  :ensure t
-  :config
-  (add-to-list 'company-backends 'company-anaconda))
-#+END_SRC
 *** flymake
 
 #+BEGIN_SRC emacs-lisp
@@ -302,9 +294,7 @@ https://github.com/jacktasia/dumb-jump
 
 #+BEGIN_SRC emacs-lisp
 (use-package flycheck
-  :ensure
-  :init (add-hook 'after-init-hook #'global-flycheck-mode)
-  :config
+  :ensure t
 )
 #+END_SRC
 
@@ -528,7 +518,7 @@ irony 提供 company-irony 后端用于代码补全，提供 flycheck-irony 用�
     (local-set-key  (kbd "C-c o") 'ff-find-other-file)))
 
 ;;; http://www.emacswiki.org/emacs/CEldocMode
-(add-hook 'c-mode-hook 'c-turn-on-eldoc-mode)
+;;(add-hook 'c-mode-hook 'c-turn-on-eldoc-mode)
 
 #+END_SRC
 
@@ -787,7 +777,12 @@ ivy 能够补全emacs的很多东西，如命令等。 需要 ivy swiper counsel
   :ensure t
   :after ivy
   :bind ("C-s" . swiper)
-  )
+  :config
+  (progn
+    ;;https://www.emacswiki.org/emacs/SearchAtPoint
+    (define-key swiper-map (kbd "M-.")
+      (lambda () (interactive) (insert (format "\\<%s\\>" (with-ivy-window (thing-at-point 'symbol))))))
+  ))
 
 (use-package counsel
   :ensure t
@@ -914,11 +909,18 @@ ivy 能够补全emacs的很多东西，如命令等。 需要 ivy swiper counsel
 #+END_SRC
 *** Python mode
 #+BEGIN_SRC emacs-lisp
-;(use-package anaconda-mode
-;  :ensure t
-;  :config
-;  (add-hook 'python-mode-hook 'anaconda-mode)
-;  (add-hook 'python-mode-hook 'anaconda-eldoc-mode))
+(use-package anaconda-mode
+  :ensure t
+  :diminish (anaconda-mode . "")
+  :config
+  (progn
+    (add-hook 'python-mode-hook 'anaconda-mode)
+    (add-hook 'python-mode-hook 'eldoc-mode))
+  (use-package company-anaconda
+    :config
+    (add-to-list 'company-backends 'company-anaconda))
+)
+
 #+END_SRC
 
 ** Org
