@@ -1,5 +1,6 @@
 :PROPERTIES:
 :END:
+
 * Emacs Config
 ** Setup
 *** Configure package sources
@@ -188,7 +189,7 @@ https://github.com/leoliu/ggtags
 ;; tags for code navigation
 (use-package ggtags
   :ensure t
-  :init (add-hook 'prog-mode-hook #'ggtags-mode)
+  :config (add-hook 'prog-mode-hook #'ggtags-mode)
   )
 #+END_SRC
 
@@ -360,7 +361,8 @@ https://github.com/jacktasia/dumb-jump
 (use-package whitespace-cleanup-mode
   :ensure t
   :config
-  (add-hook 'before-save-hook 'whitespace-cleanup))
+  ;(add-hook 'before-save-hook 'whitespace-cleanup))
+)
 #+END_SRC
 
 *** markdown
