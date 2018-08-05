@@ -486,6 +486,7 @@ irony 提供 company-irony 后端用于代码补全，提供 flycheck-irony 用�
   :config (cmake-ide-setup))
 
 (use-package irony
+  :ensure t
   :diminish irony-mode "IR"
   :init
   (progn
@@ -500,6 +501,7 @@ irony 提供 company-irony 后端用于代码补全，提供 flycheck-irony 用�
   :after (company irony))
 
 (use-package company-irony
+  :ensure t
   :after (company irony)
   :config
   (add-hook 'c-mode-common-hook
@@ -512,6 +514,41 @@ irony 提供 company-irony 后端用于代码补全，提供 flycheck-irony 用�
   :after (flycheck irony)
   :config
   (flycheck-irony-setup))
+
+(use-package cquery
+  :ensure t
+  :after lsp-mode
+  :config
+  (setq cquery-executable "/usr/local/cquery/bin/cquery")
+  (setq cquery-extra-init-params '(:index (:comments 2)
+                                   :cacheFormat "msgpack"
+                                   :completion (:detailedLabel t)))
+  (defun enable-cquery-condition ()
+    (when
+      (or (locate-dominating-file default-directory "compile_commands.json")
+          (locate-dominating-file default-directory ".cquery"))
+    (and (file-exists-p cquery-executable))
+    (lsp-cquery-enable)))
+  (when (file-exists-p cquery-executable)
+    (add-hook 'c++-mode-hook 'enable-cquery-condition)
+    (add-hook 'c-mode-hook 'enable-cquery-condition))
+)
+
+(use-package ivy-xref
+  :ensure t
+  :after ivy
+  :custom (xref-show-xrefs-function #'ivy-xref-show-xrefs))
+
+
+(use-package clang-format
+  :init
+  (setq clang-format-style "Google")
+  :bind
+  (("C-c C-f" . clang-format-region)))
+
+(use-package modern-cpp-font-lock
+    :delight modern-c++-font-lock-mode
+    :hook (c++-mode . modern-c++-font-lock-mode))
 
 ;;http://emacs-fu.blogspot.com/2008/12/quickly-switching-between-header-and.html
 ;;quickly switch between header and source
@@ -919,6 +956,7 @@ ivy 能够补全emacs的很多东西，如命令等。 需要 ivy swiper counsel
     (add-hook 'python-mode-hook 'anaconda-mode)
     (add-hook 'python-mode-hook 'eldoc-mode))
   (use-package company-anaconda
+    :ensure t
     :config
     (add-to-list 'company-backends 'company-anaconda))
 )
