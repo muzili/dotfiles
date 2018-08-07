@@ -497,9 +497,9 @@ irony 提供 company-irony 后端用于代码补全，提供 flycheck-irony 用�
 
 #+BEGIN_SRC emacs-lisp
 
-(use-package cmake-ide
-  :ensure t
-  :config (cmake-ide-setup))
+;(use-package cmake-ide
+;  :ensure t
+;  :config (cmake-ide-setup))
 
 (use-package irony
   :ensure t
