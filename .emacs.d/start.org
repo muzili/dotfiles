@@ -205,8 +205,13 @@ https://github.com/leoliu/ggtags
 ;; tags for code navigation
 (use-package ggtags
   :ensure t
-  :config (add-hook 'prog-mode-hook #'ggtags-mode)
-  )
+  :config
+  (defun enable-ggtags-condition ()
+    (when
+      (locate-dominating-file default-directory "GTAGS")
+      (add-hook 'prog-mode-hook #'ggtags-mode)))
+  (enable-ggtags-condition)
+)
 #+END_SRC
 
 *** Dump jump
