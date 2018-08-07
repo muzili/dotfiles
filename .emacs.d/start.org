@@ -43,7 +43,8 @@ If use-package is not installed, install it.
               size-indication-mode t
               scroll-conservatively 25
               scroll-preserve-screen-position 1
-              cursor-in-non-selected-windows nil)
+              cursor-in-non-selected-windows nil
+              vc-follow-symlinks nil)
 
 (run-with-idle-timer 0.1 nil 'toggle-frame-maximized)
 
@@ -91,6 +92,10 @@ This stops emacs adding customised settings to init.el.
     (setq projectile-completion-system 'default)
     (setq projectile-enable-caching t)
     (setq projectile-indexing-method 'alien)
+    (if (executable-find "ag")
+      (define-key projectile-command-map (kbd "s") 'projectile-ag))
+    (if (executable-find "rg")
+      (define-key projectile-command-map (kbd "s") 'projectile-ripgrep))
     (add-to-list 'projectile-globally-ignored-files "node-modules")
     ;; setting for projectile
     (setq projectile-other-file-alist '(("cpp" "h" "hpp" "ipp")
@@ -121,6 +126,17 @@ This stops emacs adding customised settings to init.el.
     )
   :config
   (projectile-global-mode))
+
+(use-package ripgrep
+  :ensure t
+  :config
+  (setq ripgrep-executable "/usr/bin/rg")
+  (setq ripgrep-arguments '("-S")))
+
+(use-package projectile-ripgrep
+  :ensure t
+  :commands (projectile-ripgrep)
+)
 
 #+END_SRC
 
@@ -918,17 +934,17 @@ ivy 能够补全emacs的很多东西，如命令等。 需要 ivy swiper counsel
 *** Java language support
 #+BEGIN_SRC emacs-lisp
 
-(use-package lsp-java
-  :ensure t
-  :requires (lsp-ui-flycheck lsp-ui-sideline)
-  :config
-  (add-hook 'java-mode-hook  'lsp-java-enable)
-  (add-hook 'java-mode-hook  'flycheck-mode)
-  (add-hook 'java-mode-hook  'company-mode)
-  (add-hook 'java-mode-hook  (lambda () (lsp-ui-flycheck-enable t)))
-  (add-hook 'java-mode-hook  'lsp-ui-sideline-mode)
-  (setq lsp-java--workspace-folders (list "~/zhijia")))
-
+;(use-package lsp-java
+;  :ensure t
+;  :requires (lsp-ui-flycheck lsp-ui-sideline)
+;  :config
+;  (add-hook 'java-mode-hook  'lsp-java-enable)
+;  (add-hook 'java-mode-hook  'flycheck-mode)
+;  (add-hook 'java-mode-hook  'company-mode)
+;  (add-hook 'java-mode-hook  (lambda () (lsp-ui-flycheck-enable t)))
+;  (add-hook 'java-mode-hook  'lsp-ui-sideline-mode)
+;  (setq lsp-java--workspace-folders (list "~/zhijia")))
+;
 #+END_SRC
 
 *** Rust lang support
