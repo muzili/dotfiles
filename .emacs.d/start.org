@@ -280,15 +280,23 @@ https://github.com/jacktasia/dumb-jump
   (add-hook 'java-mode-hook (lambda () (push 'company-lsp company-backends)))
   (add-hook 'c-mode-hook (lambda () (push 'company-lsp company-backends)))
   (add-hook 'c++-mode-hook (lambda () (push 'company-lsp company-backends)))
+  (add-hook 'python-mode-hook (lambda () (push 'company-lsp company-backends)))
   (setq company-lsp-cache-candidates t)
   (setq company-lsp-enable-recompletion t))
 
 (use-package lsp-mode
   :ensure
-  :init
+  :config
   (setq lsp-inhibit-message t
      lsp-eldoc-render-all nil
-     lsp-highlight-symbol-at-point nil))
+     lsp-highlight-symbol-at-point nil)
+  ;; get lsp-python-enable defined
+  ;; NB: use either projectile-project-root or ffip-get-project-root-directory
+  ;;     or any other function that can be used to find the root directory of a project
+  (lsp-define-stdio-client lsp-python "python"
+                           #'projectile-project-root
+                           '("pyls"))
+)
 
 (use-package lsp-ui
   :ensure
@@ -297,7 +305,8 @@ https://github.com/jacktasia/dumb-jump
         lsp-ui-sideline-show-symbol t
         lsp-ui-sideline-show-hover t
         lsp-ui-sideline-show-code-actions t
-        lsp-ui-sideline-update-mode 'point))
+        lsp-ui-sideline-update-mode 'point)
+  (add-hook 'lsp-mode-hook 'lsp-ui-mode))
 #+END_SRC
 
 *** flymake
@@ -979,6 +988,11 @@ ivy 能够补全emacs的很多东西，如命令等。 需要 ivy swiper counsel
   (progn
     (add-hook 'python-mode-hook 'anaconda-mode)
     (add-hook 'python-mode-hook 'eldoc-mode))
+    ;; make sure this is activated when python-mode is activated
+    ;; lsp-python-enable is created by macro above 
+    (add-hook 'python-mode-hook
+      (lambda ()
+        (lsp-python-enable)))
   (use-package company-anaconda
     :ensure t
     :config
