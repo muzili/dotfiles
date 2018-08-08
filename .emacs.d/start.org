@@ -580,8 +580,9 @@ irony 提供 company-irony 后端用于代码补全，提供 flycheck-irony 用�
   (("C-c C-f" . clang-format-region)))
 
 (use-package modern-cpp-font-lock
-    :delight modern-c++-font-lock-mode
-    :hook (c++-mode . modern-c++-font-lock-mode))
+  :ensure t
+  :delight modern-c++-font-lock-mode
+  :hook (c++-mode . modern-c++-font-lock-mode))
 
 ;;http://emacs-fu.blogspot.com/2008/12/quickly-switching-between-header-and.html
 ;;quickly switch between header and source
