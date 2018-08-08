@@ -278,7 +278,10 @@ https://github.com/jacktasia/dumb-jump
   :ensure t
   :config
   (add-hook 'java-mode-hook (lambda () (push 'company-lsp company-backends)))
-  (setq company-lsp-cache-candidates t))
+  (add-hook 'c-mode-hook (lambda () (push 'company-lsp company-backends)))
+  (add-hook 'c++-mode-hook (lambda () (push 'company-lsp company-backends)))
+  (setq company-lsp-cache-candidates t)
+  (setq company-lsp-enable-recompletion t))
 
 (use-package lsp-mode
   :ensure
