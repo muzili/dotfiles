@@ -160,6 +160,22 @@ This stops emacs adding customised settings to init.el.
   :commands (projectile-ripgrep)
 )
 
+(use-package counsel-projectile
+  :ensure t
+  :config
+  (counsel-projectile-mode)
+)
+
+(use-package find-file-in-project
+  :ensure t
+  :bind
+  ("C-x f" . find-file-in-project)
+  ("C-x d" . find-file-in-current-directory)
+  :config
+  (progn 
+    (setq ffip-use-rust-fd t)
+  )  
+)
 #+END_SRC
 
 ** Coding
@@ -885,6 +901,11 @@ ivy 能够补全emacs的很多东西，如命令等。 需要 ivy swiper counsel
      ("C-x C-f" . counsel-find-file))
   :init
 )
+
+
+(use-package flx   ; fuzzy matching/highlighting
+  :ensure t)
+
 #+END_SRC
 
 *** hungry-delete
