@@ -44,7 +44,10 @@ If use-package is not installed, install it.
               scroll-conservatively 25
               scroll-preserve-screen-position 1
               cursor-in-non-selected-windows nil
-              vc-follow-symlinks nil)
+              vc-follow-symlinks nil
+              ;; disable possible security problem:
+	      enable-local-variables nil
+)
 
 (run-with-idle-timer 0.1 nil 'toggle-frame-maximized)
 
