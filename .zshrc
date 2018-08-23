@@ -75,7 +75,7 @@ source $ZSH/oh-my-zsh.sh
 # Example aliases
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
-alias open='gio open'
+alias open='gio open $(fzf)'
 alias mu4e='emacs -e mu4e'
 alias rm='rm -i'
 alias cp='cp -i'
