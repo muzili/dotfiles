@@ -146,9 +146,6 @@ This stops emacs adding customised settings to init.el.
     (add-to-list 'projectile-other-file-alist '("css" "js")) ;; switch from css -> js
     (add-to-list 'projectile-other-file-alist '("js" "css")) ;; switch from js -> css
 
-    ;; setting for helm-projectile
-    ;;(setq projectile-switch-project-action 'helm-projectile-find-file)
-    ;;(setq projectile-switch-project-action 'helm-projectile)
     )
   (projectile-global-mode))
 
@@ -861,14 +858,6 @@ irony 提供 company-irony 后端用于代码补全，提供 flycheck-irony 用�
 ;          'append)
 ;)
 ;
-;;; use helm-mu for search email and contacts etc.
-;;(use-package helm-mu
-;;  :ensure t
-;;  :config
-;;  (setq helm-mu-default-search-string "(maildir:/INBOX OR maildir:/Sent)")
-;;  (define-key mu4e-main-mode-map "s" 'helm-mu)
-;;  (define-key mu4e-headers-mode-map "s" 'helm-mu)
-;;  (define-key mu4e-view-mode-map "s" 'helm-mu))
 #+END_SRC
 
 *** ivy
@@ -1053,7 +1042,7 @@ ivy 能够补全emacs的很多东西，如命令等。 需要 ivy swiper counsel
 #+BEGIN_SRC emacs-lisp
 (eval-after-load "org"
  '(progn
-(add-to-list 'auto-mode-alist '("\\.\\(org\\|org_archive\\)$" . org-mode))
+ (add-to-list 'auto-mode-alist '("\\.\\(org\\|org_archive\\)$" . org-mode))
 ;(require 'org)
 ;;
 ;; Standard key bindings
@@ -2973,6 +2962,35 @@ Late deadlines first, then scheduled, then non-late deadlines"
 
 (add-to-list 'org-export-filter-headline-functions
              'rasmus/condtionally-remove-label)
+
+(use-package org-ref
+  :ensure t
+  :after org
+  :config
+
+  (setq org-ref-default-bibliography '("~/bib/bibliography.bib"))
+  (setq org-ref-bibliography-notes "~/bib/notes.org")
+  (setq org-ref-pdf-directory "~/bib/pdfs")
+  (require 'org-ref)
+  (require 'org-ref-pdf)
+  (require 'doi-utils)
+  (require 'org-ref-ivy)
+  (require 'org-ref-url-utils)
+  (doi-utils-def-bibtex-type proceedings ("proceedings" "conference")
+                             author title booktitle year month pages doi url)
+  (doi-utils-def-bibtex-type inproceedings ("paper-conference" "proceedings-article")
+                             author title booktitle year month pages doi url)
+  (setq bibtex-autokey-year-length 4
+        bibtex-autokey-name-year-separator ""
+        bibtex-autokey-year-title-separator "-"
+        bibtex-autokey-titleword-separator "-"
+        bibtex-autokey-titlewords 2
+        bibtex-autokey-titlewords-stretch 1
+        bibtex-autokey-titleword-length 8
+        org-ref-completion-library 'org-ref-ivy-cite)
+  (setq biblio-cleanup-bibtex-function
+    (lambda (autokey) "call org-ref clean" (org-ref-clean-bibtex-entry)))
+(setq biblio-doi--dx-mime-accept "application/x-bibtex"))
 
 ))
 #+END_SRC
