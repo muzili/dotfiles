@@ -1,6 +1,6 @@
 export MAILDIR=$HOME/Mail
 export LC_ALL=en_US.UTF-8
-export EDITOR='emacsclient -nw -a vim'
+export EDITOR='emacs -nw'
 export SVN_EDITOR="rm svn-commit.tmp && cp ~/.gitmessage.3gdma svn-commit.tmp && vi svn-commit.tmp"
 export ASYMPTOTE_PDFVIEWER=evince
 export ASYMPTOTE_PSVIEWER=evince
