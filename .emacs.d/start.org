@@ -713,151 +713,152 @@ irony 提供 company-irony 后端用于代码补全，提供 flycheck-irony 用�
 
 *** Email for emacs
 #+BEGIN_SRC emacs-lisp
-;(add-to-list 'load-path "/usr/local/share/emacs/site-lisp/mu4e")
-;(use-package mu4e
-;  :config
-;  ;; Use mu4e as default mail agent
-;  (setq mail-user-agent 'mu4e-user-agent)
-;  ;; Mail folder set to ~/Maildir
-;(setq mu4e-maildir "~/Mail")         ; NOTE: should not be symbolic link
-;;; Fetch mail by offlineimap
-;;(setq mu4e-get-mail-command "offlineimap")
-;;; Fetch mail in 60 sec interval
-;(setq mu4e-update-interval nil)
-;
-;;hide the \"Indexing...\" messages
-;(setq mu4e-hide-index-messages t)
-;
-;; process it out of mu to speed up mu4e
-;(setq mu4e-index-lazy-check t)
-;
-;; do not show related thread mails
-;(setq mu4e-headers-include-related nil)
-;(setq mu4e-headers-show-threads nil)
-;
-;;; don't keep message buffers around
-;(setq message-kill-buffer-on-exit t)
-;
-;;set default attachments save dir
-;(setq mu4e-attachment-dir "/data/mail/attachments")
-;
-;;; folder for sent messages
-;(setq mu4e-sent-folder   "/whaley/Sent Messages")
-;;; unfinished messages
-;(setq mu4e-drafts-folder "/whaley/Drafts")
-;;; trashed messages
-;(setq mu4e-trash-folder  "/whaley/Junk")
-;;; saved messages
-;(setq mu4e-trash-folder  "/whaley/Archives")
-;
-;(require 'mu4e-contrib)
-;(setq mu4e-html2text-command 'mu4e-shr2text)
-;;; try to emulate some of the eww key-bindings
-;;(add-hook 'mu4e-view-mode-hook
-;;          (lambda ()
-;;            (local-set-key (kbd "<tab>") 'shr-next-link)
-;;            (local-set-key (kbd "<backtab>") 'shr-previous-link)))
-;
-;;Now, when viewing such a difficult message, type aV, and
-;;the message opens inside a webbrowser.
-;(add-to-list 'mu4e-view-actions
-;             '("ViewInBrowser" . mu4e-action-view-in-browser) t)
-;
-;;; whether to show images
-;(setq mu4e-view-show-images nil)
-;
-;;whether to confirm quit
-;(setq mu4e-confirm-quit nil)
-;
-;;cc to self by default
-;(setq mu4e-compose-keep-self-cc t)
-;
-;;; sending mail
-;(setq message-send-mail-function 'message-send-mail-with-sendmail
-;      sendmail-program "/usr/sbin/sendmail"
-;      user-full-name "Li Zhiguang"
-;      message-sendmail-f-is-evil 't)
-;
-;(require 'org-mu4e)
-;
-;(define-key mu4e-headers-mode-map (kbd "C-c c") 'org-mu4e-store-and-capture)
-;(define-key mu4e-view-mode-map    (kbd "C-c c") 'org-mu4e-store-and-capture)
-;(define-key mu4e-headers-mode-map (kbd "<tab>") 'mu4e-headers-next-unread)
-;(define-key mu4e-view-mode-map (kbd "<tab>") 'mu4e-view-headers-next-unread)
-;
-;(setq mu4e-headers-date-format "%d-%m-%Y %H:%M")
-;(setq mu4e-headers-fields
-;    '( (:date          .  18)    ;; alternatively, use :human-date
-;       (:flags         .   4)
-;       (:from-or-to    .  16)
-;       (:subject       .  nil))) ;; alternatively, use :thread-subject
-;
-;(setq mu4e-maildir-shortcuts
-;      '( ("/whaley/INBOX"               . ?i)
-;         ("/whaley/Sent Messages"   . ?s)
-;         ("/whaley/bugzilla"   . ?b)
-;         ("/whaley/Junk"       . ?t)))
-;
-;(setq mu4e-headers-actions
-;  '( ("capture message"  . mu4e-action-capture-message)
-;     ("show this thread" . mu4e-action-show-thread)))
-;
-;
-;;; 1) messages to me@foo.example.com should be replied with From:me@foo.example.com
-;;; 2) messages to me@bar.example.com should be replied with From:me@bar.example.com
-;;; 3) all other mail should use From:me@cuux.example.com
-;(add-hook 'mu4e-compose-pre-hook
-;  (defun my-set-from-address ()
-;    "Set the From address based on the To address of the original."
-;    (let ((msg mu4e-compose-parent-message)) ;; msg is shorter...
-;      (when msg
-;        (setq user-mail-address
-;          (cond
-;            ((mu4e-message-contact-field-matches msg :to "li.zhiguang@whaley.cn")
-;              "li.zhiguang@whaley.cn")
-;            ((mu4e-message-contact-field-matches msg :to "muzili@gmail.com")
-;              "muzili@gmail.com")
-;            (t "li.zhiguang@whaley.cn")))))))
-;
-;(add-hook 'mu4e-compose-mode-hook
-;  (defun my-add-bcc ()
-;    "Add a Bcc: header."
-;    (save-excursion (message-add-header "Bcc: li.zhiguang@whaley.cn\n"))))
-;
-;;; always show mail adress
-;(setq mu4e-view-show-addresses t)
-;
-;;Maximum number of results to show; this affects performance
-;;quite a bit
-;(setq mu4e-headers-results-limit 2000)
-;; do not ask when save attachments
-;(setq mu4e-save-multiple-attachments-without-asking t)
-;(setq mu4e-bookmarks
-;      '(
-;        ("maildir:/whaley/INBOX"                             "[Whaley] All"            ?a)
-;        ("flag:unread from:bugzilla"                         "[Whaley] Unread bugs"    ?b)
-;        ("flag:unread from:gerrit"                           "[Whaley] Unread CLs"     ?g)
-;        ("flag:unread from:jenkins@whaley.cn subject:Failed" "[Whaley] Unread failed built"     ?j)
-;        ("flag:unread AND maildir:/whaley/INBOX"             "[Whaley] Unread Inbox"   ?u)
-;        ("date:24h..now AND maildir:/whaley/INBOX"         "Today's messages"        ?t)
-;        ("date:7d..now AND maildir:/whaley/INBOX"            "Last 7 days"             ?w)
-;        ("date:30d..now AND maildir:/whaley/INBOX"           "Last 30 days"            ?m)
-;        ("mime:image/* AND maildir:/whaley/INBOX"            "Messages with images"    ?p)
-;        ("flag:attach AND maildir:/whaley/INBOX"             "Message with attachment" ?A)
-;        ("date:1m..now AND mime:text/calendar"               "Calendar in 1 month"     ?c)
-;        ))
-;
-;; message mode hooks
-;(add-hook 'message-mode-hook 'orgstruct++-mode 'append)
-;(add-hook 'message-mode-hook 'turn-on-auto-fill 'append)
-;;(add-hook 'message-mode-hook 'bbdb-define-all-aliases 'append)
-;(add-hook 'message-mode-hook 'orgtbl-mode 'append)
-;(add-hook 'message-mode-hook 'turn-on-flyspell 'append)
-;(add-hook 'message-mode-hook
-;          '(lambda () (setq fill-column 72))
-;          'append)
-;)
-;
+(add-to-list 'load-path "/usr/local/share/emacs/site-lisp/mu4e")
+(autoload 'mu4e "mu4e")
+(eval-after-load 'mu4e
+'(progn
+  ;; Use mu4e as default mail agent
+  (setq mail-user-agent 'mu4e-user-agent)
+  ;; Mail folder set to ~/Maildir
+(setq mu4e-maildir "~/Mail")         ; NOTE: should not be symbolic link
+;; Fetch mail by offlineimap
+;(setq mu4e-get-mail-command "offlineimap")
+;; Fetch mail in 60 sec interval
+(setq mu4e-update-interval nil)
+
+;hide the \"Indexing...\" messages
+(setq mu4e-hide-index-messages t)
+
+; process it out of mu to speed up mu4e
+(setq mu4e-index-lazy-check t)
+
+; do not show related thread mails
+(setq mu4e-headers-include-related nil)
+(setq mu4e-headers-show-threads nil)
+
+;; don't keep message buffers around
+(setq message-kill-buffer-on-exit t)
+
+;set default attachments save dir
+(setq mu4e-attachment-dir "/data/mail/attachments")
+
+;; folder for sent messages
+(setq mu4e-sent-folder   "/whaley/Sent Messages")
+;; unfinished messages
+(setq mu4e-drafts-folder "/whaley/Drafts")
+;; trashed messages
+(setq mu4e-trash-folder  "/whaley/Junk")
+;; saved messages
+(setq mu4e-trash-folder  "/whaley/Archives")
+
+(require 'mu4e-contrib)
+(setq mu4e-html2text-command 'mu4e-shr2text)
+;; try to emulate some of the eww key-bindings
+;(add-hook 'mu4e-view-mode-hook
+;          (lambda ()
+;            (local-set-key (kbd "<tab>") 'shr-next-link)
+;            (local-set-key (kbd "<backtab>") 'shr-previous-link)))
+
+;Now, when viewing such a difficult message, type aV, and
+;the message opens inside a webbrowser.
+(add-to-list 'mu4e-view-actions
+             '("ViewInBrowser" . mu4e-action-view-in-browser) t)
+
+;; whether to show images
+(setq mu4e-view-show-images nil)
+
+;whether to confirm quit
+(setq mu4e-confirm-quit nil)
+
+;cc to self by default
+(setq mu4e-compose-keep-self-cc t)
+
+;; sending mail
+(setq message-send-mail-function 'message-send-mail-with-sendmail
+      sendmail-program "/usr/sbin/sendmail"
+      user-full-name "Li Zhiguang"
+      message-sendmail-f-is-evil 't)
+
+(require 'org-mu4e)
+
+(define-key mu4e-headers-mode-map (kbd "C-c c") 'org-mu4e-store-and-capture)
+(define-key mu4e-view-mode-map    (kbd "C-c c") 'org-mu4e-store-and-capture)
+(define-key mu4e-headers-mode-map (kbd "<tab>") 'mu4e-headers-next-unread)
+(define-key mu4e-view-mode-map (kbd "<tab>") 'mu4e-view-headers-next-unread)
+
+(setq mu4e-headers-date-format "%d-%m-%Y %H:%M")
+(setq mu4e-headers-fields
+    '( (:date          .  18)    ;; alternatively, use :human-date
+       (:flags         .   4)
+       (:from-or-to    .  16)
+       (:subject       .  nil))) ;; alternatively, use :thread-subject
+
+(setq mu4e-maildir-shortcuts
+      '( ("/whaley/INBOX"               . ?i)
+         ("/whaley/Sent Messages"   . ?s)
+         ("/whaley/bugzilla"   . ?b)
+         ("/whaley/Junk"       . ?t)))
+
+(setq mu4e-headers-actions
+  '( ("capture message"  . mu4e-action-capture-message)
+     ("show this thread" . mu4e-action-show-thread)))
+
+
+;; 1) messages to me@foo.example.com should be replied with From:me@foo.example.com
+;; 2) messages to me@bar.example.com should be replied with From:me@bar.example.com
+;; 3) all other mail should use From:me@cuux.example.com
+(add-hook 'mu4e-compose-pre-hook
+  (defun my-set-from-address ()
+    "Set the From address based on the To address of the original."
+    (let ((msg mu4e-compose-parent-message)) ;; msg is shorter...
+      (when msg
+        (setq user-mail-address
+          (cond
+            ((mu4e-message-contact-field-matches msg :to "li.zhiguang@whaley.cn")
+              "li.zhiguang@whaley.cn")
+            ((mu4e-message-contact-field-matches msg :to "muzili@gmail.com")
+              "muzili@gmail.com")
+            (t "li.zhiguang@whaley.cn")))))))
+
+(add-hook 'mu4e-compose-mode-hook
+  (defun my-add-bcc ()
+    "Add a Bcc: header."
+    (save-excursion (message-add-header "Bcc: li.zhiguang@whaley.cn\n"))))
+
+;; always show mail adress
+(setq mu4e-view-show-addresses t)
+
+;Maximum number of results to show; this affects performance
+;quite a bit
+(setq mu4e-headers-results-limit 2000)
+; do not ask when save attachments
+(setq mu4e-save-multiple-attachments-without-asking t)
+(setq mu4e-bookmarks
+      '(
+        ("maildir:/whaley/INBOX"                             "[Whaley] All"            ?a)
+        ("flag:unread from:bugzilla"                         "[Whaley] Unread bugs"    ?b)
+        ("flag:unread from:gerrit"                           "[Whaley] Unread CLs"     ?g)
+        ("flag:unread from:jenkins@whaley.cn subject:Failed" "[Whaley] Unread failed built"     ?j)
+        ("flag:unread AND maildir:/whaley/INBOX"             "[Whaley] Unread Inbox"   ?u)
+        ("date:24h..now AND maildir:/whaley/INBOX"         "Today's messages"        ?t)
+        ("date:7d..now AND maildir:/whaley/INBOX"            "Last 7 days"             ?w)
+        ("date:30d..now AND maildir:/whaley/INBOX"           "Last 30 days"            ?m)
+        ("mime:image/* AND maildir:/whaley/INBOX"            "Messages with images"    ?p)
+        ("flag:attach AND maildir:/whaley/INBOX"             "Message with attachment" ?A)
+        ("date:1m..now AND mime:text/calendar"               "Calendar in 1 month"     ?c)
+        ))
+
+; message mode hooks
+(add-hook 'message-mode-hook 'orgstruct++-mode 'append)
+(add-hook 'message-mode-hook 'turn-on-auto-fill 'append)
+;(add-hook 'message-mode-hook 'bbdb-define-all-aliases 'append)
+(add-hook 'message-mode-hook 'orgtbl-mode 'append)
+(add-hook 'message-mode-hook 'turn-on-flyspell 'append)
+(add-hook 'message-mode-hook
+          '(lambda () (setq fill-column 72))
+          'append)
+))
+
 #+END_SRC
 
 *** ivy
