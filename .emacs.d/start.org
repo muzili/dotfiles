@@ -2879,6 +2879,10 @@ Late deadlines first, then scheduled, then non-late deadlines"
              pdfstartview=FitH,                                                                                                                                                                         
              breaklinks=true}  
 
+%https://tex.stackexchange.com/questions/32598/force-latex-image-to-appear-in-the-section-in-which-its-declared
+\\usepackage[section]{placeins}
+\\usepackage{gensymb}
+
 %%% 设置中文字体 %%%
 % https://www.zhihu.com/question/20563044
 % 衬线字体
