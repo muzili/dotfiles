@@ -49,6 +49,8 @@ plugins=(git ssh-agent gpg-agent)
 
 source $ZSH/oh-my-zsh.sh
 
+[[ -e /usr/share/fzf/shell/key-bindings.zsh ]] && source /usr/share/fzf/shell/key-bindings.zsh
+
 # User configuration
 
 # You may need to manually set your language environment
