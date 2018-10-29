@@ -49,6 +49,12 @@ If use-package is not installed, install it.
 	      enable-local-variables nil
 )
 
+(setq delete-old-versions t)
+(setq version-control t)
+(setq vc-make-backup-files t)
+(setq backup-directory-alist `(("." . "~/.emacs.d/backups")))
+(setq auto-save-file-name-transforms '((".*" "~/.emacs.d/auto-save-list" t)))
+
 (run-with-idle-timer 0.1 nil 'toggle-frame-maximized)
 
 ;;; Ctrl-h = Backspace
@@ -401,6 +407,37 @@ https://github.com/jacktasia/dumb-jump
   (add-hook 'lsp-mode-hook 'lsp-ui-mode))
 #+END_SRC
 
+*** Yasnippet
+
+#+BEGIN_SRC emacs-lisp
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Package: yasnippet
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(use-package yasnippet
+  :ensure t
+  :commands (yas-reload-all)
+  :init
+  (eval-when-compile
+    ;; Silence missing function warnings
+    (declare-function yas-global-mode "yasnippet.el"))
+  :defer 5
+  :config
+  (yas-global-mode t)
+  (yas-reload-all))
+(use-package yasnippet-snippets
+  :ensure t
+  :after yasnippet
+  :config
+  (yas-reload-all))
+;; Apparently the company-yasnippet backend shadows all backends that
+;; come after it. To work around this we assign yasnippet to a different
+;; keybind since actual source completion is vital.
+(use-package company-yasnippet
+  :bind ("C-M-y" . company-yasnippet)
+  :after (yasnippet)
+)
+#+END_SRC
+
 *** flymake
 
 #+BEGIN_SRC emacs-lisp
@@ -561,13 +598,23 @@ https://github.com/jacktasia/dumb-jump
 (autoload 'whitespace-mode "whitespace" "Toggle whitespace visualization."        t)
 (autoload 'whitespace-toggle-options "whitespace" "Toggle local `whitespace-mode' options." t)
 
+;https://www.reddit.com/r/emacs/comments/3rxfr5/xclip_copypaste_killyank_and_emacs_in_a_terminal/
+(use-package xclip
+  :ensure t
+  :config
+  (xclip-mode 1)
+)
+
+;https://stackoverflow.com/questions/1229142/how-can-i-save-my-mini-buffer-history-in-emacs
+(savehist-mode 1)
 ;; http://www.oreillynet.com/lpt/wlg/6162
-(setq x-select-enable-clipboard t)
+;(setq x-select-enable-clipboard t)
 ;(setq interprogram-paste-function 'x-cut-buffer-or-selection-value)
 
-(global-set-key "\C-w" 'clipboard-kill-region)
-(global-set-key "\M-w" 'clipboard-kill-ring-save)
-(global-set-key "\C-y" 'clipboard-yank)
+;(global-set-key "\C-w" 'clipboard-kill-region)
+;(global-set-key "\M-w" 'clipboard-kill-ring-save)
+;(global-set-key "\C-y" 'clipboard-yank)
+
 
 (setq select-active-regions t) ;  active region sets primary X11 selection
 (global-set-key [mouse-2] 'mouse-yank-primary)  ; make mouse middle-click only paste from primary X11 selection, not clipboard and kill ring.
@@ -2927,6 +2974,8 @@ Late deadlines first, then scheduled, then non-late deadlines"
 
 (run-at-time "00:59" 3600 'org-save-all-org-buffers)
 
+(setq org-latex-toc-command  "\\newpage\n\n\\tableofcontents\n\n\\newpage\n\n")
+
 ;http://emacs-china.org/blog/2015/04/20/%E4%BD%BF%E7%94%A8-ctex-%E5%B0%86-org-%E6%96%87%E4%BB%B6%E8%BD%AC%E5%8C%96%E4%B8%BA-pdf/
 (setq org-latex-default-class "ctexart")
 (add-to-list 'org-latex-classes
@@ -3090,33 +3139,13 @@ Late deadlines first, then scheduled, then non-late deadlines"
 
 (use-package org-ref
   :ensure t
-  :after org
+  :init
+  (setq org-ref-completion-library 'org-ref-ivy-cite)
   :config
-
-  (setq org-ref-default-bibliography '("~/bib/bibliography.bib"))
-  (setq org-ref-bibliography-notes "~/bib/notes.org")
-  (setq org-ref-pdf-directory "~/bib/pdfs")
-  (require 'org-ref)
-  (require 'org-ref-pdf)
-  (require 'doi-utils)
-  (require 'org-ref-ivy)
-  (require 'org-ref-url-utils)
-  (doi-utils-def-bibtex-type proceedings ("proceedings" "conference")
-                             author title booktitle year month pages doi url)
-  (doi-utils-def-bibtex-type inproceedings ("paper-conference" "proceedings-article")
-                             author title booktitle year month pages doi url)
-  (setq bibtex-autokey-year-length 4
-        bibtex-autokey-name-year-separator ""
-        bibtex-autokey-year-title-separator "-"
-        bibtex-autokey-titleword-separator "-"
-        bibtex-autokey-titlewords 2
-        bibtex-autokey-titlewords-stretch 1
-        bibtex-autokey-titleword-length 8
-        org-ref-completion-library 'org-ref-ivy-cite)
-  (setq biblio-cleanup-bibtex-function
-    (lambda (autokey) "call org-ref clean" (org-ref-clean-bibtex-entry)))
-(setq biblio-doi--dx-mime-accept "application/x-bibtex"))
-
+  (setq reftex-default-bibliography '("~/Orgnote/bibliography/references.bib"))
+  (setq org-ref-bibliography-notes "~/Orgnote/bibliography/notes.org"
+	  org-ref-default-bibliography '("~/Orgnote/bibliography/references.bib")
+	  org-ref-pdf-directory "~/Orgnote/bibliography/bibtex-pdfs/"))
 ))
 #+END_SRC
 
