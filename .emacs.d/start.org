@@ -275,8 +275,8 @@ This stops emacs adding customised settings to init.el.
 
 
 ;; open truncate lines
-(toggle-truncate-lines 1)
-
+;; https://www.zhihu.com/question/50377885 自动换行
+(global-visual-line-mode 1) ; 1 for on, 0 for off.
 
 (use-package exec-path-from-shell
   :ensure)
