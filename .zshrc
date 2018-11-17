@@ -130,12 +130,6 @@ alias editx="emacsclient -nc "
 
 export VAGRANT_DEFAULT_PROVIDER=virtualbox
 
-function start_emacs {
-    ps -ef |grep 'emacs' | grep 'daemon' > /dev/null || {
-        emacs-nox --no-site-file --daemon >/dev/null
-    }
-}
-
 function start_sogou {
     ps -ef |grep -v sogou-qimpanel-watchdog |grep -v grep |grep sogou-qimpanel >/dev/null || {
         sogou-qimpanel  >/dev/null 2>&1
@@ -153,7 +147,6 @@ function start_ibus {
     export XMODIFIERS=@im=ibus
     export QT_IM_MODULE=ibus
 }
-#start_emacs
 #start_sogou
 remove_caps
 start_ibus
