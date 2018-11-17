@@ -119,7 +119,9 @@ alias bz='bugz --connection nbug'
 alias bug='bugz --connection nbug get '
 alias mybugs='bugz --connection nbug search -a lizg -r lizg'
 alias busy="cat /dev/urandom | head -c 18K | hexdump -C | grep "ca fe""
-alias sdu "sudo dnf update "
+alias sdu="sudo dnf update "
+alias edit="emacsclient -nw "
+alias editx="emacsclient -nc "
 
 #alias ndk-addr2line=`ndk-which addr2line`
 #alias ndk-objdump=`ndk-which objdump`
