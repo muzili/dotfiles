@@ -1022,34 +1022,30 @@ ivy 能够补全emacs的很多东西，如命令等。 需要 ivy swiper counsel
 (use-package counsel
   :ensure t
   :bind (("M-x" . counsel-M-x)
-     ("C-x C-f" . counsel-find-file))
+         ("C-o" . counsel-find-file))
+  :init
+  (setq projectile-switch-project-action 'counsel-fzf)
   :commands (counsel-ag
              counsel-find-file
              counsel-fzf
              counsel-git
              counsel-rg
              counsel-yank-pop)
-  :init
-  (setq projectile-switch-project-action 'counsel-fzf)
   :config
+  (use-package smex
+    :ensure t)
+  (use-package flx
+    :ensure t)
+  (ivy-mode 1)
+  (setq ivy-use-virtual-buffers t)
   (setq counsel-yank-pop-height 15)
   (setq counsel-evil-registers-height 15)
-  (ivy-set-prompt 'counsel-fzf (lambda () "> "))
 
-  (defun counsel-configure-fzf (&rest _)
-    "Configure command to be piped into `counsel-fzf'."
-    (cond
-     ((eq major-mode 'dired-mode)
-      (if (executable-find "fd")
-          (setenv "FZF_DEFAULT_COMMAND" "fd .")
-        (setenv "FZF_DEFAULT_COMMAND" "find .")))
-     (:default
-      (setenv "FZF_DEFAULT_COMMAND"
-              "(git ls-files --recurse-submodules --exclude-standard --cached ||
-        find . -maxdepth 2 -path \"*/\\.*\" -prune -o -print -o -type l -print |
-           sed s/^..//) 2> /dev/null"))))
-
-  (advice-add 'counsel-fzf :before 'counsel-configure-fzf)
+  ;; intentional space before end of string
+  (setq ivy-count-format "(%d/%d) ")
+  (setq ivy-initial-inputs-alist nil)
+  (setq ivy-re-builders-alist
+        '((t . ivy--regex-fuzzy)))
 
   (setq ivy-use-selectable-prompt t)
   (setq counsel-async-filter-update-time 10000)
@@ -1060,11 +1056,8 @@ ivy 能够补全emacs的很多东西，如命令等。 需要 ivy swiper counsel
   (setq counsel-rg-base-command
         "rg --max-columns 80 -i --no-heading --line-number --color never %s .")
   (setq counsel-ag-base-command "ag -U --nocolor --nogroup %s -- .")
+  (ivy-set-prompt 'counsel-fzf (lambda () "> "))
 )
-
-
-(use-package flx   ; fuzzy matching/highlighting
-  :ensure t)
 
 #+END_SRC
 
