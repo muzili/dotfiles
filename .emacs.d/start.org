@@ -603,6 +603,8 @@ https://github.com/jacktasia/dumb-jump
   :ensure t
   :config
   (xclip-mode 1)
+  (setq x-select-enable-clipboard t 
+        x-select-enable-primary t)
 )
 
 ;https://stackoverflow.com/questions/1229142/how-can-i-save-my-mini-buffer-history-in-emacs
