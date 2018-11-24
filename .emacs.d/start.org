@@ -60,6 +60,9 @@ If use-package is not installed, install it.
 ;;; Ctrl-h = Backspace
 (global-set-key [8]  'delete-backward-char)
 
+;
+(global-unset-key (kbd "C-SPC"))
+
 ;; in every buffer, the line which contains the cursor will be fully highlighted
 ;(global-hl-line-mode 1)
 #+END_SRC
