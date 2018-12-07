@@ -1078,6 +1078,17 @@ ivy 能够补全emacs的很多东西，如命令等。 需要 ivy swiper counsel
   (global-hungry-delete-mode t)
 )
 #+END_SRC
+*** Smart shift
+https://github.com/hbin/smart-shift
+#+begin_src emacs-lisp
+(use-package smart-shift
+  :ensure t
+  :defer t
+  :config
+  (progn
+    (global-smart-shift-mode 1)
+    ))
+#+end_src
 *** Smart parents
 
 输入括号，引号成对出现, 具体见 [[https://github.com/lujun9972/emacs-document/blob/master/emacs-common/Smartparens%25E7%2594%25A8%25E6%25B3%2595%25E8%25AF%25A6%25E8%25A7%25A3.org][Smartparens用法详解]]
