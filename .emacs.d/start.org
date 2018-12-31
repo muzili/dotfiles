@@ -394,9 +394,9 @@ https://github.com/jacktasia/dumb-jump
   ;; get lsp-python-enable defined
   ;; NB: use either projectile-project-root or ffip-get-project-root-directory
   ;;     or any other function that can be used to find the root directory of a project
-  (lsp-define-stdio-client lsp-python "python"
-                           #'projectile-project-root
-                           '("pyls"))
+;  (lsp-define-stdio-client lsp-python "python"
+;                           #'projectile-project-root
+;                           '("pyls"))
 )
 
 (use-package lsp-ui
@@ -667,8 +667,7 @@ irony 提供 company-irony 后端用于代码补全，提供 flycheck-irony 用�
   :diminish irony-mode "IR"
   :init
   (progn
-    (setq c-basic-offset 4
-          irony-additional-clang-options '("-std=c++11"))
+    (setq irony-additional-clang-options '("-std=c++11"))
     (add-hook 'c-mode-hook 'irony-mode)
     (add-hook 'c++-mode-hook 'irony-mode)
     ))
@@ -727,6 +726,32 @@ irony 提供 company-irony 后端用于代码补全，提供 flycheck-irony 用�
   :ensure t
   :delight modern-c++-font-lock-mode
   :hook (c++-mode . modern-c++-font-lock-mode))
+
+;; google-c-style
+(use-package google-c-style
+  :ensure t
+  :hook ((c-mode-common . google-set-c-style)
+         (c-mode-common . google-make-newline-indent)))
+
+;; cmake-mode
+(use-package cmake-mode
+  :ensure t
+  :defer t
+  :hook (cmake-mode . (lambda()
+                        (progn
+                          (setq-local company-idle-delay nil)
+                          (setq-local company-dabbrev-code-everywhere t)
+                          (setq-local company-backends '(company-cmake
+                                                         company-capf
+                                                         company-files))))))
+
+;; cmake-font-lock
+(use-package cmake-font-lock
+  :ensure t
+  :commands (cmake-font-lock-activate)
+  :hook (cmake-mode . (lambda() (progn
+                              (cmake-font-lock-activate)
+                              (font-lock-refresh-defaults)))))
 
 ;;http://emacs-fu.blogspot.com/2008/12/quickly-switching-between-header-and.html
 ;;quickly switch between header and source
@@ -1039,8 +1064,8 @@ ivy 能够补全emacs的很多东西，如命令等。 需要 ivy swiper counsel
   :config
   (use-package smex
     :ensure t)
-  (use-package flx
-    :ensure t)
+  ;(use-package flx
+  ;  :ensure t)
   (ivy-mode 1)
   (setq ivy-use-virtual-buffers t)
   (setq counsel-yank-pop-height 15)
@@ -1155,11 +1180,11 @@ https://github.com/hbin/smart-shift
     (use-package go-guru
       :ensure t))
 
-(lsp-define-stdio-client lsp-go "go" #'(lambda () default-directory)
-                         '("go-langserver" "-mode=stdio")
-                         :ignore-regexps
-                         '("^langserver-go: reading on stdin, writing on stdout$"))
-
+;(lsp-define-stdio-client lsp-go "go" #'(lambda () default-directory)
+;                         '("go-langserver" "-mode=stdio")
+;                         :ignore-regexps
+;                         '("^langserver-go: reading on stdin, writing on stdout$"))
+;
 #+END_SRC
 *** Java language support
 #+BEGIN_SRC emacs-lisp
