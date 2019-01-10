@@ -1073,9 +1073,6 @@ ivy 能够补全emacs的很多东西，如命令等。 需要 ivy swiper counsel
 
   ;; intentional space before end of string
   (setq ivy-count-format "(%d/%d) ")
-  (setq ivy-initial-inputs-alist nil)
-  (setq ivy-re-builders-alist
-        '((t . ivy--regex-fuzzy)))
 
   (setq ivy-use-selectable-prompt t)
   (setq counsel-async-filter-update-time 10000)
