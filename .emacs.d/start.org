@@ -1169,17 +1169,35 @@ https://github.com/hbin/smart-shift
 *** Java language support
 #+BEGIN_SRC emacs-lisp
 
-;(use-package lsp-java
-;  :ensure t
-;  :requires (lsp-ui-flycheck lsp-ui-sideline)
-;  :config
-;  (add-hook 'java-mode-hook  'lsp-java-enable)
-;  (add-hook 'java-mode-hook  'flycheck-mode)
-;  (add-hook 'java-mode-hook  'company-mode)
-;  (add-hook 'java-mode-hook  (lambda () (lsp-ui-flycheck-enable t)))
-;  (add-hook 'java-mode-hook  'lsp-ui-sideline-mode)
-;  (setq lsp-java--workspace-folders (list "~/zhijia")))
-;
+(use-package lsp-java
+  :ensure t
+  :after lsp
+  :config
+  (add-hook 'java-mode-hook 'lsp)
+  (add-hook 'java-mode-hook 'flycheck-mode)
+  (add-hook 'java-mode-hook 'company-mode)
+  (progn 
+    (setq lsp-java-vmargs '("-noverify" "-Xmx4G" "-Xmn524m" "-XX:PermSize=1024m" "-XX:PermSize=502m" "-XX:MaxPermSize=1024m" "-Xss4m" "-XX:ParallelGCThreads=8" "-XX:ReservedCodeCacheSize=540m" "-XX:+UseCompressedOops" "-XX:ConcGCThreads=8"  "-XX:-TraceClassUnloading" "-XX:+AlwaysPreTouch" "-XX:+TieredCompilation" "-XX:SoftRefLRUPolicyMSPerMB=50" "-XX:+OptimizeStringConcat"  "-XX:-CITime" "-XX:-PrintConcurrentLocks" "-server" "-XX:+UseG1GC" )
+	  lsp-java-server-install-dir "~/.emacs.d/eclipse.jdt.ls"
+	  lsp-java-workspace-cache-dir t
+	  lsp-java-format-enabled t
+	  lsp-java-format-comments-enabled t
+	  lsp-java-save-action-organize-imports t
+	  lsp-java-save-action-organize-imports t
+	  lsp-java-import-gradle-enabled t
+	  lsp-java-import-maven-enabled t
+	  lsp-java-auto-build t
+	  lsp-print-io t
+	  lsp-java-progress-report t
+	  lsp-java-completion-guess-arguments t
+	  lsp-java-enable-file-watch t
+
+
+	  ;; Debug Server
+	  lsp-java-trace-server t
+	  lsp-java-progress-report t
+)))
+
 #+END_SRC
 
 *** Rust lang support
