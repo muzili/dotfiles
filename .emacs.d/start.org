@@ -393,9 +393,13 @@ https://github.com/jacktasia/dumb-jump
   (setq company-lsp-cache-candidates t)
   (setq company-lsp-enable-recompletion t))
 
+(use-package eglot
+  :hook (prog-mode . eglot-ensure))
+
 (use-package lsp-mode
   :ensure t
   :commands lsp
+  :hook (prog-mode . lsp)
   :config
   (setq lsp-inhibit-message t
         lsp-eldoc-render-all nil
@@ -426,7 +430,6 @@ https://github.com/jacktasia/dumb-jump
         lsp-ui-sideline-show-hover t
         lsp-ui-sideline-show-code-actions t
         lsp-ui-sideline-update-mode 'point)
-  
 #+END_SRC
 
 *** Yasnippet
@@ -676,6 +679,7 @@ https://github.com/jacktasia/dumb-jump
 #+BEGIN_SRC emacs-lisp
 
 (use-package ccls
+  :defines projectile-project-root-files-top-down-recurring
   :ensure t
   :init
   (setq ccls-executable "/usr/local/bin/ccls")
@@ -684,7 +688,13 @@ https://github.com/jacktasia/dumb-jump
   (setq cquery-extra-args '("--log-all-to-stderr" "--log-file" "/tmp/cquery.log"))
   :config
   (add-hook 'c-mode-hook #'ccls//enable)
-  (add-hook 'c++-mode-hook #'ccls//enable))
+  (add-hook 'c++-mode-hook #'ccls//enable)
+  (with-eval-after-load 'projectile
+    (setq projectile-project-root-files-top-down-recurring
+      (append '("compile_commands.json"
+                ".ccls")
+                projectile-project-root-files-top-down-recurring)))
+)
 
 (defun ccls//enable ()
   "Call C language server in every C/C++ file."
@@ -1214,15 +1224,6 @@ https://github.com/hbin/smart-shift
   :init
   (add-hook 'rust-mode-hook #'lsp-rust-enable)
   :after lsp-mode)
-#+END_SRC
-*** Python mode
-#+BEGIN_SRC emacs-lisp
-(use-package lsp-python
-  :ensure t
-  :after lsp-mode
-  :defer t
-  :hook 
-  (python-mode-hook . lsp-python-enable))
 #+END_SRC
 
 ** Org
