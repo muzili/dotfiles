@@ -308,16 +308,16 @@ This stops emacs adding customised settings to init.el.
 https://github.com/leoliu/ggtags
 
 #+BEGIN_SRC emacs-lisp
-;; tags for code navigation
-;(use-package ggtags
-;  :ensure t
-;  :config
-;  (defun enable-ggtags-condition ()
-;    (when
-;      (locate-dominating-file default-directory "GTAGS")
-;      (add-hook 'prog-mode-hook #'ggtags-mode)))
-;  (enable-ggtags-condition)
-;)
+; tags for code navigation
+(use-package ggtags
+  :ensure t
+  :config
+  (defun enable-ggtags-condition ()
+    (when
+      (locate-dominating-file default-directory "GTAGS")
+      (add-hook 'prog-mode-hook #'ggtags-mode)))
+  (enable-ggtags-condition)
+)
 #+END_SRC
 
 *** Dump jump
@@ -354,9 +354,9 @@ https://github.com/jacktasia/dumb-jump
           company-dabbrev-ignore-case nil
           company-dabbrev-downcase nil
           company-backends
-          '((company-files
+          '((company-capf
+             company-files
              company-keywords
-             company-capf
              company-yasnippet
              )
              (company-abbrev company-dabbrev)))
@@ -394,7 +394,16 @@ https://github.com/jacktasia/dumb-jump
   (setq company-lsp-enable-recompletion t))
 
 (use-package eglot
-  :hook (prog-mode . eglot-ensure))
+  :hook (prog-mode . eglot-ensure)
+  :config 
+  (add-to-list 'eglot-server-programs '(python-mode . ("pyls")))
+  (add-to-list 'eglot-server-programs '(rust-mode . ("rls")))
+;  (add-to-list 'eglot-server-programs '((c++-mode c-mode) "clangd-6.0"))
+  (add-to-list 'eglot-server-programs '((c++-mode c-mode) "ccls"))
+  (add-to-list 'eglot-server-programs '(js2-mode . ("javascript-typescript-stdio")))
+  (add-to-list 'eglot-server-programs '(typescript-mode . ("javascript-typescript-stdio")))
+  (add-to-list 'eglot-server-programs '(javascript-mode . ("javascript-typescript-stdio")))
+)
 
 (use-package lsp-mode
   :ensure t
@@ -677,7 +686,6 @@ https://github.com/jacktasia/dumb-jump
 *** C/C++ mode
 
 #+BEGIN_SRC emacs-lisp
-
 (use-package ccls
   :defines projectile-project-root-files-top-down-recurring
   :ensure t
