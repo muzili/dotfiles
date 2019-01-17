@@ -403,6 +403,7 @@ https://github.com/jacktasia/dumb-jump
   (add-to-list 'eglot-server-programs '(js2-mode . ("javascript-typescript-stdio")))
   (add-to-list 'eglot-server-programs '(typescript-mode . ("javascript-typescript-stdio")))
   (add-to-list 'eglot-server-programs '(javascript-mode . ("javascript-typescript-stdio")))
+  (add-hook 'eglot--managed-mode-hook (lambda () (flymake-mode -1)))
 )
 
 (use-package lsp-mode
@@ -412,7 +413,10 @@ https://github.com/jacktasia/dumb-jump
   :config
   (setq lsp-inhibit-message t
         lsp-eldoc-render-all nil
-        lsp-highlight-symbol-at-point nil)
+        lsp-highlight-symbol-at-point nil
+        lsp-prefer-flymake nil
+        lsp-enable-flycheck nil)
+
   ;; get lsp-python-enable defined
   ;; NB: use either projectile-project-root or ffip-get-project-root-directory
   ;;     or any other function that can be used to find the root directory of a project
@@ -428,9 +432,6 @@ https://github.com/jacktasia/dumb-jump
   (:map lsp-ui-mode-map
 	      ([remap xref-find-definitions] . lsp-ui-peek-find-definitions)
         ([remap xref-find-references] . lsp-ui-peek-find-references))
-  :hook
-  (c-mode-hook . flycheck-mode)
-  (python-mode-hook . flycheck-mode)
   :init
   (add-hook 'lsp-mode-hook 'lsp-ui-mode))  
   :config
@@ -471,30 +472,6 @@ https://github.com/jacktasia/dumb-jump
   :after (yasnippet)
 )
 #+END_SRC
-
-*** flymake
-
-#+BEGIN_SRC emacs-lisp
-
-(use-package flymake
-  :defer t
-  :custom
-  (flymake-proc-compilation-prevents-syntax-check nil)
-  :hook
-  ;; Some modes turn `flymake-mode' on by default, I have to tell these
-  ;; specifically to do it:
-  ((emacs-lisp-mode python-mode). flymake-mode))
-
-#+END_SRC
-
-*** flycheck
-
-#+BEGIN_SRC emacs-lisp
-(use-package flycheck
-  :ensure t
-)
-#+END_SRC
-
 *** docker
 #+BEGIN_SRC emacs-lisp
 (use-package dockerfile-mode
@@ -527,7 +504,6 @@ https://github.com/jacktasia/dumb-jump
          ("\\.html\\'" . web-mode))
   :config
     (add-hook 'web-mode-hook 'emmet-mode)
-    (add-hook 'web-mode-hook 'flycheck-mode)
     (add-hook 'web-mode-hook 'company-mode)
     (add-hook 'web-mode-hook
       (lambda ()
@@ -546,10 +522,6 @@ https://github.com/jacktasia/dumb-jump
        (add-to-list 'web-mode-content-types '("json" . "\\.json\\'"))
        (add-to-list 'web-mode-content-types '("jsx" . ".\\.js[x]?\\'")))
 
-     (eval-after-load 'flycheck
-       '(progn
-          (flycheck-add-mode 'html-tidy 'web-mode)
-          (flycheck-add-mode 'css-csslint 'web-mode)))
 #+END_SRC
 
 *** whitespace-cleanup
@@ -588,8 +560,6 @@ https://github.com/jacktasia/dumb-jump
     (defun my-ts-mode-configuration ()
       (interactive)
       (tide-setup)
-      (flycheck-mode +1)
-      (setq flycheck-check-syntax-automatically '(save mode-enabled))
       (eldoc-mode +1)
       (tide-hl-identifier-mode +1)
       (company-mode +1))
@@ -1150,9 +1120,6 @@ https://github.com/hbin/smart-shift
 
 #+BEGIN_SRC emacs-lisp
 
-;(with-eval-after-load 'lsp-mode
-;(require 'lsp-flycheck))
-
 (use-package go-mode
   :config (progn
             (add-hook 'before-save-hook 'gofmt-before-save)
@@ -1165,8 +1132,7 @@ https://github.com/hbin/smart-shift
                         (local-set-key (kbd "M-.") 'xref-find-definitions)
                         (lsp)
                         (set (make-local-variable 'company-backends) '(company-go))
-                        (company-mode)
-                        (flycheck-mode t))))
+                        (company-mode))))
     (use-package go-eldoc
       :ensure t
       :config
@@ -1192,7 +1158,6 @@ https://github.com/hbin/smart-shift
   :after lsp
   :config
   (add-hook 'java-mode-hook 'lsp)
-  (add-hook 'java-mode-hook 'flycheck-mode)
   (add-hook 'java-mode-hook 'company-mode)
   (progn 
     (setq lsp-java-vmargs '("-noverify" "-Xmx4G" "-Xmn524m" "-XX:PermSize=1024m" "-XX:PermSize=502m" "-XX:MaxPermSize=1024m" "-Xss4m" "-XX:ParallelGCThreads=8" "-XX:ReservedCodeCacheSize=540m" "-XX:+UseCompressedOops" "-XX:ConcGCThreads=8"  "-XX:-TraceClassUnloading" "-XX:+AlwaysPreTouch" "-XX:+TieredCompilation" "-XX:SoftRefLRUPolicyMSPerMB=50" "-XX:+OptimizeStringConcat"  "-XX:-CITime" "-XX:-PrintConcurrentLocks" "-server" "-XX:+UseG1GC" )
