@@ -49,6 +49,10 @@
 (eval-when-compile
   (require 'use-package))
 
+;; Required by `use-package'
+(use-package diminish)
+(use-package bind-key)
+
 #+END_SRC
 
 *** start configuration
@@ -447,13 +451,7 @@ https://github.com/jacktasia/dumb-jump
   :after yasnippet
   :config
   (yas-reload-all))
-;; Apparently the company-yasnippet backend shadows all backends that
-;; come after it. To work around this we assign yasnippet to a different
-;; keybind since actual source completion is vital.
-(use-package company-yasnippet
-  :bind ("C-M-y" . company-yasnippet)
-  :after (yasnippet)
-)
+
 #+END_SRC
 *** docker
 #+BEGIN_SRC emacs-lisp
