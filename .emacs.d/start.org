@@ -37,7 +37,8 @@
   (package-refresh-contents)
   (package-install 'use-package))
 
-(require 'use-package)
+(eval-when-compile
+  (require 'use-package))
 
 ;; Should set before loading `use-package'
 (eval-and-compile
@@ -45,9 +46,6 @@
   (setq use-package-always-defer t)
   (setq use-package-expand-minimally t)
   (setq use-package-enable-imenu-support t))
-
-(eval-when-compile
-  (require 'use-package))
 
 ;; Required by `use-package'
 (use-package diminish)
@@ -91,11 +89,17 @@
 ;;; Ctrl-h = Backspace
 (global-set-key [8]  'delete-backward-char)
 
-;
+;fix shortcut key conflicts with chinese input method
 (global-unset-key (kbd "C-SPC"))
 
-;; in every buffer, the line which contains the cursor will be fully highlighted
-;(global-hl-line-mode 1)
+;; files, folders, buffers and text
+;; use fundamental-mode to open large files
+(defun lzg/check-large-file ()
+  (when (> (buffer-size) 500000)
+    (progn (fundamental-mode)
+	   (hl-line-mode -1))))
+(add-hook 'find-file-hook 'lzg/check-large-file)
+
 #+END_SRC
 
 
@@ -203,7 +207,7 @@ This stops emacs adding customised settings to init.el.
 (use-package counsel-projectile
   :ensure t
   :config
-  ;(counsel-projectile-mode)
+  (counsel-projectile-mode)
 )
 
 (use-package find-file-in-project
@@ -274,7 +278,6 @@ This stops emacs adding customised settings to init.el.
 
 ** Coding
 *** global config
-
 #+BEGIN_SRC emacs-lisp
 
 ;You can also tell Emacs to revert buffers periodically. To do this for a specific buffer, enable the minor mode Auto-Revert mode by typing M-x auto-revert-mode. This automatically reverts the current buffer when its visited file changes on disk. To do the same for all file buffers, type M-x global-auto-revert-mode to enable Global Auto-Revert mode. These minor modes do not check or revert remote files, because that is usually too slow. This behavior can be changed by setting the variable auto-revert-remote-files to non-nil.
@@ -328,31 +331,51 @@ This stops emacs adding customised settings to init.el.
   :config
   (which-key-mode))
 #+END_SRC
-
+*** rtags
+#+begin_src emacs-lisp
+;(use-package rtags
+;  :config
+;  (progn
+;  (add-hook 'c-mode-common-hook 
+;			  (lambda () 
+;				(rtags-enable-standard-keybindings)
+;				(local-set-key (kbd "M-.") 'rtags-find-symbol-at-point)
+;;				(local-set-key (kbd "M-s") 'rtags-find-symbol)
+;				(local-set-key (kbd "M-,") 'rtags-location-stack-back)
+;				(local-set-key (kbd "C-M-*") 'rtags-location-stack-forward)
+;				(local-set-key (kbd "M-N") 'rtags-next-match)
+;				(local-set-key (kbd "M-P") 'rtags-previous-match)
+;				(local-set-key (kbd "C-S-SPC") 'rtags-print-cursorinfo)
+;				))
+;	))
+;
+#+end_src
 *** ggtags for source code navigation
 
 https://github.com/leoliu/ggtags
 
 #+BEGIN_SRC emacs-lisp
 ; tags for code navigation
-(use-package ggtags
-  :ensure t
-  :config
-  (progn
-  (defun enable-ggtags-condition ()
-    (when
-      (locate-dominating-file default-directory "GTAGS")
-      (add-hook 'prog-mode-hook #'ggtags-mode)))
-  (enable-ggtags-condition)
-  (define-key ggtags-mode-map (kbd "C-c g s") 'ggtags-find-other-symbol)
-  (define-key ggtags-mode-map (kbd "C-c g h") 'ggtags-view-tag-history)
-  (define-key ggtags-mode-map (kbd "C-c g r") 'ggtags-find-reference)
-  (define-key ggtags-mode-map (kbd "C-c g f") 'ggtags-find-file)
-  (define-key ggtags-mode-map (kbd "C-c g c") 'ggtags-create-tags)
-  (define-key ggtags-mode-map (kbd "C-c g u") 'ggtags-update-tags)
-;  (define-key ggtags-mode-map (kbd "M-,") 'pop-tag-mark)
-  )
-)
+;(use-package ggtags
+;  :ensure t
+;  :config
+;  (progn
+;  (defun enable-ggtags-condition ()
+;    (when
+;      (locate-dominating-file default-directory "GTAGS")
+;      (add-hook 'prog-mode-hook #'ggtags-mode)))
+;  (enable-ggtags-condition)
+;  (define-key ggtags-mode-map (kbd "C-c g s") 'ggtags-find-other-symbol)
+;  (define-key ggtags-mode-map (kbd "C-c g h") 'ggtags-view-tag-history)
+;  (define-key ggtags-mode-map (kbd "C-c g r") 'ggtags-find-reference)
+;  (define-key ggtags-mode-map (kbd "C-c g t") 'ggtags-find-tag-dwim) 
+;  (define-key ggtags-mode-map (kbd "C-c g f") 'ggtags-find-file)
+;  (define-key ggtags-mode-map (kbd "C-c g c") 'ggtags-create-tags)
+;  (define-key ggtags-mode-map (kbd "C-c g u") 'ggtags-update-tags)
+;  ;(define-key ggtags-mode-map (kbd "M-]") 'ggtags-find-reference)
+;  ;(define-key ggtags-mode-map (kbd "C-M-.") 'ggtags-find-tag-regexp)
+;  )
+;)
 #+END_SRC
 
 *** Dump jump
@@ -403,30 +426,65 @@ https://github.com/jacktasia/dumb-jump
 
 #+END_SRC
 
-*** Company mode for go(golang)
-#+BEGIN_SRC emacs-lisp
-(use-package company-go
-  :ensure t
-  :config
-  (add-to-list 'company-backends 'company-go))
-#+END_SRC
-
-*** Company mode for lsp
+*** LSP
 
 #+BEGIN_SRC emacs-lisp
-(use-package eglot
-  :hook (prog-mode . eglot-ensure)
-  :config 
-  (add-to-list 'eglot-server-programs '(python-mode . ("pyls")))
-  (add-to-list 'eglot-server-programs '(rust-mode . ("rls")))
-  (add-to-list 'eglot-server-programs '((c++-mode c-mode) "clangd"))
+;(use-package eglot
+;  :hook (prog-mode . eglot-ensure)
+;  :config 
+;  (add-to-list 'eglot-server-programs '(python-mode . ("pyls")))
+;  (add-to-list 'eglot-server-programs '(rust-mode . ("rls")))
+;;  (add-to-list 'eglot-server-programs '((c++-mode c-mode) "clangd"))
 ;  (add-to-list 'eglot-server-programs '((c++-mode c-mode) "ccls"))
-  (add-to-list 'eglot-server-programs '(js2-mode . ("javascript-typescript-stdio")))
-  (add-to-list 'eglot-server-programs '(typescript-mode . ("javascript-typescript-stdio")))
-  (add-to-list 'eglot-server-programs '(javascript-mode . ("javascript-typescript-stdio")))
-  (add-hook 'eglot--managed-mode-hook (lambda () (flymake-mode -1)))
+;  (add-to-list 'eglot-server-programs '(js2-mode . ("javascript-typescript-stdio")))
+;  (add-to-list 'eglot-server-programs '(typescript-mode . ("javascript-typescript-stdio")))
+;  (add-to-list 'eglot-server-programs '(javascript-mode . ("javascript-typescript-stdio")))
+;  (add-hook 'eglot--managed-mode-hook (lambda () (flymake-mode -1)))
+;)
+;;
+; begins ccls
+(use-package lsp-mode
+  :commands lsp
+  :config
+  (set-face-attribute
+   'lsp-face-highlight-read nil
+   :underline (face-foreground 'warning))
+  (set-face-attribute
+   'lsp-face-highlight-write nil
+   :underline (face-foreground 'error))
+  (set-face-attribute
+   'lsp-face-highlight-textual nil
+   :underline (face-foreground 'success))
+  :custom
+  (lsp-prefer-flymake nil))
+
+(use-package lsp-ui
+  :commands lsp-ui-mode
+  :hook
+  (lsp-mode . lsp-ui-mode)
+  :bind (:map lsp-ui-mode-map
+    ([remap xref-find-definitions] . lsp-ui-peek-find-definitions)
+    ([remap xref-find-references] . lsp-ui-peek-find-references))
+  :config
+  (setq lsp-ui-sideline-enable t
+        lsp-ui-sideline-show-symbol t
+        lsp-ui-sideline-show-hover t
+        lsp-ui-sideline-show-code-actions t
+        lsp-ui-sideline-update-mode 'point)
 )
 
+(use-package company-lsp
+  :commands company-lsp
+  :defer t
+  :custom
+  (company-quickhelp-delay 1)
+  (company-lsp-enable-snippet t)
+  (company-lsp-async t)
+  (company-lsp-cache-candidates t)
+  (company-lsp-enable-recompletion t)
+  :config
+  (push 'company-lsp company-backends)
+)
 #+END_SRC
 
 *** Yasnippet
@@ -524,7 +582,7 @@ https://github.com/jacktasia/dumb-jump
   :init (setq markdown-command "multimarkdown")
 
   (use-package markdown-preview-mode
-    :ensure t
+  :ensure t
     :defer t)
 )
 #+END_SRC
@@ -638,21 +696,65 @@ https://github.com/jacktasia/dumb-jump
 *** C/C++ mode
 
 #+BEGIN_SRC emacs-lisp
-;(use-package ccls
-;  :defines projectile-project-root-files-top-down-recurring
-;  :ensure t
-;  :hook ((c-mode c++-mode objc-mode) . (lambda () (require 'ccls) (lsp)))
-;  :init
-;  (setq ccls-executable "/usr/local/bin/ccls")
-;  (setq ccls-extra-init-params '(:index (:comments 2) :completion (:detailedLabel t) :index (:reparseForDependency 1) :clang (:resourceDir "/usr/local/clang/7.0.0")))
-;  :config
-;  (with-eval-after-load 'projectile
-;    (setq projectile-project-root-files-top-down-recurring
-;      (append '("compile_commands.json"
-;                ".ccls")
-;                projectile-project-root-files-top-down-recurring)))
-;)
-;
+(use-package ccls
+  :init
+  (defun ccls/callee () (interactive)
+	 (lsp-ui-peek-find-custom "$ccls/call" '(:callee t)))
+  (defun ccls/caller () (interactive)
+	 (lsp-ui-peek-find-custom "$ccls/call"))
+  (defun ccls/vars (kind)
+    (lsp-ui-peek-find-custom "$ccls/vars" `(:kind ,kind)))
+  (defun ccls/base (levels)
+    (lsp-ui-peek-find-custom "$ccls/inheritance" `(:levels ,levels)))
+  (defun ccls/derived (levels)
+    (lsp-ui-peek-find-custom "$ccls/inheritance" `(:levels ,levels :derived t)))
+  (defun ccls/member (kind) (interactive)
+	 (lsp-ui-peek-find-custom "$ccls/member" `(:kind ,kind)))
+
+  ;; References w/ Role::Role
+  (defun ccls/references-read () (interactive)
+	 (lsp-ui-peek-find-custom
+	  "textDocument/references"
+	  (plist-put
+	   (lsp--text-document-position-params) :role 8)))
+
+  ;; References w/ Role::Write
+  (defun ccls/references-write ()
+    (interactive)
+    (lsp-ui-peek-find-custom
+     "textDocument/references"
+     (plist-put
+      (lsp--text-document-position-params) :role 16)))
+
+  ;; References w/ Role::Dynamic bit (macro expansions)
+  (defun ccls/references-macro () (interactive)
+	 (lsp-ui-peek-find-custom
+	  "textDocument/references"
+	  (plist-put
+	   (lsp--text-document-position-params) :role 64)))
+
+  ;; References w/o Role::Call bit (e.g. where functions are taken addresses)
+  (defun ccls/references-not-call () (interactive)
+	 (lsp-ui-peek-find-custom
+	  "textDocument/references"
+	  (plist-put
+	   (lsp--text-document-position-params) :excludeRole 32)))
+  ;; ccls/vars ccls/base ccls/derived ccls/members have a parameter while others are interactive.
+  ;; (ccls/base 1) direct bases
+  ;; (ccls/derived 1) direct derived
+  ;; (ccls/member 2) => 2 (Type) => nested classes / types in a namespace
+  ;; (ccls/member 3) => 3 (Func) => member functions / functions in a namespace
+  ;; (ccls/member 0) => member variables / variables in a namespace
+  ;; (ccls/vars 1) => field
+  ;; (ccls/vars 2) => local variable
+  ;; (ccls/vars 3) => field or local variable. 3 = 1 | 2
+  ;; (ccls/vars 4) => parameter
+  :custom
+  (ccls-executable "~/code/misc/ccls/Release/ccls")
+  (ccls-args '("--log-file=/home/joshua/tmp/ccls.log" "-v=2" "--init={\"maxPathSize\":512}"))
+  :hook ((c-mode c++-mode) . (lambda () (require 'ccls) (lsp)))
+)
+
 (use-package ivy-xref
   :ensure t
   :after ivy
@@ -1031,6 +1133,65 @@ ivy 能够补全emacs的很多东西，如命令等。 需要 ivy swiper counsel
 
 #+END_SRC
 
+*** Hydra
+#+begin_src emacs-lisp
+;; hydra
+(use-package hydra
+  :defer t)
+
+(defhydra hydra-smartparens (global-map "M-p s" :hint t)
+  "
+Sexps (quit with _q_, help with _h_)
+^Nav^            ^Barf/Slurp^                 ^Depth^
+^---^------------^----------^-----------------^-----^-----------------
+_f_: forward     _→_:          slurp forward   _R_: splice
+_b_: backward    _←_:          barf forward    _r_: raise
+_u_: backward ↑  _C-<right>_:  slurp backward  _↑_: raise backward
+_d_: forward ↓   _C-<left>_:   barf backward   _↓_: raise forward
+_p_: backward ↓
+_n_: forward ↑
+^Kill^           ^Misc^                       ^Wrap^
+^----^-----------^----^-----------------------^----^------------------
+_w_: copy        _j_: join                    _(_: wrap with ( )
+_k_: kill        _s_: split                   _{_: wrap with { }
+^^               _t_: transpose               _'_: wrap with ' '
+^^               _c_: convolute               _\"_: wrap with \" \"
+^^               _i_: indent defun"
+  ("q" nil)
+  ("h" hydra-smartparens/body)
+  ;; Wrapping
+  ("(" (lambda (_) (interactive "P") (sp-wrap-with-pair "(")))
+  ("{" (lambda (_) (interactive "P") (sp-wrap-with-pair "{")))
+  ("'" (lambda (_) (interactive "P") (sp-wrap-with-pair "'")))
+  ("\"" (lambda (_) (interactive "P") (sp-wrap-with-pair "\"")))
+  ;; Navigation
+  ("f" sp-forward-sexp )
+  ("b" sp-backward-sexp)
+  ("u" sp-backward-up-sexp)
+  ("d" sp-down-sexp)
+  ("p" sp-backward-down-sexp)
+  ("n" sp-up-sexp)
+  ;; Kill/copy
+  ("w" sp-copy-sexp)
+  ("k" sp-kill-sexp)
+  ;; Misc
+  ("t" sp-transpose-sexp)
+  ("j" sp-join-sexp)
+  ("s" sp-split-sexp)
+  ("c" sp-convolute-sexp)
+  ("i" sp-indent-defun)
+  ;; Depth changing
+  ("R" sp-splice-sexp)
+  ("r" sp-splice-sexp-killing-around)
+  ("<up>" sp-splice-sexp-killing-backward)
+  ("<down>" sp-splice-sexp-killing-forward)
+  ;; Barfing/slurping
+  ("<right>" sp-forward-slurp-sexp)
+  ("<left>" sp-forward-barf-sexp)
+  ("C-<left>" sp-backward-barf-sexp)
+  ("C-<right>" sp-backward-slurp-sexp))
+
+#+end_src
 *** hungry-delete
 
 一次删除连续的空格, 不用按多次删除键
@@ -1088,6 +1249,75 @@ https://github.com/hbin/smart-shift
   (add-hook 'prog-mode-hook #'rainbow-delimiters-mode))
 
 #+END_SRC
+*** modeline
+#+begin_src emacs-lisp
+
+#+end_src
+*** ace-window
+#+begin_src emacs-lisp
+;; ace-window
+(use-package ace-window
+  :defer t
+  :custom
+  (aw-background nil)
+  :bind (("C-x o" . ace-window)))
+#+end_src
+*** treemacs
+#+begin_src emacs-lisp
+;; treemacs
+(use-package treemacs
+  :defer t
+  :config
+  (progn
+    (setq treemacs-collapse-dirs              (if (executable-find "python") 3 0)
+          treemacs-deferred-git-apply-delay   0.5
+          treemacs-display-in-side-window     t
+          treemacs-file-event-delay           5000
+          treemacs-file-follow-delay          0.2
+          treemacs-follow-after-init          t
+          treemacs-follow-recenter-distance   0.1
+          treemacs-goto-tag-strategy          'refetch-index
+          treemacs-indentation                2
+          treemacs-indentation-string         " "
+          treemacs-is-never-other-window      t
+          treemacs-no-png-images              nil
+          treemacs-project-follow-cleanup     nil
+          treemacs-persist-file               (expand-file-name ".cache/treemacs-persist" user-emacs-directory)
+          treemacs-recenter-after-file-follow nil
+          treemacs-recenter-after-tag-follow  nil
+          treemacs-show-hidden-files          t
+          treemacs-silent-filewatch           nil
+          treemacs-silent-refresh             nil
+          treemacs-sorting                    'alphabetic-desc
+          treemacs-space-between-root-nodes   t
+          treemacs-tag-follow-cleanup         t
+          treemacs-tag-follow-delay           1.5
+          treemacs-width                      35)
+
+    ;; The default width and height of the icons is 22 pixels. If you are
+    ;; using a Hi-DPI display, uncomment this to double the icon size.
+    (treemacs-resize-icons 44)
+    
+    (treemacs-follow-mode t)
+    (treemacs-filewatch-mode t)
+    (treemacs-fringe-indicator-mode t)
+    (pcase (cons (not (null (executable-find "git")))
+                 (not (null (executable-find "python3"))))
+      (`(t . t)
+       (treemacs-git-mode 'deferred))
+      (`(t . _)
+       (treemacs-git-mode 'simple))))
+  :bind
+  (:map global-map
+	([f2] . treemacs-select-window)
+        ("C-x t 1"   . treemacs-delete-other-windows)
+        ("C-x t B"   . treemacs-bookmark)
+        ("C-x t C-t" . treemacs-find-file)
+        ("C-x t M-t" . treemacs-find-tag)))
+
+(use-package treemacs-projectile
+  :after (treemacs projectile))
+#+end_src
 *** Go(golang) language config
 
 #+BEGIN_SRC emacs-lisp
@@ -3068,13 +3298,11 @@ Late deadlines first, then scheduled, then non-late deadlines"
 *** Theme
 [[https://www.monokai.pro/][Beautiful functionality for professional developers]]
 
-#+BEGIN_SRC emacs-lisp
-
-(use-package monokai-theme
-  :ensure t
-  :config
-  (load-theme 'monokai t))
-
+#+begin_src emacs-lisp
+;(use-package monokai-theme
+;  :ensure t
+;  :config
+;  (load-theme 'monokai t))
 #+END_SRC
 
 *** Font
