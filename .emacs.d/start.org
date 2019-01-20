@@ -132,7 +132,9 @@ This stops emacs adding customised settings to init.el.
 #+BEGIN_SRC emacs-lisp
 (use-package projectile
   :ensure t
-  :diminish projectile-mode
+  :diminish projectile-mode " PRJ"
+  ;:init (add-hook 'prog-mode-hook #'projectile-mode)
+  :init(projectile-global-mode t)
   :config
   (progn
     (setq projectile-keymap-prefix (kbd "C-c p"))
@@ -191,7 +193,8 @@ This stops emacs adding customised settings to init.el.
     (add-to-list 'projectile-other-file-alist '("js" "css")) ;; switch from js -> css
 
     )
-  (projectile-global-mode))
+  ;(projectile-global-mode)
+)
 
 (use-package ripgrep
   :ensure t
@@ -444,8 +447,8 @@ https://github.com/jacktasia/dumb-jump
 ;;
 ; begins ccls
 (use-package lsp-mode
-  :commands lsp
-  :config
+:commands lsp
+:config
   (set-face-attribute
    'lsp-face-highlight-read nil
    :underline (face-foreground 'warning))
@@ -455,17 +458,18 @@ https://github.com/jacktasia/dumb-jump
   (set-face-attribute
    'lsp-face-highlight-textual nil
    :underline (face-foreground 'success))
-  :custom
+  (require 'lsp-clients)
+:custom
   (lsp-prefer-flymake nil))
 
 (use-package lsp-ui
-  :commands lsp-ui-mode
-  :hook
-  (lsp-mode . lsp-ui-mode)
-  :bind (:map lsp-ui-mode-map
+:commands lsp-ui-mode
+:hook
+(lsp-mode . lsp-ui-mode)
+:bind (:map lsp-ui-mode-map
     ([remap xref-find-definitions] . lsp-ui-peek-find-definitions)
     ([remap xref-find-references] . lsp-ui-peek-find-references))
-  :config
+:config
   (setq lsp-ui-sideline-enable t
         lsp-ui-sideline-show-symbol t
         lsp-ui-sideline-show-hover t
@@ -474,15 +478,15 @@ https://github.com/jacktasia/dumb-jump
 )
 
 (use-package company-lsp
-  :commands company-lsp
-  :defer t
-  :custom
+ :commands company-lsp
+ :defer t
+ :custom
   (company-quickhelp-delay 1)
   (company-lsp-enable-snippet t)
   (company-lsp-async t)
   (company-lsp-cache-candidates t)
   (company-lsp-enable-recompletion t)
-  :config
+:config
   (push 'company-lsp company-backends)
 )
 #+END_SRC
