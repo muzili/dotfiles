@@ -446,6 +446,7 @@ https://github.com/jacktasia/dumb-jump
 ;  (add-hook 'eglot--managed-mode-hook (lambda () (flymake-mode -1)))
 ;)
 
+;https://emacs-china.org/t/lsp-mode-lsp-el/7742 使用lsp-mode 的新接口
 (use-package lsp-mode
 :commands lsp
 :custom
@@ -692,6 +693,21 @@ https://github.com/jacktasia/dumb-jump
 #+END_SRC
 
 *** C/C++ mode
+- **Install ccls**
+
+#+begin_src shell
+git clone --depth=1 --recursive https://github.com/MaskRay/ccls
+cd ccls
+cmake -H. -BRelease -DCMAKE_BUILD_TYPE=Release -DCMAKE_EXPORT_COMPILE_COMMANDS=YES
+cmake  --build Release
+#+end_src
+
+- **Install ccls shell wrapper(/usr/local/bin/ccls)**
+
+#+begin_src shell
+CCLS_DIR=/data/code/misc/ccls
+exec $CCLS_DIR/Release/ccls --log-file=/tmp/ccls.log -v=1  "$@"
+#+end_src
 
 #+BEGIN_SRC emacs-lisp
 (use-package ccls
@@ -748,7 +764,6 @@ https://github.com/jacktasia/dumb-jump
   ;; (ccls/vars 3) => field or local variable. 3 = 1 | 2
   ;; (ccls/vars 4) => parameter
   ;:custom
-  
   ;(ccls-executable "/home/joshua/code/misc/ccls/Release/ccls")
   ;(ccls-args '("--log-file=/home/joshua/tmp/ccls.log" "-v=2" "--init={\"maxPathSize\":512}"))
   :hook ((c-mode c++-mode) . (lambda () (require 'ccls) (lsp)))
@@ -1317,22 +1332,99 @@ https://github.com/hbin/smart-shift
 (use-package treemacs-projectile
   :after (treemacs projectile))
 #+end_src
+*** Python language server
+- **Install pyls server**
+
+#+begin_src shell
+pip3 install --user python-language-server
+#+end_src
+
+- **Configure lsp clients**
+
+#+begin_src emacs-lisp
+(use-package python-mode
+  :config
+  (add-hook 'python-mode-hook #'lsp))
+(use-package conda
+   :init
+   (custom-set-variables '(conda-anaconda-home "~/miniconda3")))
+#+end_src
 *** Go(golang) language config
+- **Install bingo language server**
+
+#+begin_src shell
+export http_proxy=http://127.0.0.1:58118
+export https_proxy=http://127.0.0.1:58118
+go get -u github.com/saibing/bingo
+#+end_src
 
 #+BEGIN_SRC emacs-lisp
-
+(use-package go-mode
+  :commands go-mode
+  :mode (("\\.go?\\'" . go-mode))
+  :init
+  (add-hook 'go-mode-hook #'lsp)
+  :config
+  ;; 缩进设置
+  (setq indent-tabs-mode nil)
+  (setq c-basic-offset 4)
+  (setq tab-width 4)
+  ;; 保存前 lsp-format-buffer
+  (add-hook 'before-save-hook 'lsp-format-buffer))
 #+END_SRC
 *** Java language support
+- **Install eclipse java server**
+#+begin_src shell
+rm -rf ~/.emacs.d/eclipse.jdt.ls/server/
+mkdir -p ~/.emacs.d/eclipse.jdt.ls/server/
+wget http://download.eclipse.org/jdtls/snapshots/jdt-language-server-latest.tar.gz -O /tmp/jdt-latest.tar
+tar xf /tmp/jdt-latest.tar -C ~/.emacs.d/eclipse.jdt.ls/server/
+#+end_src
+
 #+BEGIN_SRC emacs-lisp
 (use-package lsp-java
-  :hook (java-mode . (lambda () (require 'lsp-java) (lsp))))
+:hook (java-mode . (lambda () (require 'lsp-java) (lsp))))
 #+END_SRC
 
 *** Rust lang support
+- **Install rust server**
+
+#+begin_src shell
+rustup component add rls-preview rust-analysis rust-src
+#+end_src
+
+- **rust mode**
+
 #+BEGIN_SRC emacs-lisp
+(use-package rust-mode
+  :ensure t
+  :defer t
+  :init
+  (add-to-list 'auto-mode-alist '("\\.rs\\'" . rust-mode))
+  (add-hook 'rust-mode-hook 'lsp)
+  :config
+  (setq rust-indent-offset 2))
 
+(use-package cargo
+  :ensure t
+  :after rust-mode
+)
 #+END_SRC
+*** Bash lang support
 
+- **Install bash lang server**
+
+#+begin_src shell
+sudo npm i -g bash-language-server
+#+end_src
+*** HTML/CSS/JSON/JS/TS support
+
+- **Install lang server**
+
+#+begin_src shell
+sudo npm install -g vscode-{html,css,json}-languageserver-bin
+sudo npm install -g typescript-language-server
+#+end_src
 ** Org
 *** init-org.el
 #+BEGIN_SRC emacs-lisp
