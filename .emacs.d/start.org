@@ -1,3 +1,4 @@
+
 :PROPERTIES:
 :END:
 
@@ -444,23 +445,17 @@ https://github.com/jacktasia/dumb-jump
 ;  (add-to-list 'eglot-server-programs '(javascript-mode . ("javascript-typescript-stdio")))
 ;  (add-hook 'eglot--managed-mode-hook (lambda () (flymake-mode -1)))
 ;)
-;;
-; begins ccls
+
 (use-package lsp-mode
 :commands lsp
-:config
-  (set-face-attribute
-   'lsp-face-highlight-read nil
-   :underline (face-foreground 'warning))
-  (set-face-attribute
-   'lsp-face-highlight-write nil
-   :underline (face-foreground 'error))
-  (set-face-attribute
-   'lsp-face-highlight-textual nil
-   :underline (face-foreground 'success))
-  (require 'lsp-clients)
 :custom
-  (lsp-prefer-flymake nil))
+  (lsp-project-blacklist '("^/usr/"))
+  (lsp-prefer-flymake nil)
+  (lsp-highlight-symbol-at-point nil)
+  (lsp-auto-guess-root t)
+:config
+  (require 'lsp-clients)
+)
 
 (use-package lsp-ui
 :commands lsp-ui-mode
@@ -478,9 +473,8 @@ https://github.com/jacktasia/dumb-jump
 )
 
 (use-package company-lsp
- :commands company-lsp
- :defer t
- :custom
+:commands company-lsp
+:custom
   (company-quickhelp-delay 1)
   (company-lsp-enable-snippet t)
   (company-lsp-async t)
@@ -753,9 +747,10 @@ https://github.com/jacktasia/dumb-jump
   ;; (ccls/vars 2) => local variable
   ;; (ccls/vars 3) => field or local variable. 3 = 1 | 2
   ;; (ccls/vars 4) => parameter
-  :custom
-  (ccls-executable "~/code/misc/ccls/Release/ccls")
-  (ccls-args '("--log-file=/home/joshua/tmp/ccls.log" "-v=2" "--init={\"maxPathSize\":512}"))
+  ;:custom
+  
+  ;(ccls-executable "/home/joshua/code/misc/ccls/Release/ccls")
+  ;(ccls-args '("--log-file=/home/joshua/tmp/ccls.log" "-v=2" "--init={\"maxPathSize\":512}"))
   :hook ((c-mode c++-mode) . (lambda () (require 'ccls) (lsp)))
 )
 
@@ -1259,7 +1254,7 @@ https://github.com/hbin/smart-shift
 #+end_src
 *** ace-window
 #+begin_src emacs-lisp
-;; ace-window
+; ace-window
 (use-package ace-window
   :defer t
   :custom
@@ -1329,7 +1324,8 @@ https://github.com/hbin/smart-shift
 #+END_SRC
 *** Java language support
 #+BEGIN_SRC emacs-lisp
-
+(use-package lsp-java
+  :hook (java-mode . (lambda () (require 'lsp-java) (lsp))))
 #+END_SRC
 
 *** Rust lang support
