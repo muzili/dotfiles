@@ -1,7 +1,3 @@
-
-:PROPERTIES:
-:END:
-
 * Emacs Config
 ** Setup
 *** Startup
@@ -220,9 +216,9 @@ This stops emacs adding customised settings to init.el.
   ("C-x f" . find-file-in-project)
   ("C-x d" . find-file-in-current-directory)
   :config
-  (progn 
+  (progn
     (setq ffip-use-rust-fd t)
-  )  
+  )
 )
 
 (use-package fzf
@@ -279,6 +275,91 @@ This stops emacs adding customised settings to init.el.
                               "\\.el\\.gz\\'"))
   (recentf-mode 1))
 #+END_SRC
+
+*** Hydra
+#+begin_src emacs-lisp
+(use-package hydra
+  :ensure t
+  :defer t
+  :bind("C-c e" . hydra-master/body)
+  :config
+  (eval-and-compile
+    (defhydra hydra-common (:color blue)
+      ("<SPC>" nil "quit")))
+  (defhydra hydra-master (:color blue :inherit (hydra-common/heads))
+    "
+----------------------------------------------------------------------------------
+  ^[b]^ buffers        ^[c]^ flycheck        ^[j]^ jump        ^[q]^ quit
+  ^[w]^ windows        ^[o]^ org             ^[f]^ files       ^[p]^ projectile
+  ^[e]^ expand         ^[r]^ replace
+----------------------------------------------------------------------------------
+    "
+    ("b"     hydra-buffers/body nil)
+    ("c"     hydra-flycheck/body nil)
+    ("j"     hydra-jump/body nil)
+    ("q"     kill-emacs nil)
+    ("o"     hydra-org/body nil)
+    ("f"     hydra-files/body nil)
+    ("p"     helm-projectile nil)
+    ("e"     hippie-expand nil)
+    ("r"     anzu-isearch-query-replace nil))
+
+  (defhydra hydra-buffers (:color blue :hint nil :inherit (hydra-common/heads))
+    "
+--------------------------------------------------------------------------------
+  ^[b]^ switch              ^[d]^ kill the buffer
+  ^[i]^ ibuffer             ^[r]^ toggle read-only mode
+  ^[w]^ save buffer
+---------------------------------------------------------------------------------
+    "
+    ("d" kill-this-buffer)
+    ("i" ibuffer)
+    ("r" read-only-mode)
+    ("w" save-buffer))
+
+  (defhydra hydra-flycheck (:color blue :hint nil :inherit (hydra-common/heads))
+    "
+--------------------------------------------------------------------------------
+  ^[p]^ previous
+  ^[f]^ first
+  ^[n]^ next
+---------------------------------------------------------------------------------
+    "
+    ("p" flycheck-previous-error :color red)
+    ("f" flycheck-first-error)
+    ("n" flycheck-next-error))
+
+  (defhydra hydra-jump (:color red :hint nil :inherit (hydra-common/heads))
+    "
+--------------------------------------------------------------------------------
+  ^[c]^ char          ^[s]^ search                     ^[i]^ imenu
+  ^[l]^ line          ^[S]^ search-at-point
+---------------------------------------------------------------------------------
+    "
+    ("c" evil-avy-goto-char :color red)
+    ("l" evil-avy-goto-line)
+    ("s" helm-swoop)
+    ("S" helm-swoop-from-evil-search)
+    ("i" helm-imenu))
+
+  (defhydra hydra-org (:color green :hint nil :inherit (hydra-common/heads))
+    "
+----------------------------------------------------------------------------------
+  ^[a]^ agenda    ^[c]^ capture
+----------------------------------------------------------------------------------
+  "
+    ("a" org-agenda)
+    ("c" org-capture))
+
+  (defhydra hydra-files (:hint nil :inherit (hydra-common/heads))
+    "
+-------------------------------------------------------------------------------
+  ^[f]^ find        ^[i]^ init
+-------------------------------------------------------------------------------
+"
+    ("f" helm-find-files)
+    ("i" (find-file "~/.emacs.d/init.org"))))
+#+end_src
 
 ** Coding
 *** global config
@@ -340,8 +421,8 @@ This stops emacs adding customised settings to init.el.
 ;(use-package rtags
 ;  :config
 ;  (progn
-;  (add-hook 'c-mode-common-hook 
-;			  (lambda () 
+;  (add-hook 'c-mode-common-hook
+;			  (lambda ()
 ;				(rtags-enable-standard-keybindings)
 ;				(local-set-key (kbd "M-.") 'rtags-find-symbol-at-point)
 ;;				(local-set-key (kbd "M-s") 'rtags-find-symbol)
@@ -372,7 +453,7 @@ https://github.com/leoliu/ggtags
 ;  (define-key ggtags-mode-map (kbd "C-c g s") 'ggtags-find-other-symbol)
 ;  (define-key ggtags-mode-map (kbd "C-c g h") 'ggtags-view-tag-history)
 ;  (define-key ggtags-mode-map (kbd "C-c g r") 'ggtags-find-reference)
-;  (define-key ggtags-mode-map (kbd "C-c g t") 'ggtags-find-tag-dwim) 
+;  (define-key ggtags-mode-map (kbd "C-c g t") 'ggtags-find-tag-dwim)
 ;  (define-key ggtags-mode-map (kbd "C-c g f") 'ggtags-find-file)
 ;  (define-key ggtags-mode-map (kbd "C-c g c") 'ggtags-create-tags)
 ;  (define-key ggtags-mode-map (kbd "C-c g u") 'ggtags-update-tags)
@@ -435,7 +516,7 @@ https://github.com/jacktasia/dumb-jump
 #+BEGIN_SRC emacs-lisp
 ;(use-package eglot
 ;  :hook (prog-mode . eglot-ensure)
-;  :config 
+;  :config
 ;  (add-to-list 'eglot-server-programs '(python-mode . ("pyls")))
 ;  (add-to-list 'eglot-server-programs '(rust-mode . ("rls")))
 ;;  (add-to-list 'eglot-server-programs '((c++-mode c-mode) "clangd"))
@@ -484,6 +565,15 @@ https://github.com/jacktasia/dumb-jump
 :config
   (push 'company-lsp company-backends)
 )
+
+
+(use-package dap-mode
+  :ensure t
+  :after lsp-mode
+  :config
+  (dap-mode t)
+  (dap-ui-mode t))
+
 #+END_SRC
 
 *** Yasnippet
@@ -646,7 +736,7 @@ https://github.com/jacktasia/dumb-jump
   :ensure t
   :config
   (xclip-mode 1)
-  (setq x-select-enable-clipboard t 
+  (setq x-select-enable-clipboard t
         x-select-enable-primary t)
 )
 
@@ -1311,7 +1401,7 @@ https://github.com/hbin/smart-shift
     ;; The default width and height of the icons is 22 pixels. If you are
     ;; using a Hi-DPI display, uncomment this to double the icon size.
     (treemacs-resize-icons 44)
-    
+
     (treemacs-follow-mode t)
     (treemacs-filewatch-mode t)
     (treemacs-fringe-indicator-mode t)
@@ -1628,16 +1718,22 @@ sudo npm install -g typescript-language-server
     (setq org-archive-location "%s_archive::* Archived Tasks")
 
     ;; TODO Install ditaa later
-    (setq org-ditaa-jar-path "/usr/share/java/ditaa.jar")
-    (setq org-plantuml-jar-path "/usr/share/java/plantuml.jar")
+    (setq org-ditaa-jar-path "~/.emacs.d/software/ditaa.jar")
+    (setq org-plantuml-jar-path "~/.emacs.d/software/plantuml.jar")
 
-                                        ; Make babel results blocks lowercase
+    (setq org-babel-python-command "python3")
+    ; Make babel results blocks lowercase
     (setq org-babel-results-keyword "results")
     ;; active Babel languages
     (org-babel-do-load-languages
      'org-babel-load-languages
      '((R . t)
        (latex . t)
+       (python . t)
+       (dot . t)
+       (ditaa . t)
+       (plantuml . t)
+       (shell . t)
        (emacs-lisp . nil)))
 
     (defun bh/display-inline-images ()
@@ -2522,5 +2618,7 @@ Use ibus to replace pyim for 中文输入。
 *** [[https://github.com/andresilva/emacs.d/][My Emacs config]]
 *** [[https://emacs.lujianmei.com/][谁说Emacs不好玩？]]
 *** [[https://github.com/tsu-nera/dotfiles][My dotfiles history ]]
+
+
 
 
