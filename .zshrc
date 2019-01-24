@@ -151,9 +151,6 @@ function start_ibus {
 remove_caps
 start_ibus
 
-source <(kompose completion zsh)
-source <(kubectl completion zsh)
-
 . "/home/joshua/.acme.sh/acme.sh.env"
 
 # add auto-completion directory to zsh's fpath
