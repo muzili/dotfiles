@@ -1515,6 +1515,14 @@ sudo npm i -g bash-language-server
 sudo npm install -g vscode-{html,css,json}-languageserver-bin
 sudo npm install -g typescript-language-server
 #+end_src
+*** Yaml mode
+#+begin_src emacs-lisp
+(use-package yaml-mode
+  :mode (("\\.ya?ml$" . yaml-mode))
+  :ensure t
+)
+#+end_src
+
 ** Org
 #+BEGIN_SRC emacs-lisp
 (use-package org
