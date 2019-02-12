@@ -2444,9 +2444,9 @@ package is loaded.")
 % 等宽字体/打印机字体
 \\setCJKmonofont[BoldFont = Source Han Sans CN,ItalicFont = FandolKai]{Source Han Sans CN}
 
-\setCJKfamilyfont{zhsong}{Source Han Serif CN}
-\setCJKfamilyfont{zhhei}{Source Han Sans CN}
-\setCJKfamilyfont{zhkai}{FandolKai}
+\\setCJKfamilyfont{zhsong}{Source Han Serif CN}
+\\setCJKfamilyfont{zhhei}{Source Han Sans CN}
+\\setCJKfamilyfont{zhkai}{FandolKai}
 
 %%% Prefer the free fonts %%%
 \\setmainfont{Roboto Slab Light}
@@ -2454,7 +2454,8 @@ package is loaded.")
 \\setmonofont{Roboto Mono Light}
 
 "))
-    ;; The "H" option (`float' package) prevents images from floating around.
+
+   ;; The "H" option (`float' package) prevents images from floating around.
     (setq org-latex-default-figure-position "H") ;figures are NOT floating
     ;; (setq org-latex-default-figure-position "htb") ;default - figures are floating
 
@@ -2473,7 +2474,7 @@ package is loaded.")
                   "filecolor=black,\n"
                   "linkcolor=blue,\n"
                   "urlcolor=blue\n"
-                  "}"))
+                  "}\n"))
 ;    (defvar modi/ox-latex-use-minted t
 ;      "Use `minted' package for listings.")
 ;
