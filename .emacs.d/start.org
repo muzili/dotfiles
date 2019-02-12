@@ -2433,6 +2433,27 @@ ftp://ftp.ctan.org/tex-archive/macros/latex/contrib/hyperref/README.pdf ")
       "Alist of packages that have to (or can be) loaded after `hyperref'
 package is loaded.")
 
+    (defconst modi/org-latex-packages-alist-zhfont
+      '("
+%%% 设置中文字体 %%%
+% https://www.zhihu.com/question/20563044
+% 衬线字体
+\\setCJKmainfont[BoldFont = Source Han Sans CN,ItalicFont = FandolKai]{Source Han Serif CN}
+% 无衬线字体同上
+\\setCJKsansfont[BoldFont = Source Han Sans CN,ItalicFont = FandolKai]{Source Han Sans CN}
+% 等宽字体/打印机字体
+\\setCJKmonofont[BoldFont = Source Han Sans CN,ItalicFont = FandolKai]{Source Han Sans CN}
+
+\setCJKfamilyfont{zhsong}{Source Han Serif CN}
+\setCJKfamilyfont{zhhei}{Source Han Sans CN}
+\setCJKfamilyfont{zhkai}{FandolKai}
+
+%%% Prefer the free fonts %%%
+\\setmainfont{Roboto Slab Light}
+\\setsansfont{Roboto Light}
+\\setmonofont{Roboto Mono Light}
+
+"))
     ;; The "H" option (`float' package) prevents images from floating around.
     (setq org-latex-default-figure-position "H") ;figures are NOT floating
     ;; (setq org-latex-default-figure-position "htb") ;default - figures are floating
@@ -2497,6 +2518,7 @@ package is loaded.")
     (setq org-latex-packages-alist
           (append modi/org-latex-packages-alist-pre-hyperref
                   '(("" "hyperref" nil))
+                  modi/org-latex-packages-alist-zhfont
                   modi/org-latex-packages-alist-post-hyperref))
 
     ;; `-shell-escape' is required when using the `minted' package
