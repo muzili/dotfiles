@@ -2407,8 +2407,7 @@ sudo npm install -g typescript-language-server
     ;; in the final document.
 
     (defconst modi/org-latex-packages-alist-pre-hyperref
-      '(("letterpaper,margin=1.0in" "geometry")
-        ;; Prevent an image from floating to a different location.
+      '(;; Prevent an image from floating to a different location.
         ;; http://tex.stackexchange.com/a/8633/52678
         ("" "float")
         ;; % 0 paragraph indent, adds vertical space between paragraphs
@@ -2429,7 +2428,7 @@ ftp://ftp.ctan.org/tex-archive/macros/latex/contrib/hyperref/README.pdf ")
         ;; Packages suggested to be added for previewing latex fragments
         ;; https://orgmode.org/worg/org-tutorials/org-latex-preview.html
         ("mathscr" "eucal")
-        ("" "titlesec")
+        ;;("" "titlesec")
         ("" "latexsym"))
       "Alist of packages that have to (or can be) loaded after `hyperref'
 package is loaded.")
@@ -2454,10 +2453,10 @@ package is loaded.")
 \\setsansfont{Roboto Light}
 \\setmonofont{Roboto Mono Light}
 
-\\titleformat{\\section}
-        {\\normalfont\\Large\\bfseries}{\\makebox[30pt][l]{\\thesection}}{0pt}{}
-\\titleformat{\\subsection}
-        {\\normalfont\\large\\bfseries}{\\makebox[30pt][l]{\\thesubsection}}{0pt}{}
+%\\titleformat{\\section}
+%        {\\normalfont\\Large\\bfseries}{\\makebox[30pt][l]{\\thesection}}{0pt}{}
+%\\titleformat{\\subsection}
+%        {\\normalfont\\large\\bfseries}{\\makebox[30pt][l]{\\thesubsection}}{0pt}{}
 
 "))
 
