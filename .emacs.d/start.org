@@ -2596,6 +2596,8 @@ package is loaded.")
                           ("\\.jpg\\'" . "geeqie %s")))
 
     ))
+(use-package ox-hugo
+  :after ox)
 #+END_SRC
 
 ** Set theme
