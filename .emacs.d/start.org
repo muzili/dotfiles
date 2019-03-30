@@ -2322,7 +2322,46 @@ sudo npm install -g typescript-language-server
                   ("A" "#+ascii: ")
                   ("i" "#+index: ?" "#+index: ?")
                   ("I" "#+include %file ?" "<include file=%file markup=\"?\">"))))
+    ;; add <el for emacs-lisp expansion
+    (add-to-list 'org-structure-template-alist
+	         '("el" "#+BEGIN_SRC emacs-lisp\n?\n#+END_SRC"
+	           "<src lang=\"emacs-lisp\">\n?\n</src>"))
 
+    ;; add <sh for shell
+    (add-to-list 'org-structure-template-alist
+	         '("sh" "#+BEGIN_SRC sh\n?\n#+END_SRC"
+	           "<src lang=\"shell\">\n?\n</src>"))
+
+    (add-to-list 'org-structure-template-alist
+	         '("lh" "#+latex_header: " ""))
+
+    (add-to-list 'org-structure-template-alist
+	         '("lc" "#+latex_class: " ""))
+
+    (add-to-list 'org-structure-template-alist
+	         '("lco" "#+latex_class_options: " ""))
+
+    (add-to-list 'org-structure-template-alist
+	         '("ao" "#+attr_org: " ""))
+
+    (add-to-list 'org-structure-template-alist
+	         '("al" "#+attr_latex: " ""))
+
+    (add-to-list 'org-structure-template-alist
+	         '("ca" "#+caption: " ""))
+
+    (add-to-list 'org-structure-template-alist
+	         '("tn" "#+tblname: " ""))
+
+    (add-to-list 'org-structure-template-alist
+	         '("n" "#+name: " ""))
+
+    (add-to-list 'org-structure-template-alist
+	         '("r" "#+BEGIN_SRC R :results output \n?\n#+END_SRC"))
+
+    (add-to-list 'org-structure-template-alist
+	         '("R" "#+BEGIN_SRC R :results output graphics :file ./test.png :exports results \n?\n#+END_SRC"))
+    
     (setq org-startup-folded t)
 
     ;; flyspell mode for spell checking everywhere
@@ -2453,11 +2492,6 @@ package is loaded.")
 \\setsansfont{Roboto Light}
 \\setmonofont{Roboto Mono Light}
 
-%\\titleformat{\\section}
-%        {\\normalfont\\Large\\bfseries}{\\makebox[30pt][l]{\\thesection}}{0pt}{}
-%\\titleformat{\\subsection}
-%        {\\normalfont\\large\\bfseries}{\\makebox[30pt][l]{\\thesubsection}}{0pt}{}
-
 "))
 
     
@@ -2533,7 +2567,13 @@ package is loaded.")
     (setq org-latex-default-class "ctexart")
     (add-to-list 'org-latex-classes
                  '("ctexart"
-                   "\\documentclass[UTF8,a4paper]{ctexart}"
+                   "\\documentclass[UTF8,a4paper]{ctexart}\n\\usepackage{titlesec}
+[DEFAULT-PACKAGES]
+[PACKAGES]
+[EXTRA]
+\\titleformat{\\section}{\\normalfont\\Large\\bfseries}{\\makebox[30pt][l]{\\thesection}}{0pt}{}
+\\titleformat{\\subsection}{\\normalfont\\large\\bfseries}{\\makebox[30pt][l]{\\thesubsection}}{0pt}{}
+"
                    ("\\section{%s}" . "\\section*{%s}")
                    ("\\subsection{%s}" . "\\subsection*{%s}")
                    ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
