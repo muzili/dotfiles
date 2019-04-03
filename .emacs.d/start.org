@@ -92,7 +92,7 @@
 ;; files, folders, buffers and text
 ;; use fundamental-mode to open large files
 (defun lzg/check-large-file ()
-  (when (> (buffer-size) 500000)
+  (when (> (buffer-size) 2000000)
     (progn (fundamental-mode)
 	   (hl-line-mode -1))))
 (add-hook 'find-file-hook 'lzg/check-large-file)
@@ -2567,9 +2567,10 @@ package is loaded.")
     (setq org-latex-default-class "ctexart")
     (add-to-list 'org-latex-classes
                  '("ctexart"
-                   "\\documentclass[UTF8,a4paper]{ctexart}\n\\usepackage{titlesec}
+                   "\\documentclass[UTF8,a4paper]{ctexart}
 [DEFAULT-PACKAGES]
 [PACKAGES]
+\\usepackage{titlesec}
 [EXTRA]
 \\titleformat{\\section}{\\normalfont\\Large\\bfseries}{\\makebox[30pt][l]{\\thesection}}{0pt}{}
 \\titleformat{\\subsection}{\\normalfont\\large\\bfseries}{\\makebox[30pt][l]{\\thesubsection}}{0pt}{}
