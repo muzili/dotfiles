@@ -2515,47 +2515,49 @@ package is loaded.")
                   "linkcolor=blue,\n"
                   "urlcolor=blue\n"
                   "}\n"))
-;    (defvar modi/ox-latex-use-minted t
-;      "Use `minted' package for listings.")
-;
-;    (if modi/ox-latex-use-minted
-;        ;; using minted
-;        ;; https://github.com/gpoore/minted
-;        (progn
-;          (setq org-latex-listings 'minted) ;default nil
-;          ;; The default value of the `minted' package option `cachedir'
-;          ;; is "_minted-\jobname". That clutters the working dirs with
-;          ;; _minted* dirs. So instead create them in temp folders.
-;          (defvar latex-minted-cachedir
-;            (file-name-as-directory
-;             (expand-file-name ".minted/\\jobname" modi/temporary-file-directory)))
-;          ;; `minted' package needed to be loaded AFTER `hyperref'.
-;          ;; http://tex.stackexchange.com/a/19586/52678
-;          (add-to-list 'modi/org-latex-packages-alist-post-hyperref
-;                       `(,(concat "cachedir=" ;options
-;                                  latex-minted-cachedir)
-;                         "minted" ;package
-;                         ;; If `org-latex-create-formula-image-program'
-;                         ;; is set to `dvipng', minted package cannot be
-;                         ;; used to show latex previews.
-;                         ,(not (eq org-latex-create-formula-image-program 'dvipng)))) ;snippet-flag
-;
-;          ;; minted package options (applied to embedded source codes)
-;          (setq org-latex-minted-options
-;                '(("linenos")
-;                  ("numbersep" "5pt")
-;                  ("frame"     "none") ;box frame is created by `mdframed' package
-;                  ("framesep"  "2mm")
-;                  ;; minted 2.0+ required for `breaklines'
-;                  ("breaklines"))) ;line wrapping within code blocks
-;          (when (equal org-latex-compiler "pdflatex")
-;            (add-to-list 'org-latex-minted-options '(("fontfamily"  "zi4")))))
-;      ;; not using minted
-;      (progn
-;        ;; Commented out below because it clashes with `placeins' package
-;        ;; (add-to-list 'modi/org-latex-packages-alist-post-hyperref '("" "color"))
-;        (add-to-list 'modi/org-latex-packages-alist-post-hyperref '("" "listings"))))
-;
+
+    (defvar modi/temporary-file-directory (let ((dir (file-name-as-directory (expand-file-name user-login-name temporary-file-directory))))))
+    (defvar modi/ox-latex-use-minted t
+      "Use `minted' package for listings.")
+
+    (if modi/ox-latex-use-minted
+        ;; using minted
+        ;; https://github.com/gpoore/minted
+        (progn
+          (setq org-latex-listings 'minted) ;default nil
+          ;; The default value of the `minted' package option `cachedir'
+          ;; is "_minted-\jobname". That clutters the working dirs with
+          ;; _minted* dirs. So instead create them in temp folders.
+          (defvar latex-minted-cachedir
+            (file-name-as-directory
+             (expand-file-name ".minted/\\jobname" modi/temporary-file-directory)))
+          ;; `minted' package needed to be loaded AFTER `hyperref'.
+          ;; http://tex.stackexchange.com/a/19586/52678
+          (add-to-list 'modi/org-latex-packages-alist-post-hyperref
+                       `(,(concat "cachedir=" ;options
+                                  latex-minted-cachedir)
+                         "minted" ;package
+                         ;; If `org-latex-create-formula-image-program'
+                         ;; is set to `dvipng', minted package cannot be
+                         ;; used to show latex previews.
+                         ,(not (eq org-latex-create-formula-image-program 'dvipng)))) ;snippet-flag
+
+          ;; minted package options (applied to embedded source codes)
+          (setq org-latex-minted-options
+                '(("linenos")
+                  ("numbersep" "5pt")
+                  ("frame"     "none") ;box frame is created by `mdframed' package
+                  ("framesep"  "2mm")
+                  ;; minted 2.0+ required for `breaklines'
+                  ("breaklines"))) ;line wrapping within code blocks
+          (when (equal org-latex-compiler "pdflatex")
+            (add-to-list 'org-latex-minted-options '(("fontfamily"  "zi4")))))
+      ;; not using minted
+      (progn
+        ;; Commented out below because it clashes with `placeins' package
+        ;; (add-to-list 'modi/org-latex-packages-alist-post-hyperref '("" "color"))
+        (add-to-list 'modi/org-latex-packages-alist-post-hyperref '("" "listings"))))
+
     (setq org-latex-packages-alist
           (append modi/org-latex-packages-alist-pre-hyperref
                   '(("" "hyperref" nil))
@@ -2615,11 +2617,11 @@ package is loaded.")
 
     (setq org-beamer-theme nil)
     (setq org-latex-commands
-          '(("xelatex -interaction nonstopmode -output-directory %o %f"
+          '(("xelatex -shell-escape -interaction nonstopmode -output-directory %o %f"
              "bibtex %b"
-             "xelatex -interaction nonstopmode -output-directory %o %f"
-             "xelatex -interaction nonstopmode -output-directory %o %f")
-            ("xelatex -interaction nonstopmode -output-directory %o %f")))
+             "xelatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+             "xelatex -shell-escape -interaction nonstopmode -output-directory %o %f")
+            ("xelatex -shell-escape -interaction nonstopmode -output-directory %o %f")))
 
     (defun my-org-latex-compile (orig-fun texfile &optional snippet)
       (let ((org-latex-pdf-process
