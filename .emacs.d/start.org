@@ -911,6 +911,17 @@ exec $CCLS_DIR/Release/ccls --log-file=/tmp/ccls.log -v=1  "$@"
 ;;; http://www.emacswiki.org/emacs/CEldocMode
 ;;(add-hook 'c-mode-hook 'c-turn-on-eldoc-mode)
 
+;guess indentation
+(use-package dtrt-indent
+  :ensure t
+  :defer t
+  :diminish dtrt-indent-mode " dtrt"
+  :hook (prog-mode . (lambda () (dtrt-indent-mode t)))
+  :config
+  (progn
+    (setq dtrt-indent-verbosity 0)
+    )
+)
 #+END_SRC
 
 *** Tex/LaTeX mode
