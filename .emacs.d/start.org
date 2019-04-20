@@ -134,7 +134,7 @@ This stops emacs adding customised settings to init.el.
   :init(projectile-global-mode t)
   :config
   (progn
-    (setq projectile-keymap-prefix (kbd "C-c p"))
+    (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
     (setq projectile-completion-system 'default)
     (setq projectile-enable-caching t)
     (setq projectile-indexing-method 'alien)
