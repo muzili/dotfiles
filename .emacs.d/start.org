@@ -2474,6 +2474,7 @@ ftp://ftp.ctan.org/tex-archive/macros/latex/contrib/hyperref/README.pdf ")
         ;; Graphics package for more complicated figures
         ("" "tikz")
         ("" "caption")
+        ("" "tcolorbox")
         ;;
         ;; Packages suggested to be added for previewing latex fragments
         ;; https://orgmode.org/worg/org-tutorials/org-latex-preview.html
