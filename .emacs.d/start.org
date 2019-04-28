@@ -274,6 +274,7 @@ This stops emacs adding customised settings to init.el.
                               "^/[^/]*:"
                               "\\.el\\.gz\\'"))
   (recentf-mode 1))
+
 #+END_SRC
 
 *** Hydra
@@ -1484,7 +1485,11 @@ tar xf /tmp/jdt-latest.tar -C ~/.emacs.d/eclipse.jdt.ls/server/
 
 #+BEGIN_SRC emacs-lisp
 (use-package lsp-java
-:hook (java-mode . (lambda () (require 'lsp-java) (lsp))))
+:hook (java-mode . (lambda () (require 'lsp-java) (lsp)))
+:config (progn
+(setq lsp-java-save-action-organize-imports nil)
+)
+)
 #+END_SRC
 
 *** Rust lang support

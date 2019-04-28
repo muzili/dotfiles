@@ -151,7 +151,7 @@ function start_ibus {
 remove_caps
 start_ibus
 
-. "/home/joshua/.acme.sh/acme.sh.env"
+[ -e /home/joshua/.acme.sh/acme.sh.env ] && . "/home/joshua/.acme.sh/acme.sh.env"
 
 # add auto-completion directory to zsh's fpath
 fpath=($HOME/.zsh/completion $fpath)
