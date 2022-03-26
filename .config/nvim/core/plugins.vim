@@ -85,6 +85,15 @@ let g:Lf_ShortcutB = ''
 " set up working directory for git repository
 let g:Lf_WorkingDirectoryMode = 'a'
 
+" recall last search. If the result window is closed, reopen it.
+noremap go :<C-U>Leaderf! rg --recall<CR>
+
+" search word under cursor in cpp files
+nnoremap <silent> <Leader>fa :<C-U><C-R>=printf("Leaderf! rg -e %s ", expand("<cword>"))<CR><CR>
+
+" search word under cursor in cpp files
+nnoremap <silent> <Leader>fc :<C-U><C-R>=printf("Leaderf! rg -e %s -t cpp ", expand("<cword>"))<CR><CR>
+
 " Search files in popup window
 nnoremap <silent> <leader>ff :<C-U>Leaderf file --popup<CR>
 
