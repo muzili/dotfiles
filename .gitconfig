@@ -1,0 +1,84 @@
+[user]
+	name = Zhiguang Li
+	email = muzili@gmail.com
+[color]
+    diff = auto
+    status = auto
+    branch = auto
+[alias]
+    ci = commit -s
+    co = checkout
+    br = branch
+    rb = rebase
+    st = status
+    di = diff -b -w
+    tags = tag -l
+    cp = cherry-pick
+    graphviz = "!f() { echo 'digraph git {' ; git log --pretty='format:  %h -> { %p }' \"$@\" | sed 's/[0-9a-f][0-9a-f]*/\"&\"/g' ; echo '}'; }; f"
+    who = shortlog -s --
+    cherry-pick-svn = !GIT_EDITOR='sed -i /^git-svn-id:/d' git cherry-pick -e
+    branch-svn = svn branch
+    merge-svn = merge --squash
+    push-svn = svn dcommit
+    up = svn rebase
+    update = svn rebase
+    #review = log --no-prefix --since='24 hours ago' -p  --pretty=format:'%CgreenAuthor: %Cred%an%n%CgreenDate:%Creset %ar%n%CgreenRevision:%Creset %b%CgreenChangelog:%Cred %s%n%Creset' --cc
+    mylog = log --no-prefix -p --pretty=format:'%CgreenAuthor: %Cred%an%n%CgreenDate:%Creset %ar%n%CgreenRevision:%Creset %b%CgreenChangelog:%Cred %s%n%Creset' --cc
+    cp-svn = !GIT_EDITOR='sed -i s/^git-svn-id:/Merged-from:/' git cherry-pick -e -s -x
+    lg = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative
+    lgnocolor = log --graph --pretty=format:'%h(%an) - %s' --abbrev-commit --date=relative
+    lr =  log --pretty=format:'%h(%an) - %s' --abbrev-commit --date=relative --reverse
+    lc = log --stat --no-merges
+    undo=reset --hard
+    changes=diff --name-status -r
+    diffstat=diff --stat -r
+    stsh = !CURRENT=$(git symbolic-ref HEAD) && git symbolic-ref HEAD refs/heads/stash && git commit -a -m stashed && git checkout $CURRENT
+    prune-all = !git remote | xargs -n 1 git remote prune
+    example = !sh -c 'ls $2 $1' -
+    whois = "!sh -c 'git log -i -1 --pretty=\"format:%an <%ae>\n\" --author=\"$1\"' -"
+    whatis = show -s --pretty='tformat:%h (%s, %ad)' --date=short
+    intercommit = !sh -c 'git show "$1" > .git/commit1 && git show "$2" > .git/commit2 && interdiff .git/commit[12] | less -FRS' -
+    sortdiff = !sh -c 'git diff "$@" | grep "^[+-]" | sort --key=1.2 | uniq -u -s1'
+    edit-unmerged = "!f() { git ls-files --unmerged | cut -f2 | sort -u ; }; vim `f`"
+    add-unmerged = "!f() { git ls-files --unmerged | cut -f2 | sort -u ; }; git add `f`"
+    cl=log --no-prefix  --pretty=format:'%h(%an)\t - %s' --no-merges
+    meld = !/home/joshua/project/git-meld/git-meld.pl
+	oldest-ancestor = !zsh -c 'diff --old-line-format= --new-line-format= <(git rev-list --first-parent \"${1:-master}\") <(git rev-list --first-parent \"${2:-HEAD}\") | head -1' -
+	branchdiff = !sh -c \"git diff `git oldest-ancestor`..\"
+	branchlog = !sh -c \"git log `git oldest-ancestor`..\"
+
+[core]
+	#editor = emacsclient -t
+	quotepath = off
+[merge]
+	tool = meld
+[status]
+	showuntrackedfiles = no
+
+[log]
+	date = local
+[sendemail]
+	aliasesfile = /home/joshua/.mutt/aliases
+        aliasfiletype = mutt
+        chainreplyto = false
+        to=3gdma@alphanetworks.sh.zj
+	smtpserver = mailhost.marvell.com
+	confirm = auto
+        suppresscc = author
+[format]
+        signoff = true
+        subjectprefix = PATCH
+[svn]
+	#authorsfile = /home/joshua/.git-svn-authors.txt
+[push]
+	default = simple
+[http]
+	sslVerify = false
+	postBuffer = 524288000
+[filter "lfs"]
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+	required = true
+[commit]
+	template = /home/joshua/.gitmessage

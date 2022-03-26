@@ -45,7 +45,7 @@ ZSH_THEME="gentoo"
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git ssh-agent gpg-agent)
+plugins=(ssh-agent gpg-agent autojump)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -84,7 +84,6 @@ alias cp='cp -i'
 alias mv='mv -i'
 alias mkdir='mkdir -p'
 alias h='history'
-alias j='jobs -l'
 alias ..='cd ..'
 alias cd..='cd ..'
 alias path='echo -e ${PATH//:/\\n}'
@@ -122,12 +121,13 @@ alias busy="cat /dev/urandom | head -c 18K | hexdump -C | grep "ca fe""
 alias sdu="sudo dnf update "
 alias edit="emacsclient -nw "
 alias editx="emacsclient -nc "
-
+alias vi="nvim"
 #alias ndk-addr2line=`ndk-which addr2line`
 #alias ndk-objdump=`ndk-which objdump`
 #alias ndk-gcc=`ndk-which gcc`
 #alias android-build='docker run -i --privileged -v /dev/bus/usb:/dev/bus/usb -v $(pwd):/app -w /app -u $UID:$GID muzili/android'
 
+source ~/.zshenv
 export VAGRANT_DEFAULT_PROVIDER=virtualbox
 
 function start_sogou {
@@ -148,14 +148,31 @@ function start_ibus {
     export QT_IM_MODULE=ibus
 }
 #start_sogou
-remove_caps
+#remove_caps
 start_ibus
 
-[ -e /home/joshua/.acme.sh/acme.sh.env ] && . "/home/joshua/.acme.sh/acme.sh.env"
+#[ -e /home/joshua/.acme.sh/acme.sh.env ] && . "/home/joshua/.acme.sh/acme.sh.env"
 
 # add auto-completion directory to zsh's fpath
-fpath=($HOME/.zsh/completion $fpath)
+#fpath=($HOME/.zsh/completion $fpath)
 
 # compsys initialization
-autoload -U compinit
-compinit
+#autoload -U compinit
+#compinit
+#fpath+=${ZDOTDIR:-~}/.zsh_functions
+
+# >>> conda initialize >>>
+# !! Contents within this block are managed by 'conda init' !!
+__conda_setup="$('/data/miniconda39_x64/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
+if [ $? -eq 0 ]; then
+    eval "$__conda_setup"
+else
+    if [ -f "/data/miniconda39_x64/etc/profile.d/conda.sh" ]; then
+        . "/data/miniconda39_x64/etc/profile.d/conda.sh"
+    else
+        export PATH="/data/miniconda39_x64/bin:$PATH"
+    fi
+fi
+unset __conda_setup
+# <<< conda initialize <<<
+conda activate python37
