@@ -122,6 +122,7 @@ alias sdu="sudo dnf update "
 alias edit="emacsclient -nw "
 alias editx="emacsclient -nc "
 alias vi="nvim"
+alias config='/usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME'
 #alias ndk-addr2line=`ndk-which addr2line`
 #alias ndk-objdump=`ndk-which objdump`
 #alias ndk-gcc=`ndk-which gcc`
