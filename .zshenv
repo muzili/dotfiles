@@ -38,6 +38,8 @@ alias lst='ls -lrt'
 # 上海交通大学
 #export RUSTUP_DIST_SERVER=https://mirrors.sjtug.sjtu.edu.cn/rust-static/
 #
+export RUSTUP_DIST_SERVER="https://rsproxy.cn"
+export RUSTUP_UPDATE_ROOT="https://rsproxy.cn/rustup"
 source "$HOME/.cargo/env"
 
 [ -e $HOME/.sfplatformsdk ]  && source  $HOME/.sfplatformsdk
