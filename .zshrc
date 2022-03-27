@@ -176,4 +176,4 @@ else
 fi
 unset __conda_setup
 # <<< conda initialize <<<
-conda activate python37
+[ -e /data/miniconda39_x64/envs/python37 ] && conda activate python37
