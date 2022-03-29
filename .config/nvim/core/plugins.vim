@@ -286,6 +286,19 @@ augroup END
 set spelllang=en,cjk
 set spell
 
+let g:vimtex_compiler_latexmk_engines = {
+    \ '_'                : '-xelatex',
+    \ 'pdfdvi'           : '-pdfdvi',
+    \ 'pdfps'            : '-pdfps',
+    \ 'pdflatex'         : '-pdf',
+    \ 'luatex'           : '-lualatex',
+    \ 'lualatex'         : '-lualatex',
+    \ 'xelatex'          : '-xelatex',
+    \ 'context (pdftex)' : '-pdf -pdflatex=texexec',
+    \ 'context (luatex)' : '-pdf -pdflatex=context',
+    \ 'context (xetex)'  : '-pdf -pdflatex=''texexec --xtx''',
+    \}
+
 let g:vimtex_compiler_latexmk = {
       \ 'background': 1,
       \ 'build_dir': 'build',
