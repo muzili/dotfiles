@@ -1,168 +1,260 @@
 global !p
-def gen_header(snip):
-	placeholders_string = snip.buffer[snip.line].strip()
-	level = int(placeholders_string[0])
 
-	# erase current line
-	snip.buffer[snip.line] = ""
-	line_content = "#"*level + " ${1:Section Name}"
-	line_content += '\n$0'
 
-	snip.expand_anon(line_content)
+import re
+from snippet_helpers import last_p1_not_p2, first_p1_not_p2
+
+def back_parentheses():
+	right = vim.eval("getline('.')[col('.')-1:]")
+	left = vim.eval("getline('.')[:col('.')-2]")
+	# print("left: ##%s##" % left)
+	# print("right: ##%s##" % right)
+	return right.lstrip().startswith(")") and left.count("(")-1 < right.count(")")
+
+# def math():
+#   if vim_left_last_p1_not_p2(r"https://www.zhihu.com/equation\?tex=\" alt=\"", r"eeimg=\"") and vim_right_first_p1_not_p2(r"eeimg=\"", r"https://www.zhihu.com/equation\?tex=\" alt=\""):
+#     return True
+#   lp = vim_left_paragraph()
+#   rp = vim_right_paragraph()
+#   lp = " ".join(lp)
+#   rp = " ".join(rp)
+#   lp = re.sub(r"(?<!\\)(\\\\)*\\$", "", lp)
+#   rp = re.sub(r"(?<!\\)(\\\\)*\\$", "", rp)
+#   tlp = re.sub(r"(?<!\\)(\\\\)*$$", "", lp)
+#   trp = re.sub(r"(?<!\\)(\\\\)*$$", "", rp)
+#   if tlp.count("$") % 2 == 1 and "$" in trp:
+#     return True
+#   if last_p1_not_p2(lp, "$$", "$") and first_p1_not_p2(rp, "$$", "$") and tlp.count("$$") % 2 == 1:
+#     return True
+#   return False
+
+def math():
+	return vim.eval('vimtex#syntax#in_mathzone()') == '1'
+
+def vim_left_paragraph():
+	currentlinenumber = int(vim.eval("line('.')"))
+	left = vim.eval("getline('.')[0:col('.')-2]")
+	lp = [left]
+	for index in range(currentlinenumber-1, -1, -1):
+		tline = vim.eval("getline(%d)" % index)
+		if not tline.strip():
+			return lp
+		lp = [tline] + lp
+	return lp
+
+def vim_left_all(max_line = 100, offset = 0):
+	left = vim.eval("getline('.')[:col('.')-2+(%d)]" % offset)
+	content = [left]
+	currentlinenumber = int(vim.eval("line('.')"))
+	for index in range(currentlinenumber-1, max(0, currentlinenumber - max_line) if max_line > 0 else -1, -1):
+		content.append(vim.eval('getline(%d)' % index))
+	return content
+
+def vim_right_paragraph():
+	currentlinenumber = int(vim.eval("line('.')"))
+	right = vim.eval("getline('.')[col('.')-1:]")
+	rp = [right]
+	for index in range(currentlinenumber+1, int(vim.eval("line('$')")) + 1):
+		tline = vim.eval("getline(%d)" % index)
+		if not tline.strip():
+			return rp
+		rp.append(tline)
+	return rp
+
+def vim_left_have(pattern):
+	currentlinenumber = int(vim.eval("line('.')"))
+	currentline = vim.eval("getline('.')")
+	currentcol = int(vim.eval("col('.')"))
+	left = currentline[0:currentcol-1]
+	if re.fullmatch(pattern, left):
+		return True
+	for index in range(currentlinenumber-1, -1, -1):
+		tline = vim.eval("getline(%d)" % index)
+		if not tline.strip():
+			return False
+		if re.fullmatch(pattern, tline):
+			return True
+
+def vim_right_have(pattern):
+	currentlinenumber = int(vim.eval("line('.')"))
+	currentline = vim.eval("getline('.')")
+	currentcol = int(vim.eval("col('.')"))
+	right = currentline[currentcol-1:]
+	if re.fullmatch(pattern, right):
+		return True
+	for index in range(currentlinenumber+1, int(vim.eval("line('$')")) + 1):
+		tline = vim.eval("getline(%d)" % index)
+		if not tline.strip():
+			return False
+		if re.fullmatch(pattern, tline):
+			return True
+
+
+def vim_left_last_p1_not_p2(p1, p2):
+	currentlinenumber = int(vim.eval("line('.')"))
+	# currentline = vim.eval("getline('.')")
+	# currentcol = int(vim.eval("col('.')"))
+	left = vim.eval("getline('.')[:col('.')-2]")
+	p1s = re.search(p1, left)
+	p2s = re.search(p2, left)
+	# print(p1, left, p1s)
+	# print(p2, left, p2s)
+	# print("left: $%s$" % left)
+	if p1s and not p2s:
+		return True
+	if p2s and not p1s:
+		return False
+	if p1s and p2s:
+		return last_p1_not_p2(left, p1, p2) == 1
+	else:
+		for index in range(int(vim.eval("line('$')")) - 1, 0, -1):
+			tline = vim.eval("getline(%d)" % index)
+			if not tline.strip():
+				return False
+			p1s = re.search(p1, tline)
+			p2s = re.search(p2, tline)
+			if p1s and not p2s:
+				return True
+			if p2s and not p1s:
+				return False
+			if p1s and p2s:
+				return last_p1_not_p2(tline, p1, p2) == 1
+	return False
+
+def vim_right_first_p1_not_p2(p1, p2):
+	currentlinenumber = int(vim.eval("line('.')"))
+	# currentline = vim.eval("getline('.')")
+	# currentcol = int(vim.eval("col('.')"))
+	# right = currentline[currentcol-1:]
+	right = vim.eval("getline('.')[col('.')-1:]")
+	p1s = re.search(p1, right)
+	p2s = re.search(p2, right)
+	# print(p1, right, p1s)
+	# print(p2, right, p2s)
+	# print("right: $%s$" % right)
+	if p1s and not p2s:
+		return True
+	if p2s and not p1s:
+		return False
+	if p1s and p2s:
+		return first_p1_not_p2(right, p1, p2) == 1
+	else:
+		for index in range(currentlinenumber+1, int(vim.eval("line('$')")) + 1):
+			tline = vim.eval("getline(%d)" % index)
+			if not tline.strip():
+				return False
+			p1s = re.search(p1, tline)
+			p2s = re.search(p2, tline)
+			if p1s and not p2s:
+				return True
+			if p2s and not p1s:
+				return False
+			if p1s and p2s:
+				return first_p1_not_p2(tline, p1, p2) == 1
+	return False
+
 endglobal
 
-snippet "(k1|kbd)" "HTML kbd tag" rw
-<kbd>${1:KEY}</kbd>$0
+# extends mathtex
+
+context "not math()"
+snippet zhihumk "Math" wA
+<img src="https://www.zhihu.com/equation?tex=" alt="$1" eeimg="1"> $0
 endsnippet
 
-snippet k2 "Two key strokes shortcut"
-<kbd>${1:KEY}</kbd> + <kbd>${2:KEY}</kbd>
+context "not math()"
+snippet dm "Math" wA
+$$
+${1:${VISUAL}}
+$$$0
 endsnippet
 
-snippet k3 "Three key strokes shortcut"
-<kbd>${1:KEY}</kbd> + <kbd>${2:KEY}</kbd> + <kbd>${3:KEY}</kbd>
+context "not math()"
+snippet zhihudm "Math" wA
+<img src="https://www.zhihu.com/equation?tex=" alt="$1\\\\" eeimg="1"> $0
 endsnippet
 
-snippet meta "Markdown front matter (YAML format)" b
----
-title: "$1"
-date: `!p from datetime import datetime
-if not snip.c:
-	snip.rv=datetime.now().astimezone().strftime("%Y-%m-%d %H:%M:%S%z")`
-tags: [$2]
-categories: [$3]
----
-$0
+context "not math()"
+snippet cbt "text with color" w
+$\bbox[#E8F8FF, 4px, border:1px solid gray]{\color{blue}{\texttt{$1}}}$ $0
 endsnippet
 
-snippet more "HTML more tag"
-<!--more-->
+context "not math()"
+snippet ct "text with color" w
+$\color{blue}{\texttt{$1}}}$ $0
 endsnippet
 
-snippet img "Aligned image using HTML tag"
-<p align="center">
-<img src="${1:URL}" width="${2:800}">
-</p>
-$0
+context "not math()"
+snippet rt "text with color" w
+${\color{red}{\small \texttt{$1}}}$ $0
 endsnippet
 
-snippet font "HTML font tag"
-<font color="${1:red}">${2:TEXT}</font>
+# post_jump "add_placeholder(snip)"
+# context "environment(lastemptyline = True)"
+# snippet "^(\s+)" "auto insert something" wr
+# `!p
+# snip.rv = match.group(1)
+# env_name = environment()
+# line_number = int(vim.eval("line('.')"))
+# last_line = vim.eval("getline(%d)" % (line_number-1))
+# if any(env_name.startswith(x) for x in ["ali", "split"]):
+# 	try:
+# 		last_operator = extract_operator(re.fullmatch(r"[^&]*&(.*)", last_line).group(1))
+# 	except:
+# 		last_operator = ""
+# 	if last_line.split("&")[0].strip():
+# 		snip.rv += "$2 & ${1:%s} $3 \\\\\\\\" % last_operator
+# 	else:
+# 		snip.rv += "& ${1:%s} $3 \\\\\\\\" % last_operator
+# elif re.search("matrix", env_name):
+# 	number = last_line.count("&") + 1
+# 	snip.rv += " & ".join("$%d" % x for x in range(1, number+1)) + "\\" * 4
+# elif env_name == "enumerate":
+# 	snip.rv = " " * (len(last_line) - len(last_line.lstrip())) + "\item $1"
+# `
+# endsnippet
+
+# It automatically extracts the last word in the link and use the word as default title.
+# examples fill $2 automatically [zyt-snippet](https://github.com/sillybun/zyt-snippet)
+# examples add arxiv automatically  [arxiv 2009.12345](https://arxiv.org/abs/2009.12345)
+snippet pslink "paste a link"
+[`!p # match arxiv
+def match_arxiv(str):
+	regex = r"\d{4}\.\d{5}" 
+	matches = re.fullmatch(regex, str)
+	if matches is None:
+		return False
+	else:
+		return True
+
+snip.rv = ""
+if t[2]:
+	if match_arxiv(t[2]):
+		snip.rv = "arxiv " # not very perfect, works only after you go to normal mode after paste
+`${2:${1/.*\/([\w\-#]*)/(?1:$1:)/}}](${1:${VISUAL}})
 endsnippet
 
-snippet link "Markdown links"
-[$1]($2)$0
+snippet head(slide) "head for slide" b
+autoscale: true
+footer: $1
+slidenumbers: true
+
 endsnippet
 
-post_jump "gen_header(snip)"
-snippet "h([1-6])" "Markdown header" br
-`!p snip.rv = match.group(1)`
-endsnippet
-
-snippet detail "Clickable details" b
+# html code can be inserted to md by surrounding them with ~~~ ~~~
+snippet fold "fold content by inserting html" b
+~~~
 <details>
-<summary><font size="2" color="red">${1:Click to show the code.}</font></summary>
-
-$2
+<summary>${2:title}</summary>
+~~~
+${1:${VISUAL}}
+~~~
 </details>
+~~~
 endsnippet
 
-snippet yh "直角引号" w
-「$1」
+context "math()"
+snippet so "so3" A
+so3
 endsnippet
-
-snippet info "info box"
-<style type="text/css">
-@import url('//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css');
-
-.info-msg {
-	color: #059;
-	background-color: #BEF;
-	margin: 5px 0;
-	margin-bottom: 20px;
-	padding: 10px;
-	border-radius: 5px 5px 5px 5px;
-	border: 2px solid transparent;
-	border-color: transparent;
-}
-</style>
-
-<div class="info-msg">
-	<i class="fa fa-info-circle"> Info</i></br>
-	${1:info text}
-</div>
-$0
-endsnippet
-
-snippet warn "warning box"
-<style type="text/css">
-@import url('//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css');
-
-.warning-msg {
-	color: #9F6000;
-	background-color: #FEEFB3;
-	margin: 5px 0;
-	margin-bottom: 20px;
-	padding: 10px;
-	border-radius: 5px 5px 5px 5px;
-	border: 2px solid transparent;
-	border-color: transparent;
-}
-</style>
-
-<div class="warning-msg">
-	<i class="fa fa-warning"> Warning</i></br>
-	${1:warning text}
-</div>
-$0
-endsnippet
-
-snippet error "error box"
-<style type="text/css">
-@import url('//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css');
-
-.error-msg {
-	color: #D8000C;
-	background-color: #FFBABA;
-	margin: 5px 0;
-	margin-bottom: 20px;
-	padding: 10px;
-	border-radius: 5px 5px 5px 5px;
-	border: 2px solid transparent;
-	border-color: transparent;
-}
-</style>
-
-<div class="error-msg">
-	<i class="fa fa-times-circle"> Error</i></br>
-	${1:error text}
-</div>
-$0
-endsnippet
-
-snippet success "success box"
-<style type="text/css">
-@import url('//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css');
-
-.success-msg {
-	color: #270;
-	background-color: #DFF2BF;
-	margin: 5px 0;
-	margin-bottom: 20px;
-	padding: 10px;
-	border-radius: 5px 5px 5px 5px;
-	border: 2px solid transparent;
-	border-color: transparent;
-}
-</style>
-
-<div class="success-msg">
-	<i class="fa fa-check"></i>
-	${1:success text}
-</div>
-$0
-endsnippet
-
-snippet td "too long do not read" bw
-tl;dr: $1
-endsnippet
+# vim:ft=snippets
