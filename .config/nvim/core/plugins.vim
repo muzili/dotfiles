@@ -270,66 +270,90 @@ nmap s <Nop>
 omap s <Nop>
 
 """"""""""""""""""""""""""""vimtex settings"""""""""""""""""""""""""""""
-if ( g:is_win || g:is_mac ) && executable('latex')
-  " Hacks for inverse serach to work semi-automatically,
-  " see https://jdhao.github.io/2021/02/20/inverse_search_setup_neovim_vimtex/.
-  function! s:write_server_name() abort
-    let nvim_server_file = (has('win32') ? $TEMP : '/tmp') . '/vimtexserver.txt'
-    call writefile([v:servername], nvim_server_file)
-  endfunction
+" Hacks for inverse serach to work semi-automatically,
+" see https://jdhao.github.io/2021/02/20/inverse_search_setup_neovim_vimtex/.
+function! s:write_server_name() abort
+  let nvim_server_file = (has('win32') ? $TEMP : '/tmp') . '/vimtexserver.txt'
+  call writefile([v:servername], nvim_server_file)
+endfunction
 
-  augroup vimtex_common
+augroup vimtex_common
+  autocmd!
+  autocmd FileType tex call s:write_server_name()
+  autocmd FileType tex nmap <buffer> <F9> <plug>(vimtex-compile)
+augroup END
+
+set spelllang=en,cjk
+set spell
+
+let g:vimtex_compiler_latexmk = {
+      \ 'background': 1,
+      \ 'build_dir': 'build',
+      \ 'continuous': 1,
+      \ 'options': [
+      \    '-pdf',
+      \    '-verbose',
+      \    '-file-line-error',
+      \    '-synctex=1',
+      \    '-interaction=nonstopmode',
+      \],
+      \}
+
+let g:vimtex_quickfix_open_on_warning = 0
+let g:vimtex_quickfix_mode = 2
+if has('nvim')
+    let g:vimtex_compiler_progname = 'nvr'
+endif
+
+" TOC settings
+let g:vimtex_toc_config = {
+      \ 'name' : 'TOC',
+      \ 'layers' : ['content', 'todo', 'include'],
+      \ 'resize' : 1,
+      \ 'split_width' : 30,
+      \ 'todo_sorted' : 0,
+      \ 'show_help' : 1,
+      \ 'show_numbers' : 1,
+      \ 'mode' : 2,
+      \ }
+
+" Viewer settings for different platforms
+if g:is_linux
+  " From https://github.com/lervag/vimtex
+  let g:vimtex_view_general_method = 'zathura'
+  let g:vimtex_view_general_viewer = 'okular'
+  let g:vimtex_view_general_options = '--unique file:@pdf\#src:@line@tex'
+endif
+
+
+if g:is_win
+  let g:vimtex_view_general_viewer = 'SumatraPDF'
+  let g:vimtex_view_general_options_latexmk = '-reuse-instance'
+  let g:vimtex_view_general_options = '-reuse-instance -forward-search @tex @line @pdf'
+endif
+
+if g:is_mac
+  " let g:vimtex_view_method = "skim"
+  let g:vimtex_view_general_viewer = '/Applications/Skim.app/Contents/SharedSupport/displayline'
+  let g:vimtex_view_general_options = '-r @line @pdf @tex'
+
+  augroup vimtex_mac
     autocmd!
-    autocmd FileType tex call s:write_server_name()
-    autocmd FileType tex nmap <buffer> <F9> <plug>(vimtex-compile)
+    autocmd User VimtexEventCompileSuccess call UpdateSkim()
   augroup END
 
-  let g:vimtex_compiler_latexmk = {
-        \ 'build_dir' : 'build',
-        \ }
+  " The following code is adapted from https://gist.github.com/skulumani/7ea00478c63193a832a6d3f2e661a536.
+  function! UpdateSkim() abort
+    let l:out = b:vimtex.out()
+    let l:src_file_path = expand('%:p')
+    let l:cmd = [g:vimtex_view_general_viewer, '-r']
 
-  " TOC settings
-  let g:vimtex_toc_config = {
-        \ 'name' : 'TOC',
-        \ 'layers' : ['content', 'todo', 'include'],
-        \ 'resize' : 1,
-        \ 'split_width' : 30,
-        \ 'todo_sorted' : 0,
-        \ 'show_help' : 1,
-        \ 'show_numbers' : 1,
-        \ 'mode' : 2,
-        \ }
+    if !empty(system('pgrep Skim'))
+      call extend(l:cmd, ['-g'])
+    endif
 
-  " Viewer settings for different platforms
-  if g:is_win
-    let g:vimtex_view_general_viewer = 'SumatraPDF'
-    let g:vimtex_view_general_options_latexmk = '-reuse-instance'
-    let g:vimtex_view_general_options = '-reuse-instance -forward-search @tex @line @pdf'
-  endif
-
-  if g:is_mac
-    " let g:vimtex_view_method = "skim"
-    let g:vimtex_view_general_viewer = '/Applications/Skim.app/Contents/SharedSupport/displayline'
-    let g:vimtex_view_general_options = '-r @line @pdf @tex'
-
-    augroup vimtex_mac
-      autocmd!
-      autocmd User VimtexEventCompileSuccess call UpdateSkim()
-    augroup END
-
-    " The following code is adapted from https://gist.github.com/skulumani/7ea00478c63193a832a6d3f2e661a536.
-    function! UpdateSkim() abort
-      let l:out = b:vimtex.out()
-      let l:src_file_path = expand('%:p')
-      let l:cmd = [g:vimtex_view_general_viewer, '-r']
-
-      if !empty(system('pgrep Skim'))
-        call extend(l:cmd, ['-g'])
-      endif
-
-      call jobstart(l:cmd + [line('.'), l:out, l:src_file_path])
-    endfunction
-  endif
+    call jobstart(l:cmd + [line('.'), l:out, l:src_file_path])
+  endfunction
 endif
 
 """"""""""""""""""""""""""""vim-startify settings""""""""""""""""""""""""""""
