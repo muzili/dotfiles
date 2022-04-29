@@ -1,7 +1,19 @@
 local api = vim.api
-local lsp = vim.lsp
+-- local lsp = vim.lsp
+
+local lsp = require 'vim.lsp'
+local log = require 'vim.lsp.log'
+
+log.set_level("info")
+
+log.debug("Start lsp config")
 
 local utils = require("utils")
+
+local servers = { "sumneko_lua", "rust_analyzer", "pylsp", "vim-language-server", "clangd"}
+require("nvim-lsp-installer").setup {
+  ensure_installed = servers
+}
 
 local M = {}
 
@@ -17,6 +29,7 @@ function M.show_line_diagnostics()
 end
 
 local custom_attach = function(client, bufnr)
+  log.debug("start client ", client)
   local function buf_set_keymap(...)
     api.nvim_buf_set_keymap(bufnr, ...)
   end
@@ -109,6 +122,7 @@ end
 -- end
 
 if utils.executable('clangd') then
+  log.debug("clangd is available")
   lspconfig.clangd.setup({
     cmd = { "clangd",
       "--background-index",
@@ -126,12 +140,31 @@ if utils.executable('clangd') then
     },
     on_attach = custom_attach,
     capabilities = capabilities,
-    filetypes = { "c", "cpp", "cc" },
+    filetypes = { "c", "cpp", "cc", "objc", "objcpp" },
     flags = {
       debounce_text_changes = 500,
     },
+    root_dir = function(fname)
+      local nvim_lsp = require'lspconfig';
+      local filename = nvim_lsp.util.path.is_absolute(fname) and fname
+        or nvim_lsp.util.path.join(vim.loop.cwd(), fname)
+      local root_pattern = nvim_lsp.util.root_pattern(
+          '.clangd',
+          '.clang-tidy',
+          '.clang-format',
+          'compile_commands.json',
+          'compile_flags.txt',
+          'configure.ac',
+          '.git'
+      )
+      -- log.debug("root_pattern ", root_pattern(filename))
+      return root_pattern(filename) or nvim_lsp.util.dirname(filename)
+    end;
+    single_file_support = true,
+    autostart = false,
   })
 else
+  log.warn("clangd not found")
   vim.notify("clangd not found!", 'warn', {title = 'Nvim-config'})
 end
 
@@ -156,11 +189,13 @@ if utils.executable('bash-language-server') then
   })
 end
 
-local sumneko_binary_path = vim.fn.exepath("lua-language-server")
+local sumneko_binary_path = vim.fn.exepath("/usr/local/lua-language-server/bin/lua-language-server")
 if vim.g.is_mac or vim.g.is_linux and sumneko_binary_path ~= "" then
-  local sumneko_root_path = vim.fn.fnamemodify(sumneko_binary_path, ":h:h:h")
+  local sumneko_root_path = vim.fn.fnamemodify(sumneko_binary_path, ":h")
+  -- log.debug("sumneko_root_path ", sumneko_root_path)
 
   local runtime_path = vim.split(package.path, ";")
+  -- log.debug("runtime path ", runtime_path)
   table.insert(runtime_path, "lua/?.lua")
   table.insert(runtime_path, "lua/?/init.lua")
 

@@ -37,12 +37,19 @@ require("packer").startup({
 
     -- use {"hrsh7th/cmp-cmdline", after = "nvim-cmp"}
     use {"quangnguyen30192/cmp-nvim-ultisnips", after = {'nvim-cmp', 'ultisnips'}}
-    if vim.g.is_mac then
-      use {"hrsh7th/cmp-emoji", after = 'nvim-cmp'}
-    end
+    use {"hrsh7th/cmp-emoji", after = 'nvim-cmp'}
 
     -- nvim-lsp configuration (it relies on cmp-nvim-lsp, so it should be loaded after cmp-nvim-lsp).
-    use({ "neovim/nvim-lspconfig", after = "cmp-nvim-lsp", config = [[require('config.lsp')]] })
+    use({ "neovim/nvim-lspconfig",
+      after = "cmp-nvim-lsp",
+      requires = {
+        "onsails/lspkind-nvim",
+        "hrsh7th/nvim-cmp",
+        "hrsh7th/cmp-nvim-lsp",
+        'williamboman/nvim-lsp-installer'
+      },
+      config = [[require('config.lsp')]]
+    })
 
     use({ "nvim-treesitter/nvim-treesitter", event = 'BufEnter', run = ":TSUpdate", config = require('config.treesitter').setup, })
     use ({
@@ -379,11 +386,11 @@ require("packer").startup({
     use {'jdhao/whitespace.nvim', event = 'VimEnter'}
 
     -- file explorer
-    use {
-      'kyazdani42/nvim-tree.lua',
-      requires = { 'kyazdani42/nvim-web-devicons' },
-      config = [[require('config.nvim-tree')]]
-    }
+    -- use {
+    --   'kyazdani42/nvim-tree.lua',
+    --   requires = { 'kyazdani42/nvim-web-devicons' },
+    --   config = [[require('config.nvim-tree')]]
+    -- }
   end,
   config = {
     max_jobs = 16,

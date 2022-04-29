@@ -82,3 +82,5 @@
 	required = true
 [commit]
 	template = /home/joshua/.gitmessage
+[url "git@github.com:"]
+	insteadOf = https://github.com/
