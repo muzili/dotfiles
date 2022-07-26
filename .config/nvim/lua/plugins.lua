@@ -73,6 +73,16 @@ require("packer").startup({
       end,
     })
 
+    use {
+      "danymat/neogen",
+      config = function()
+        require('neogen').setup {}
+      end,
+      requires = "nvim-treesitter/nvim-treesitter",
+      -- Uncomment next line if you want to follow only stable versions
+      -- tag = "*"
+    }
+
     -- Python indent (follows the PEP8 style)
     use({ "Vimjas/vim-python-pep8-indent", ft = { "python" } })
 
