@@ -131,26 +131,13 @@ alias config='/usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME'
 source ~/.zshenv
 export VAGRANT_DEFAULT_PROVIDER=virtualbox
 
-function start_sogou {
-    ps -ef |grep -v sogou-qimpanel-watchdog |grep -v grep |grep sogou-qimpanel >/dev/null || {
-        sogou-qimpanel  >/dev/null 2>&1
-    }
-}
-
 function remove_caps {
     #http://emacswiki.org/emacs/MovingTheCtrlKey
     #remove the caps lock key to additional control
     setxkbmap -option ctrl:nocaps
 }
 
-function start_ibus {
-    export GTK_IM_MODULE=ibus
-    export XMODIFIERS=@im=ibus
-    export QT_IM_MODULE=ibus
-}
-#start_sogou
-#remove_caps
-start_ibus
+remove_caps
 
 #[ -e /home/joshua/.acme.sh/acme.sh.env ] && . "/home/joshua/.acme.sh/acme.sh.env"
 
