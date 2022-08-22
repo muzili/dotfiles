@@ -190,3 +190,7 @@ function! s:restore_cursor() abort
   silent! normal `y
   silent! delmarks y
 endfunction
+
+
+"Format the buffer with space f
+nnoremap <silent> <space>f <cmd>LspZeroFormat<CR>
