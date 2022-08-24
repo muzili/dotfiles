@@ -105,6 +105,13 @@ require("packer").startup({
       config = [[require('config.indent-blankline')]]
     })
 
+    use({
+      "nvim-treesitter/nvim-treesitter",
+      event = 'BufEnter',
+      run = ":TSUpdate",
+      config = require('config.treesitter').setup,
+    })
+
   end,
   config = {
     max_jobs = 16,
