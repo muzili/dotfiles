@@ -8,7 +8,8 @@ M.setup = function() -- {{{
     local keymap = {
         f = {
             name = '+find',
-            f = {'<Cmd>lua require("telescope.builtin").builtin({include_extensions = true})<CR>', 'telescope'},
+            -- f = {'<Cmd>lua require("telescope.builtin").builtin({include_extensions = true})<CR>', 'telescope'},
+            f = {'<Cmd>Telescope find_files<CR>', 'find files'},
             l = {'<Cmd>Telescope live_grep<CR>', 'live grep'},
             b = {'<Cmd>Telescope buffers<CR>', 'buffers'},
             h = {'<Cmd>Telescope help_tags<CR>', 'help tags'},
