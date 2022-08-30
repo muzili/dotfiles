@@ -112,6 +112,14 @@ require("packer").startup({
       config = require('config.treesitter').setup,
     })
 
+    use({
+      'simrat39/symbols-outline.nvim',
+      cmd = "SymbolsOutline",
+      config = function() 
+        require("symbols-outline").setup()
+      end
+    })
+
   end,
   config = {
     max_jobs = 16,
