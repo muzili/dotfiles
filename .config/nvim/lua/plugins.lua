@@ -127,6 +127,13 @@ require("packer").startup({
       end
     })
 
+    use ({
+	    "windwp/nvim-autopairs",
+      config = function()
+        require("nvim-autopairs").setup()
+      end
+    })
+
   end,
   config = {
     max_jobs = 16,
