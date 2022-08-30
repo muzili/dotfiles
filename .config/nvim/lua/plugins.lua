@@ -115,8 +115,15 @@ require("packer").startup({
     use({
       'simrat39/symbols-outline.nvim',
       cmd = "SymbolsOutline",
-      config = function() 
+      config = function()
         require("symbols-outline").setup()
+      end
+    })
+
+    use({
+      "terrortylor/nvim-comment",
+      config = function()
+        require('nvim_comment').setup()
       end
     })
 
