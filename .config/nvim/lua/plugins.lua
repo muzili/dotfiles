@@ -167,6 +167,13 @@ require("packer").startup({
       config = 'require("config.neogen")',
       after = 'nvim-treesitter',
     }
+
+    use {
+        "folke/trouble.nvim",
+        requires = { "kyazdani42/nvim-web-devicons", opt = true },
+        config = 'require("config.trouble")',
+        after = 'nvim-web-devicons',
+    }
   end,
   config = {
     max_jobs = 16,
@@ -200,7 +207,8 @@ lsp.configure('clangd', {
   },
 })
 lsp.set_preferences({
-  set_lsp_keymaps = true
+  set_lsp_keymaps = true,
+  configure_diagnostics = true,
 })
 
 
