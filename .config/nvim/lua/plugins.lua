@@ -20,12 +20,19 @@ local util = require("packer.util")
 require("packer").startup({
   function(use)
     -- it is recommened to put impatient.nvim before any other plugins
-    use({ "lewis6991/impatient.nvim", config = [[require('impatient')]] })
+    use{ "lewis6991/impatient.nvim", config = [[require('impatient')]] }
 
-    use({ "wbthomason/packer.nvim", opt = true })
+    use{ "wbthomason/packer.nvim", opt = true }
+
+    use{
+        'kyazdani42/nvim-web-devicons',
+        event = 'VimEnter',
+    }
+
+    use{'nvim-lua/plenary.nvim', event = "BufRead", }
 
     -- LSP
-    use({
+    use{
       "VonHeikemen/lsp-zero.nvim",
       requires = {
         -- LSP Support
@@ -45,21 +52,21 @@ require("packer").startup({
         { "L3MON4D3/LuaSnip" },
         { "rafamadriz/friendly-snippets" },
       },
-    })
+    }
     -- The missing auto-completion for cmdline!
     use({ "gelguy/wilder.nvim", opt = true, setup = [[vim.cmd('packadd wilder.nvim')]] })
 
     -- A list of colorscheme plugin you may want to try. Find what suits you.
-    use({ "lifepillar/vim-gruvbox8", opt = true })
-    use({ "navarasu/onedark.nvim", opt = true })
-    use({ "sainnhe/edge", opt = true })
-    use({ "sainnhe/sonokai", opt = true })
-    use({ "sainnhe/gruvbox-material", opt = true })
-    use({ "shaunsingh/nord.nvim", opt = true })
-    use({ "NTBBloodbath/doom-one.nvim", opt = true })
-    use({ "sainnhe/everforest", opt = true })
-    use({ "EdenEast/nightfox.nvim", opt = true })
-    use({ "rebelot/kanagawa.nvim", opt = true })
+    use { "lifepillar/vim-gruvbox8", opt = true }
+    use { "navarasu/onedark.nvim", opt = true }
+    use { "sainnhe/edge", opt = true }
+    use { "sainnhe/sonokai", opt = true }
+    use { "sainnhe/gruvbox-material", opt = true }
+    use { "shaunsingh/nord.nvim", opt = true }
+    use { "NTBBloodbath/doom-one.nvim", opt = true }
+    use { "sainnhe/everforest", opt = true }
+    use { "EdenEast/nightfox.nvim", opt = true }
+    use { "rebelot/kanagawa.nvim", opt = true }
 
     -- showing keybindings
     use { -- which key {{{
@@ -99,54 +106,61 @@ require("packer").startup({
       setup = 'require("config.telescope_repo").setup()',
     } -- }}}
 
-    use({
+    use{
       "lukas-reineke/indent-blankline.nvim",
       event = 'VimEnter',
       config = [[require('config.indent-blankline')]]
-    })
+    }
 
-    use({
+    use{
       "nvim-treesitter/nvim-treesitter",
       event = 'BufEnter',
       run = ":TSUpdate",
       config = require('config.treesitter').setup,
-    })
+    }
 
-    use({
+    use{
       'simrat39/symbols-outline.nvim',
       cmd = "SymbolsOutline",
       config = function()
         require("symbols-outline").setup()
       end
-    })
+    }
 
-    use({
+    use{
       "terrortylor/nvim-comment",
       config = function()
         require('nvim_comment').setup()
       end
-    })
+    }
 
-    use ({
+    use {
 	    "windwp/nvim-autopairs",
       config = function()
         require("nvim-autopairs").setup()
       end
-    })
+    }
 
-    use ({
+    use {
       'nvim-lualine/lualine.nvim',
       requires = { 'kyazdani42/nvim-web-devicons', opt = true },
       config = function()
         require('lualine').setup()
       end
-    })
+    }
 
-    use ({
+    use {
       'akinsho/bufferline.nvim',
       tag = "v2.*",
       requires = 'kyazdani42/nvim-web-devicons'
-    })
+    }
+
+    use {
+      'lewis6991/gitsigns.nvim',
+      requires = { 'nvim-lua/plenary.nvim' },
+      after = 'plenary.nvim',
+      config = 'require("config.gitsigns")',
+    }
 
   end,
   config = {
