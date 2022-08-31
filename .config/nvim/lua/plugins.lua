@@ -162,6 +162,11 @@ require("packer").startup({
       config = 'require("config.gitsigns")',
     }
 
+    use {
+      'danymat/neogen',
+      config = 'require("config.neogen")',
+      after = 'nvim-treesitter',
+    }
   end,
   config = {
     max_jobs = 16,
