@@ -20,19 +20,19 @@ local util = require("packer.util")
 require("packer").startup({
   function(use)
     -- it is recommened to put impatient.nvim before any other plugins
-    use{ "lewis6991/impatient.nvim", config = [[require('impatient')]] }
+    use { "lewis6991/impatient.nvim", config = [[require('impatient')]] }
 
-    use{ "wbthomason/packer.nvim", opt = true }
+    use { "wbthomason/packer.nvim", opt = true }
 
-    use{
-        'kyazdani42/nvim-web-devicons',
-        event = 'VimEnter',
+    use {
+      'kyazdani42/nvim-web-devicons',
+      event = 'VimEnter',
     }
 
-    use{'nvim-lua/plenary.nvim', event = "BufRead", }
+    use { 'nvim-lua/plenary.nvim', event = "BufRead", }
 
     -- LSP
-    use{
+    use {
       "VonHeikemen/lsp-zero.nvim",
       requires = {
         -- LSP Support
@@ -107,20 +107,20 @@ require("packer").startup({
       setup = 'require("config.telescope_repo").setup()',
     } -- }}}
 
-    use{
+    use {
       "lukas-reineke/indent-blankline.nvim",
       event = 'VimEnter',
       config = [[require('config.indent-blankline')]]
     }
 
-    use{
+    use {
       "nvim-treesitter/nvim-treesitter",
       event = 'BufEnter',
       run = ":TSUpdate",
       config = require('config.treesitter').setup,
     }
 
-    use{
+    use {
       'simrat39/symbols-outline.nvim',
       cmd = "SymbolsOutline",
       config = function()
@@ -128,7 +128,7 @@ require("packer").startup({
       end
     }
 
-    use{
+    use {
       "terrortylor/nvim-comment",
       config = function()
         require('nvim_comment').setup()
@@ -136,7 +136,7 @@ require("packer").startup({
     }
 
     use {
-	    "windwp/nvim-autopairs",
+      "windwp/nvim-autopairs",
       config = function()
         require("nvim-autopairs").setup()
       end
@@ -170,11 +170,23 @@ require("packer").startup({
     }
 
     use {
-        "folke/trouble.nvim",
-        requires = { "kyazdani42/nvim-web-devicons", opt = true },
-        config = 'require("config.trouble")',
-        after = 'nvim-web-devicons',
+      "folke/trouble.nvim",
+      requires = { "kyazdani42/nvim-web-devicons", opt = true },
+      config = 'require("config.trouble")',
+      after = 'nvim-web-devicons',
     }
+
+    use {
+      "renerocksai/telekasten.nvim",
+      requires = {
+        { "renerocksai/calendar-vim" },
+        { "nvim-telescope/telescope-symbols.nvim" },
+        { "nvim-telescope/telescope-media-files.nvim" },
+        { "iamcco/markdown-preview.nvim" },
+      },
+      config = 'require("config.telekasten")',
+    }
+
   end,
   config = {
     max_jobs = 16,
