@@ -41,7 +41,7 @@ require("packer").startup({
         { "williamboman/mason-lspconfig.nvim" },
 
         -- Autocompletion
-        { "hrsh7th/nvim-cmp" },
+        { "hrsh7th/nvim-cmp", config = 'require("config.cmp")' },
         { "hrsh7th/cmp-buffer" },
         { "hrsh7th/cmp-path" },
         { "saadparwaiz1/cmp_luasnip" },
@@ -49,11 +49,12 @@ require("packer").startup({
         { "hrsh7th/cmp-nvim-lua" },
 
         -- Snippets
-        { "L3MON4D3/LuaSnip" },
+        { "L3MON4D3/LuaSnip", config = 'require("config.snippets")'},
         { "rafamadriz/friendly-snippets" },
       },
       config = 'require("config.lsp-zero")',
     }
+
     -- The missing auto-completion for cmdline!
     use({ "gelguy/wilder.nvim", opt = true, setup = [[vim.cmd('packadd wilder.nvim')]] })
 
