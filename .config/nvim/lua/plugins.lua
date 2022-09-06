@@ -95,6 +95,9 @@ require("packer").startup({
           opt = true,
           -- config = 'require("plugin_settings.telescope_file_browser").config()',
         },
+        {
+          'nvim-telescope/telescope-fzf-native.nvim', run = 'cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release && cmake --install build --prefix build'
+        }
       },
       cmd = 'Telescope',
       module = 'telescope',
