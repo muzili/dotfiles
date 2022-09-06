@@ -184,6 +184,7 @@ require("packer").startup({
         { "nvim-telescope/telescope-media-files.nvim" },
         { "iamcco/markdown-preview.nvim" },
       },
+      after = 'telescope.nvim',
       config = 'require("config.telekasten")',
     }
 
