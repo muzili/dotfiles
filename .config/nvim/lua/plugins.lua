@@ -47,6 +47,7 @@ require("packer").startup({
         { "saadparwaiz1/cmp_luasnip" },
         { "hrsh7th/cmp-nvim-lsp" },
         { "hrsh7th/cmp-nvim-lua" },
+        { 'tzachar/cmp-tabnine', run='./install.sh', requires = 'hrsh7th/nvim-cmp'},
 
         -- Snippets
         { "L3MON4D3/LuaSnip", config = 'require("config.snippets")'},
@@ -81,6 +82,7 @@ require("packer").startup({
 
     use { -- telescope {{{
       'nvim-telescope/telescope.nvim',
+      tag = '0.1.0',
       wants = { 'popup.nvim', 'plenary.nvim' },
       requires = {
         { 'nvim-lua/popup.nvim' },
