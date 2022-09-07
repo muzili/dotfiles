@@ -31,6 +31,7 @@ require("packer").startup({
 
     use { 'nvim-lua/plenary.nvim', event = "BufRead", }
 
+
     -- LSP
     use {
       "VonHeikemen/lsp-zero.nvim",
@@ -47,17 +48,39 @@ require("packer").startup({
         { "saadparwaiz1/cmp_luasnip" },
         { "hrsh7th/cmp-nvim-lsp" },
         { "hrsh7th/cmp-nvim-lua" },
-        { 'tzachar/cmp-tabnine', run='./install.sh', requires = 'hrsh7th/nvim-cmp'},
+        { 'tzachar/cmp-tabnine', run = './install.sh', requires = 'hrsh7th/nvim-cmp' },
+        { "zbirenbaum/copilot-cmp", module = "copilot_cmp", requires = "zbirenbaum/copilot.lua" },
 
         -- Snippets
-        { "L3MON4D3/LuaSnip", config = 'require("config.snippets")'},
+        { "L3MON4D3/LuaSnip", config = 'require("config.snippets")' },
         { "rafamadriz/friendly-snippets" },
       },
       config = 'require("config.lsp-zero")',
     }
 
+    -- github copilot
+    use {'github/copilot.vim'}
+    -- then:
+    use {
+      "zbirenbaum/copilot.lua",
+      event = { "VimEnter" },
+      config = function()
+        vim.defer_fn(function()
+          require("copilot").setup({
+            cmp = {
+              enabled = true,
+              method = "getCompletionsCycle",
+            },
+            panel = {
+              enabled = true,
+            }
+          })
+        end, 100)
+      end,
+    }
+
     -- The missing auto-completion for cmdline!
-    use({ "gelguy/wilder.nvim", opt = true, setup = [[vim.cmd('packadd wilder.nvim')]] })
+    use { "gelguy/wilder.nvim", opt = true, setup = [[vim.cmd('packadd wilder.nvim')]] }
 
     -- A list of colorscheme plugin you may want to try. Find what suits you.
     use { "lifepillar/vim-gruvbox8", opt = true }
@@ -99,7 +122,8 @@ require("packer").startup({
           -- config = 'require("plugin_settings.telescope_file_browser").config()',
         },
         {
-          'nvim-telescope/telescope-fzf-native.nvim', run = 'cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release && cmake --install build --prefix build'
+          'nvim-telescope/telescope-fzf-native.nvim',
+          run = 'cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release && cmake --install build --prefix build'
         }
       },
       cmd = 'Telescope',
