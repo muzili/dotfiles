@@ -59,7 +59,7 @@ require("packer").startup({
     }
 
     -- github copilot
-    use {'github/copilot.vim'}
+    -- use {'github/copilot.vim'}
     -- then:
     use {
       "zbirenbaum/copilot.lua",
