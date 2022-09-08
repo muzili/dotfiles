@@ -162,15 +162,3 @@ tabnine:setup({
   run_on_every_keystroke = true,
   snippet_placeholder = "..",
 })
-
--- Recommended
-require("copilot").setup {
-  cmp = {
-    enabled = true,
-    method = "getCompletionsCycling",
-  },
-  panel = {
-    enabled = false,
-  }
-}
-
