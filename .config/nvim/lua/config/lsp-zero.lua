@@ -13,8 +13,10 @@ lsp.setup_nvim_cmp({
   })
 })
 
+-- local clangd_exe = vim.fn.expand("~/.local/share/nvim/mason/bin/clangd")
+local clangd_exe = vim.fn.expand("/usr/bin/clangd-12")
 lsp.configure('clangd', {
-  cmd = { "clangd",
+  cmd = { clangd_exe,
     "--background-index",
     "--suggest-missing-includes",
     "--clang-tidy",
