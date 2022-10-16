@@ -107,8 +107,100 @@ end
 
 return {
     -- templates
+    s({ trig='elegantbook', name='elegant book', dscr='tex template for ctexbook'},
+    fmt([[
+      \documentclass[lang=cn,10pt,newtx]{elegantbook}
+
+      \title{<>}
+      \subtitle{<>}
+
+      \author{Zhiguang Li}
+      \institute{Viitrix}
+      \date{Aug 15, 2022}
+      \version{4.4}
+      %\bioinfo{自定义}{信息}
+
+      \extrainfo{要让一群人团结起来，需要的不是英明的领导，而是共同的敌人。—— 比企谷八幡}
+
+      \setcounter{tocdepth}{3}
+
+      %\logo{logo-blue.png}
+      %\cover{cover.jpg}
+
+      % 本文档命令
+      \usepackage{array}
+      \newcommand{\ccr}[1]{\makecell{{\color{#1}\rule{1cm}{1cm}}}}
+
+      % 修改标题页的橙色带
+      \definecolor{customcolor}{RGB}{32,178,170}
+      \colorlet{coverlinecolor}{customcolor}
+      \usepackage{cprotect}
+
+      % \addbibresource[location=local]{reference.bib} % 参考文献，不要删除
+
+      \begin{document}
+
+      \maketitle
+      \frontmatter
+
+      \tableofcontents
+
+      \mainmatter
+
+      \chapter{<>}
+
+      \section{<>}
+
+    \end{document}
+    ]],
+    { i(1, "Title"), i(2, "Subtitle"), i(3, "Chapter"), i(4, "Section")},
+    { delimiters='<>' }
+    )),
+    s({ trig='elegantnote', name='elegant note', dscr='tex template for ctexnote'},
+    fmt([[
+    %!TEX program = xelatex
+    \documentclass[cn,hazy,blue,14pt,screen]{elegantnote}
+    \title{<>}
+
+    \author{Zhiguang Li}
+    \institute{Viitrix}
+
+    \version{2.40}
+    \date{\zhtoday}
+
+    \usepackage{array}
+
+    % graphics path
+    \graphicspath{
+      {./figure/}
+      {./figures/}
+      {./image/}
+      {./images/}
+      {./graphics/}
+      {./graphic/}
+      {./pictures/}
+      {./picture/}
+    }
+
+    \begin{document}
+
+    \maketitle
+
+    \centerline{
+      \includegraphics[width=0.2\textwidth]{logo-blue.png}
+    }
+
+    \tableofcontents
+
+    \section{<>}
+
+    \end{document}
+    ]],
+    { i(1, "Title"), i(2, "Section")},
+    { delimiters='<>' }
+    )),
     s({ trig='texdoc', name='new tex doc', dscr='Create a general new tex document'},
-    fmt([[ 
+    fmt([[
     \documentclass{article}
     \usepackage{iftex}
     \ifluatex
