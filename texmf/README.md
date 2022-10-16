@@ -6,7 +6,7 @@ sudo dnf install texlive-cnltx texlive-newtx texlive-esint texlive-cprotect
 ```
 ## For Ubuntu
 ```
-sudo apt install texlive-cnltx texlive-newtx texlive-esint texlive-cprotect
+sudo apt install texlive-fonts-recommended texlive-latex-recommended texlive-pictures texlive-latex-extra
 ```
 # Reference
 
