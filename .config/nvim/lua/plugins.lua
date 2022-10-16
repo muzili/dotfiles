@@ -218,6 +218,10 @@ require("packer").startup({
       config = 'require("config.telekasten")',
     }
 
+    use {
+      "lervag/vimtex"
+    }
+
   end,
   config = {
     max_jobs = 16,

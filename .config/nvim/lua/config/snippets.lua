@@ -1,4 +1,6 @@
 local ls = require "luasnip"
+require("luasnip.loaders.from_lua").load({paths = "~/.config/nvim/luasnip/"})
+
 -- some shorthands...
 local snip = ls.snippet
 local node = ls.snippet_node

@@ -186,19 +186,6 @@ nmap s <Nop>
 omap s <Nop>
 
 """"""""""""""""""""""""""""vimtex settings"""""""""""""""""""""""""""""
-" Hacks for inverse serach to work semi-automatically,
-" see https://jdhao.github.io/2021/02/20/inverse_search_setup_neovim_vimtex/.
-function! s:write_server_name() abort
-  let nvim_server_file = (has('win32') ? $TEMP : '/tmp') . '/vimtexserver.txt'
-  call writefile([v:servername], nvim_server_file)
-endfunction
-
-augroup vimtex_common
-  autocmd!
-  autocmd FileType tex call s:write_server_name()
-  autocmd FileType tex nmap <buffer> <F9> <plug>(vimtex-compile)
-augroup END
-
 set spelllang=en,cjk
 set spell
 
@@ -230,21 +217,6 @@ let g:vimtex_compiler_latexmk = {
 
 let g:vimtex_quickfix_open_on_warning = 0
 let g:vimtex_quickfix_mode = 2
-if has('nvim')
-    let g:vimtex_compiler_progname = 'nvr'
-endif
-
-" TOC settings
-let g:vimtex_toc_config = {
-      \ 'name' : 'TOC',
-      \ 'layers' : ['content', 'todo', 'include'],
-      \ 'resize' : 1,
-      \ 'split_width' : 30,
-      \ 'todo_sorted' : 0,
-      \ 'show_help' : 1,
-      \ 'show_numbers' : 1,
-      \ 'mode' : 2,
-      \ }
 
 " Viewer settings for different platforms
 if g:is_linux
