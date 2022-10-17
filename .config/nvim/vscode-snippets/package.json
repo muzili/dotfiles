@@ -1,0 +1,11 @@
+{
+  "name": "vscode-snippets",
+  "contributes": {
+    "snippets": [
+      {
+        "language": "plantuml",
+        "path": "./snippets/c4.code-snippets"
+      }
+    ]
+  }
+}

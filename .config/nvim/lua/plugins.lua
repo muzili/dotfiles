@@ -233,6 +233,10 @@ require("packer").startup({
       ft = 'tex'
     }
 
+    use {'tyru/open-browser.vim', ft = {'plantuml'}, event = 'BufEnter'}
+    use {'aklt/plantuml-syntax'}
+    use {'weirongxu/plantuml-previewer.vim', ft = {'plantuml'}, event = 'BufEnter'}
+
   end,
   config = {
     max_jobs = 16,
