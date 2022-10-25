@@ -41,7 +41,8 @@ lsp.on_attach(function(client, bufnr)
   local noremap = {buffer = bufnr, remap = false}
   local bind = vim.keymap.set
 
-  bind('n', '<leader>r', '<cmd>lua vim.lsp.buf.rename()<cr>', noremap)
+  bind('n', '<space>cr', '<cmd>lua vim.lsp.buf.rename()<cr>', noremap)
+  bind("n", "<space>ca", "<cmd>lua vim.lsp.buf.code_action()<CR>", opts)
   -- more code  ...
 end)
 

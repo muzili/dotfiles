@@ -44,49 +44,6 @@ if g:is_win || g:is_mac
   xmap ob <Plug>(openbrowser-smart-search)
 endif
 
-""""""""""""""""""""""""""" vista settings """"""""""""""""""""""""""""""""""
-let g:vista#renderer#icons = {
-      \ 'member': '',
-      \ }
-
-" Do not echo message on command line
-let g:vista_echo_cursor = 0
-" Stay in current window when vista window is opened
-let g:vista_stay_on_open = 0
-
-nnoremap <silent> <Space>t :<C-U>Vista!!<CR>
-
-""""""""""""""""""""""""vim-mundo settings"""""""""""""""""""""""
-let g:mundo_verbose_graph = 0
-let g:mundo_width = 80
-
-nnoremap <silent> <Space>u :MundoToggle<CR>
-
-""""""""""""""""""""""""""""vim-yoink settings"""""""""""""""""""""""""
-if g:is_win || g:is_mac
-  " ctrl-n and ctrl-p will not work if you add the TextChanged event to vim-auto-save events.
-  " nmap <c-n> <plug>(YoinkPostPasteSwapBack)
-  " nmap <c-p> <plug>(YoinkPostPasteSwapForward)
-
-  " The following p/P mappings are also needed for ctrl-n and ctrl-p to work
-  " nmap p <plug>(YoinkPaste_p)
-  " nmap P <plug>(YoinkPaste_P)
-
-  " Cycle the yank stack with the following mappings
-  nmap [y <plug>(YoinkRotateBack)
-  nmap ]y <plug>(YoinkRotateForward)
-
-  " Do not change the cursor position
-  nmap y <plug>(YoinkYankPreserveCursorPosition)
-  xmap y <plug>(YoinkYankPreserveCursorPosition)
-
-  " Move cursor to end of paste after multiline paste
-  let g:yoinkMoveCursorToEndOfPaste = 0
-
-  " Record yanks in system clipboard
-  let g:yoinkSyncSystemClipboardOnFocus = 1
-endif
-
 """"""""""""""""""""""""""""better-escape.vim settings"""""""""""""""""""""""""
 let g:better_escape_interval = 200
 " use jj to escape insert mode.

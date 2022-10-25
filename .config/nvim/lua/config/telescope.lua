@@ -5,6 +5,8 @@ M.setup = function() -- {{{
   vim.api.nvim_set_keymap('n', '<C-p>', '<Cmd>Telescope find_files find_command=fd,--hidden,--type,f,--exclude,.git <CR>'
     , opts)
   vim.api.nvim_set_keymap('n', '<C-f>', '<Cmd>Telescope live_grep<CR>', opts)
+  vim.api.nvim_set_keymap('n', '<space>ck', '<Cmd>Telescope keymaps<CR>', opts)
+  vim.api.nvim_set_keymap('n', '<space>cq', '<Cmd>Telescope quickfix<CR>', opts)
 
   local keymap = {
     f = {
@@ -25,7 +27,6 @@ M.setup = function() -- {{{
         c = { '<Cmd>Telescope commands<CR>', 'commands' },
         h = { '<Cmd>Telescope command_history<CR>', 'history' },
       },
-      q = { '<Cmd>Telescope quickfix<CR>', 'quickfix' },
       g = {
         name = '+git',
         g = { '<Cmd>Telescope git_commits<CR>', 'commits' },
