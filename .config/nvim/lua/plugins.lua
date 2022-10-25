@@ -206,25 +206,23 @@ require("packer").startup({
       after = 'nvim-web-devicons',
     }
 
+    -- install without yarn or npm
     use {
-      "renerocksai/telekasten.nvim",
-      requires = {
-        { "renerocksai/calendar-vim" },
-        { "nvim-telescope/telescope-symbols.nvim" },
-        { "nvim-telescope/telescope-media-files.nvim" },
-        { "iamcco/markdown-preview.nvim" },
-      },
-      after = 'telescope.nvim',
-      config = 'require("config.telekasten")',
+      "iamcco/markdown-preview.nvim",
+      run = function() vim.fn["mkdp#util#install"]() end,
+      setup = function()
+        vim.g.mkdp_filetypes = { "markdown" }
+      end,
+      ft = { "markdown" },
     }
 
     use {
       "lervag/vimtex",
       opt = true,
-      config = function ()
+      config = function()
         vim.g.vimtex_view_general_viewer = 'okular'
         vim.g.vimtex_compiler_latexmk_engines = {
-            _ = '-xelatex'
+          _ = '-xelatex'
         }
         vim.g.tex_comment_nospell = 1
         vim.g.vimtex_compiler_progname = 'nvr'
@@ -233,9 +231,9 @@ require("packer").startup({
       ft = 'tex'
     }
 
-    use {'tyru/open-browser.vim', ft = {'plantuml'}, event = 'BufEnter'}
-    use {'aklt/plantuml-syntax'}
-    use {'weirongxu/plantuml-previewer.vim', ft = {'plantuml'}, event = 'BufEnter'}
+    use { 'tyru/open-browser.vim', ft = { 'plantuml' }, event = 'BufEnter' }
+    use { 'aklt/plantuml-syntax' }
+    use { 'weirongxu/plantuml-previewer.vim', ft = { 'plantuml' }, event = 'BufEnter' }
 
   end,
   config = {
