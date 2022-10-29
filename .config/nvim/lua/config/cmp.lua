@@ -41,8 +41,8 @@ cmp.setup {
   confirmation = { default_behaviour = cmp.ConfirmBehavior.Replace },
   sources = {
     { name = "nvim_lsp", priority = 8 },
-    { name = 'copilot', priority = 8 },
     { name = "cmp_tabnine", priority = 8, max_item_count = 3 },
+    { name = 'copilot', priority = 8 },
     { name = "treesitter", priority = 7 },
     { name = "buffer", priority = 7, keyword_length = 5 },
     { name = "nvim_lua", priority = 5 },
