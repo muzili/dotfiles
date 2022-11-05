@@ -18,7 +18,7 @@ export GOPATH=$HOME/code/go
 ## export JAVA_HOME JDK/JRE ##
 export JAVA_HOME=$(dirname $(dirname $(readlink -f /usr/bin/javac)))
 
-export PATH=/usr/local/cuda-11.2/bin:/snap/bin:/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin:${HOME}/bin:${HOME}/.local/bin:${HOME}/.local/node_modules/.bin:${JAVA_HOME}/bin:$HOME/.cargo/bin:$HOME/code/go/bin
+export PATH=/usr/local/cuda-11.2/bin:/snap/bin:/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin:${HOME}/bin:${HOME}/.local/bin:${JAVA_HOME}/bin:$HOME/.cargo/bin:$HOME/code/go/bin:$HOME/.cabal/bin
 #export PATH=/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin:$ANDROID_SDK_ROOT/platform-tools:$ANDROID_SDK_ROOT/tools:$ANDROID_SDK_ROOT/tools/bin:$ANDROID_SDK_ROOT/build-tools/27.0.3:/usr/local/go/bin:${HOME}/bin:${HOME}/.local/bin:${HOME}/.local/node_modules/.bin:${JAVA_HOME}/bin:$HOME/.cargo/bin:$HOME/code/go/bin:/mnt/eng-nfs/external/hisi-linux/x86-arm/Hi3559A_V100R001C02SPC020/aarch64-himix100-linux/bin:/mnt/eng-nfs/external/hisi-linux/x86-arm/Hi3516CV500R001C02SPC020/arm-himix200-linux/bin
 
 
@@ -31,15 +31,12 @@ alias bb='cd ~/data/nvr/nvr && ./build.sh && cd -'
 alias lst='ls -lrt'
 
 # 清华大学
-# export RUSTUP_DIST_SERVER=https://mirrors.tuna.tsinghua.edu.cn/rustup  
+# export RUSTUP_DIST_SERVER=https://mirrors.tuna.tsinghua.edu.cn/rustup
 # 中国科学技术大学
 # export RUSTUP_DIST_SERVER=https://mirrors.ustc.edu.cn/rust-static
-# export RUSTUP_UPDATE_ROOT=https://mirrors.ustc.edu.cn/rust-static/rustup  
+# export RUSTUP_UPDATE_ROOT=https://mirrors.ustc.edu.cn/rust-static/rustup
 # 上海交通大学
 #export RUSTUP_DIST_SERVER=https://mirrors.sjtug.sjtu.edu.cn/rust-static/
 #
 export RUSTUP_DIST_SERVER="https://rsproxy.cn"
 export RUSTUP_UPDATE_ROOT="https://rsproxy.cn/rustup"
-source "$HOME/.cargo/env"
-
-[ -e $HOME/.sfplatformsdk ]  && source  $HOME/.sfplatformsdk
