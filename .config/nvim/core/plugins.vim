@@ -180,7 +180,7 @@ let g:mkdp_filetypes = ['markdown']
 
 " set default theme (dark or light)
 " By default the theme is define according to the preferences of the system
-let g:mkdp_theme = 'dark'
+"let g:mkdp_theme = 'light'
 
 " normal/insert
 nmap <C-s> <Plug>MarkdownPreview
