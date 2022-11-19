@@ -1,3 +1,6 @@
+# How to install zsh
+# sudo apt install zsh-autosuggestions zsh-syntax-highlighting
+
 # Path to your oh-my-zsh installation.
 export ZSH=$HOME/.oh-my-zsh
 
@@ -45,7 +48,7 @@ ZSH_THEME="gentoo"
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(ssh-agent gpg-agent autojump)
+plugins=(ssh-agent gpg-agent zoxide rust)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -173,3 +176,6 @@ export NVM_DIR="$HOME/.nvm"
 export PNPM_HOME="/home/joshua/.local/share/pnpm"
 export PATH="$PNPM_HOME:$PATH"
 # pnpm end
+#
+eval "$(starship init zsh)"
+
