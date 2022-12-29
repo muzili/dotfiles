@@ -42,7 +42,6 @@ cmp.setup {
   sources = {
     { name = "nvim_lsp", priority = 8 },
     { name = "cmp_tabnine", priority = 8, max_item_count = 3 },
-    { name = 'copilot', priority = 8 },
     { name = "treesitter", priority = 7 },
     { name = "buffer", priority = 7, keyword_length = 5 },
     { name = "nvim_lua", priority = 5 },
@@ -53,8 +52,6 @@ cmp.setup {
   sorting = {
     priority_weight = 1.0,
     comparators = {
-      require("copilot_cmp.comparators").prioritize,
-      require("copilot_cmp.comparators").score,
       cmp.config.compare.locality,
       cmp.config.compare.recently_used,
       cmp.config.compare.score,
@@ -115,7 +112,6 @@ cmp.setup {
       item.menu = ({
         buffer = "[Buffer]",
         cmp_tabnine = "[T9]",
-        cmp_copilot = "[Copilot]",
         nvim_lsp = "[LSP]",
         nvim_lua = "[NLUA]",
         treesitter = "[TS]",
@@ -162,8 +158,3 @@ tabnine:setup({
   run_on_every_keystroke = true,
   snippet_placeholder = "..",
 })
-
-vim.g.copilot_no_tab_map = true
-vim.api.nvim_set_keymap("i", "<C-J>", 'copilot#Accept("<CR>")', { silent = true, expr = true })
-vim.api.nvim_set_keymap("i", "<C-H>", 'copilot#Previous()', { silent = true, expr = true })
-vim.api.nvim_set_keymap("i", "<C-K>", 'copilot#Next()', { silent = true, expr = true })
