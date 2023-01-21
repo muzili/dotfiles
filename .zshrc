@@ -137,7 +137,7 @@ export VAGRANT_DEFAULT_PROVIDER=virtualbox
 function remove_caps {
     #http://emacswiki.org/emacs/MovingTheCtrlKey
     #remove the caps lock key to additional control
-    setxkbmap -option ctrl:nocaps
+    #setxkbmap -option ctrl:nocaps
 }
 
 remove_caps
