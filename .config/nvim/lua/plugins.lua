@@ -49,34 +49,12 @@ require("packer").startup({
         { "hrsh7th/cmp-nvim-lsp" },
         { "hrsh7th/cmp-nvim-lua" },
         { 'tzachar/cmp-tabnine', run = './install.sh', requires = 'hrsh7th/nvim-cmp' },
-        { "zbirenbaum/copilot-cmp", module = "copilot_cmp", requires = "zbirenbaum/copilot.lua" },
 
         -- Snippets
         { "L3MON4D3/LuaSnip", config = 'require("config.snippets")' },
         { "rafamadriz/friendly-snippets" },
       },
       config = 'require("config.lsp-zero")',
-    }
-
-    -- github copilot
-    -- use {'github/copilot.vim'}
-    -- then:
-    use {
-      "zbirenbaum/copilot.lua",
-      event = { "VimEnter" },
-      config = function()
-        vim.defer_fn(function()
-          require("copilot").setup({
-            cmp = {
-              enabled = true,
-              method = "getCompletionsCycle",
-            },
-            panel = {
-              enabled = true,
-            }
-          })
-        end, 100)
-      end,
     }
 
     -- The missing auto-completion for cmdline!

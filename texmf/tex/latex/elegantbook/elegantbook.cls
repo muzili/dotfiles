@@ -1231,7 +1231,7 @@
 
 \renewcommand*{\maketitle}{%
 \hypersetup{pageanchor=false}
-\pagenumbering{Alph}
+\pagenumbering{arabic}
 \begin{titlepage}
   \newgeometry{margin = 0in}
   \parindent=0pt
