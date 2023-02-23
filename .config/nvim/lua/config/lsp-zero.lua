@@ -57,7 +57,7 @@ lsp.on_attach(function(client, bufnr)
   bind('n', '<C-k>', '<cmd>lua vim.lsp.buf.signature_help()<CR>', norebind)
   bind('n', 'go', '<cmd>lua vim.lsp.buf.type_definition()<CR>', norebind)
   bind('n', 'gc', '<cmd>lua vim.lsp.buf.references()<CR>', norebind)
-  bind('n', 'gf', '<cmd>lua vim.lsp.buf.formatting()<CR>', norebind)
+  bind('n', 'gf', '<cmd>lua vim.lsp.buf.format({async = true})<CR>', norebind)
   bind('n', 'ga', '<cmd>lua vim.lsp.buf.code_action()<CR>', norebind)
 end)
 

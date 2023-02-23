@@ -192,9 +192,6 @@ function! s:restore_cursor() abort
 endfunction
 
 
-"Format the buffer with space f
-nnoremap <silent> <space>cf <cmd>LspZeroFormat<CR>
-
 " ----- the following are for syntax-coloring [[links]] and ==highlighted text==
 " ----- (see the section about coloring in README.md)
 
