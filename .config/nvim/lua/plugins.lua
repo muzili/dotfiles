@@ -35,6 +35,7 @@ require("packer").startup({
     -- LSP
     use {
       "VonHeikemen/lsp-zero.nvim",
+      branch = 'v1.x',
       requires = {
         -- LSP Support
         { "neovim/nvim-lspconfig" },
@@ -43,10 +44,10 @@ require("packer").startup({
 
         -- Autocompletion
         { "hrsh7th/nvim-cmp", config = 'require("config.cmp")' },
+        { 'hrsh7th/cmp-nvim-lsp'},     -- Required
         { "hrsh7th/cmp-buffer" },
         { "hrsh7th/cmp-path" },
         { "saadparwaiz1/cmp_luasnip" },
-        { "hrsh7th/cmp-nvim-lsp" },
         { "hrsh7th/cmp-nvim-lua" },
         { 'tzachar/cmp-tabnine', run = './install.sh', requires = 'hrsh7th/nvim-cmp' },
 
