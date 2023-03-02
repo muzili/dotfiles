@@ -62,6 +62,10 @@ require("packer").startup({
             vim.g.codeium_enabled = true
           end,
         },
+
+        -- null-ls
+        { "jose-elias-alvarez/null-ls.nvim" },
+        { "jay-babu/mason-null-ls.nvim" },
       },
       config = 'require("config.lsp-zero")',
     }

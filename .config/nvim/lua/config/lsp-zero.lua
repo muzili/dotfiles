@@ -41,6 +41,49 @@ lsp.configure('clangd', {
   },
 })
 
+-- null-ls setup
+local null_ls = require('null-ls')
+local mason_null_ls = require('mason-null-ls')
+
+-- See mason-null-ls.nvim's documentation for more details:
+-- https://github.com/jay-babu/mason-null-ls.nvim#setup
+require('mason-null-ls').setup({
+  ensure_installed = {
+      "stylua",
+      "black",
+      "clang_format",
+      "docker-compose-language-service",
+      "jsonlint",
+      "markdownlint",
+      "vale",
+      "yamlfmt",
+      "yamllint",
+      "cmake_format",
+  },
+  automatic_installation = false, -- You can still set this to `true`
+  automatic_setup = true,
+})
+
+mason_null_ls.setup_handlers({
+  function(source_name, methods)
+      require("mason-null-ls.automatic_setup")(source_name, methods)
+  end,
+  stylua = function(source_name, methods)
+      null_ls.register(null_ls.builtins.formatting.stylua)
+  end,
+  clang_format = function(source_name, methods)
+      null_ls.register(null_ls.builtins.formatting.clang_format)
+  end,
+  cmake_format = function(source_name, methods)
+      null_ls.register(null_ls.builtins.formatting.cmake_format)
+  end,
+  black = function()
+    null_ls.register(null_ls.builtins.formatting.black)
+  end,
+})
+
+null_ls.setup()
+
 lsp.on_attach(function(client, bufnr)
   local noremap = {buffer = bufnr, remap = false}
   local bind = vim.keymap.set
