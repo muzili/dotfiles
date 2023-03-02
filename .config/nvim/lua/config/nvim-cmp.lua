@@ -31,6 +31,7 @@ cmp.setup({
   },
   sources = {
     { name = 'nvim_lsp' }, -- For nvim-lsp
+    { name = 'codeium' }, -- For codeium user.
     { name = 'ultisnips' }, -- For ultisnips user.
     { name = 'nvim_lua' }, -- for nvim lua function
     { name = 'path' }, -- for path completion
@@ -51,6 +52,7 @@ cmp.setup({
       mode = "symbol_text",
       menu = ({
         nvim_lsp = "[LSP]",
+        codeium = "[Codeium]",
         ultisnips = "[US]",
         nvim_lua = "[Lua]",
         path = "[Path]",

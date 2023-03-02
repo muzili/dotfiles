@@ -214,6 +214,31 @@ require("packer").startup({
     use { 'aklt/plantuml-syntax' }
     use { 'weirongxu/plantuml-previewer.vim', ft = { 'plantuml' }, event = 'BufEnter' }
 
+    use {
+      'Exafunction/codeium.vim',
+      config = function ()
+        vim.g.codeium_disable_bindings = 1  -- disable codeium bindings
+        vim.g.codeium_no_map_tab = 1
+
+        -- Change '<C-g>' here to any keycode you like.
+        vim.keymap.set('i', '<C-g>', function () return vim.fn['codeium#Accept']() end, { expr = true })
+        vim.keymap.set('i', '<c-;>', function() return vim.fn['codeium#CycleCompletions'](1) end, { expr = true })
+        vim.keymap.set('i', '<c-,>', function() return vim.fn['codeium#CycleCompletions'](-1) end, { expr = true })
+        vim.keymap.set('i', '<c-x>', function() return vim.fn['codeium#Clear']() end, { expr = true })
+      end
+    }
+    -- use { -- unofficial plugin for codeium with cmp
+    -- "jcdickinson/codeium.nvim",
+    -- requires = {
+    --     "nvim-lua/plenary.nvim",
+    --     "MunifTanjim/nui.nvim",
+    --     "hrsh7th/nvim-cmp",
+    -- },
+    -- config = function()
+    --     require("codeium").setup({
+    --     })
+    -- end
+    -- }
   end,
   config = {
     max_jobs = 16,
