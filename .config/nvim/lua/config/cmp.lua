@@ -61,6 +61,29 @@ cmp.setup {
   },
 
   mapping = {
+    ["<C-l>"] = cmp.mapping(function(fallback)
+          local luasnip = require "luasnip"
+          if luasnip.expandable() then
+            luasnip.expand()
+          else
+            local codeium_accept_key = vim.fn["codeium#Accept"]()
+            if codeium_accept_key ~= "" then
+              vim.api.nvim_feedkeys(codeium_accept_key, "i", false)
+            elseif cmp.visible() then
+              cmp.confirm {
+                select = true,
+                behavior = cmp.ConfirmBehavior.Replace,
+              }
+            elseif luasnip.jumpable(1) then
+              luasnip.jump(1)
+            else
+              fallback()
+            end
+          end
+        end, {
+          "i",
+          "s",
+        }),
     ["<CR>"] = cmp.mapping.confirm { select = false },
     ["<C-d>"] = cmp.mapping.scroll_docs(-4),
     ["<C-f>"] = cmp.mapping.scroll_docs(4),
