@@ -87,12 +87,11 @@ alias cp='cp -i'
 alias mv='mv -i'
 alias mkdir='mkdir -p'
 alias h='history'
+alias cd='z'
 alias ..='cd ..'
 alias cd..='cd ..'
 alias path='echo -e ${PATH//:/\\n}'
 alias libpath='echo -e ${LD_LIBRARY_PATH//:/\\n}'
-alias print='/usr/bin/lp -o nobanner -d $LPDEST'
-alias pjet='enscript -h -G -fCourier9 -d $LPDEST'
 alias du='du -kh'       # Makes a more readable output.
 alias df='df -kTh'
 alias ll="ls -l --group-directories-first"
@@ -179,4 +178,3 @@ export PATH="$PNPM_HOME:$PATH"
 # pnpm end
 #
 eval "$(starship init zsh)"
-
