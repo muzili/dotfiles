@@ -48,7 +48,7 @@ ZSH_THEME="gentoo"
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(ssh-agent gpg-agent zoxide rust)
+plugins=(ssh-agent gpg-agent zoxide rust docker docker-compose)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -142,6 +142,26 @@ function remove_caps {
 
 remove_caps
 
+urlencode() {
+  LC_ALL=C awk -- '
+    BEGIN {
+      for (i = 1; i <= 255; i++) hex[sprintf("%c", i)] = sprintf("%%%02X", i)
+    }
+    function urlencode(s,  c,i,r,l) {
+      l = length(s)
+      for (i = 1; i <= l; i++) {
+        c = substr(s, i, 1)
+        r = r "" (c ~ /^[-._~0-9a-zA-Z]$/ ? c : hex[c])
+      }
+      return r
+    }
+    BEGIN {
+      for (i = 1; i < ARGC; i++)
+        print urlencode(ARGV[i])
+    }' "$@"
+}
+
+
 #[ -e /home/joshua/.acme.sh/acme.sh.env ] && . "/home/joshua/.acme.sh/acme.sh.env"
 
 # add auto-completion directory to zsh's fpath
@@ -165,9 +185,6 @@ else
     fi
 fi
 unset __conda_setup
-# <<< conda initialize <<<
-[ -e /data/miniconda39_x64/envs/python37 ] && conda activate python37
-[ -e /data/miniconda3/envs/python310 ] && conda activate python310
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
