@@ -47,6 +47,7 @@ cmp.setup {
     { name = "nvim_lua", priority = 5 },
     { name = "luasnip", priority = 5 },
     { name = "path", priority = 4 },
+    { name = "codeium", priority = 8, max_item_count = 3 },
   },
 
   sorting = {
@@ -132,6 +133,9 @@ cmp.setup {
           item.kind = "   (" .. entry.completion_item.data.detail .. ")"
         end
       end
+      if entry.source.name == "cmp_tabnine" then
+        item.kind = ""
+      end
       item.menu = ({
         buffer = "[Buffer]",
         cmp_tabnine = "[T9]",
@@ -140,6 +144,7 @@ cmp.setup {
         treesitter = "[TS]",
         path = "[Path]",
         luasnip = "[Snippet]",
+        codeium = "[Codeium]",
       })[entry.source.name]
       return item
     end,

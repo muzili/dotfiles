@@ -29,8 +29,8 @@ require("packer").startup({
       event = 'VimEnter',
     }
 
-    use { 'nvim-lua/plenary.nvim', event = "BufRead", }
 
+    use { 'nvim-lua/plenary.nvim', event = "BufRead", }
 
     -- LSP
     use {
@@ -56,18 +56,38 @@ require("packer").startup({
         { "rafamadriz/friendly-snippets" },
 
         -- codeium
-        { "Exafunction/codeium.vim",
-          config = function()
-            vim.keymap.set("i", "<C-J>", "codeium#Accept()", { silent = true, expr = true, remap = true })
-            vim.g.codeium_enabled = true
-          end,
-        },
-
+        -- { "Exafunction/codeium.vim",
+        --   config = function()
+        --     -- vim.keymap.set("i", "<C-J>", "codeium#Accept()", { silent = true, expr = true, remap = true })
+        --     vim.keymap.set('i', '<C-g>', function () return vim.fn['codeium#Accept']() end, { expr = true })
+        --     vim.keymap.set('i', '<c-;>', function() return vim.fn['codeium#CycleCompletions'](1) end, { expr = true })
+        --     vim.keymap.set('i', '<c-,>', function() return vim.fn['codeium#CycleCompletions'](-1) end, { expr = true })
+        --     vim.keymap.set('i', '<c-x>', function() return vim.fn['codeium#Clear']() end, { expr = true })
+        --     vim.g.codeium_enabled = true
+        --   end,
+        -- },
+        --
         -- null-ls
         { "jose-elias-alvarez/null-ls.nvim" },
         { "jay-babu/mason-null-ls.nvim" },
+
+        -- jdtls
+        { "mfussenegger/nvim-jdtls" },
       },
       config = 'require("config.lsp-zero")',
+    }
+
+    use {
+    	"Exafunction/codeium.nvim",
+    	requires = {
+           "nvim-lua/plenary.nvim",
+           "hrsh7th/nvim-cmp",
+        },
+        after = {'plenary.nvim', 'nvim-cmp'},
+        config = function()
+          require("codeium").setup({
+          })
+        end
     }
 
     -- The missing auto-completion for cmdline!

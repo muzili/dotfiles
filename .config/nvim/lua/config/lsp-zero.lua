@@ -28,8 +28,8 @@ lsp.configure('clangd', {
     "--header-insertion-decorators",
     "--completion-style=bundled",
     "--query-driver=/data/toolchains/arm-asr7200sdk-linux-gnueabi/usr/bin/arm-asr7200-linux-gnueabi/arm-asr7200-linux-gnueabi-g*",
-    "--query-driver=/opt/gcc-linaro-6.2.1-2016.11-x86_64_aarch64-linux-gnu/bin/aarch64-linux-gnu-g*",
-    "--query-driver=/opt/arm-histbv320-linux/bin/arm-histbv320-linux-g*",
+    "--query-driver=/data/toolchains/gcc-linaro-6.2.1-2016.11-x86_64_aarch64-linux-gnu/bin/aarch64-linux-gnu-g*",
+    "--query-driver=/data/toolchains/arm-histbv320-linux/bin/arm-histbv320-linux-g*",
     "--query-driver=/usr/bin/g*",
     "--query-driver=/usr/bin/clang*",
     "--pch-storage=memory",
@@ -51,39 +51,32 @@ require('mason-null-ls').setup({
   ensure_installed = {
       "stylua",
       "black",
-      "clang_format",
       "docker-compose-language-service",
       "jsonlint",
       "markdownlint",
-      "vale",
       "yamlfmt",
       "yamllint",
       "cmake_format",
   },
   automatic_installation = false, -- You can still set this to `true`
-  automatic_setup = true,
+  automatic_setup = false,
 })
 
-mason_null_ls.setup_handlers({
-  function(source_name, methods)
-      require("mason-null-ls.automatic_setup")(source_name, methods)
-  end,
-  stylua = function(source_name, methods)
-      null_ls.register(null_ls.builtins.formatting.stylua)
-  end,
-  clang_format = function(source_name, methods)
-      null_ls.register(null_ls.builtins.formatting.clang_format)
-  end,
-  cmake_format = function(source_name, methods)
-      null_ls.register(null_ls.builtins.formatting.cmake_format)
-  end,
-  black = function()
-    null_ls.register(null_ls.builtins.formatting.black)
-  end,
-})
-
-null_ls.setup()
-
+-- mason_null_ls.setup_handlers({
+--   function(source_name, methods)
+--       require("mason-null-ls.automatic_setup")(source_name, methods)
+--   end,
+--   stylua = function(source_name, methods)
+--       null_ls.register(null_ls.builtins.formatting.stylua)
+--   end,
+--   cmake_format = function(source_name, methods)
+--       null_ls.register(null_ls.builtins.formatting.cmake_format)
+--   end,
+--   black = function()
+--     null_ls.register(null_ls.builtins.formatting.black)
+--   end,
+-- })
+--
 lsp.on_attach(function(client, bufnr)
   local noremap = {buffer = bufnr, remap = false}
   local bind = vim.keymap.set
@@ -102,6 +95,7 @@ lsp.on_attach(function(client, bufnr)
   bind('n', 'gc', '<cmd>lua vim.lsp.buf.references()<CR>', norebind)
   bind('n', 'gf', '<cmd>lua vim.lsp.buf.format({async = true})<CR>', norebind)
   bind('n', 'ga', '<cmd>lua vim.lsp.buf.code_action()<CR>', norebind)
+
 end)
 
 lsp.set_preferences({
@@ -111,6 +105,7 @@ lsp.set_preferences({
 
 
 lsp.nvim_workspace()
+lsp.skip_server_setup({'jdtls'})
 lsp.setup()
 
 
