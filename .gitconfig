@@ -83,4 +83,8 @@
 [commit]
 	template = /home/joshua/.gitmessage
 [url "git@github.com:"]
-	insteadOf = https://github.com/
+    insteadOf = https://github.com/
+[url "git@hf.co:"]
+    insteadOf = https://huggingface.co/
+[url "git@hf.co:"]
+	insteadOf = https://hf.co/
