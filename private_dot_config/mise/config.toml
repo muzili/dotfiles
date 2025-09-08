@@ -1,0 +1,34 @@
+[tools]
+bun = "latest"
+go = "1.21"
+node = "20.19.3"
+"npm:prettier" = "latest"
+python = "3.9.21"
+zig = "latest"
+uv = "latest"
+cmake = "latest"
+tmux = "latest"
+neovim = "latest"
+fd = "latest"
+ripgrep = "latest"
+fzf = "latest"
+yazi = "latest"
+yarn = "latest"
+upx = "latest"
+mdbook = "latest"
+ninja = "1.12.1"
+rust = "latest"
+starship = "1.22.1"
+clang-format = "latest"
+zoxide = "latest"
+lazygit = "latest"
+mold = "latest"
+tree-sitter = "latest"
+eza = "latest"
+
+[settings]
+experimental = true
+idiomatic_version_file_enable_tools = ["rust"]
+
+[settings.python]
+uv_venv_auto = true
