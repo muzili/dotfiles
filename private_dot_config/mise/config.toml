@@ -30,5 +30,30 @@ eza = "latest"
 experimental = true
 idiomatic_version_file_enable_tools = ["rust"]
 
+[settings]
+# Simple hostname replacement
+url_replacements = { 
+  "github.com" = "xiu.lzg.cc/gh",
+  "gitlab.com" = "xiu.lzg.cc/gl" 
+}
+
+# Regex patterns
+#url_replacements = {
+#  "regex:^http://(.+)" = "https://$1",
+#  "regex:https://github\\.com/([^/]+)/([^/]+)/releases/download/(.+)" = 
+#    "https://hub.corp.com/artifactory/github/$1/$2/$3"
+#}
+
+
 [settings.python]
 uv_venv_auto = true
+
+
+[settings.aqua]
+registry_url = "https://xiu.lzg.cc/gh/aquaproj/aqua-registry"
+
+[settings.node]
+mirror_url = "https://npmmirror.com/mirrors/node/"
+
+[settings.pipx]
+registry_url = "https://xiu.lzg.cc/pypi/{}/json"
