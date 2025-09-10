@@ -31,7 +31,7 @@ experimental = true
 idiomatic_version_file_enable_tools = ["rust"]
 
 # Simple hostname replacement
-url_replacements = {  "github.com" = "xiu.lzg.cc/gh", "gitlab.com" = "xiu.lzg.cc/gl" }
+url_replacements = {  "https://github.com" = "https://xiu.lzg.cc/gh", "https://gitlab.com" = "https://xiu.lzg.cc/gl" }
 
 # Regex patterns
 #url_replacements = {
