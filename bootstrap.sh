@@ -4,7 +4,8 @@ set -e
 mkdir -p "$HOME/.local/bin"
 
 echo "🚀 Installing chezmoi..."
-sh -c "$(curl -fsSL https://git.io/chezmoi)" -- -b "$HOME/.local/bin"
+curl https://xiu.lzg.cc/gh/twpayne/chezmoi/releases/download/v2.65.1/chezmoi-linux-amd64-musl -o $HOME/.local/bin/chezmoi
+chmod +x $HOME/.local/bin/chezmoi
 
 echo "📥 Initializing dotfiles..."
 chezmoi init --apply https://xiu.lzg.cc/gh/muzili/dotfiles.git
