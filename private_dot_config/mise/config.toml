@@ -30,12 +30,8 @@ eza = "latest"
 experimental = true
 idiomatic_version_file_enable_tools = ["rust"]
 
-[settings]
 # Simple hostname replacement
-url_replacements = { 
-  "github.com" = "xiu.lzg.cc/gh",
-  "gitlab.com" = "xiu.lzg.cc/gl" 
-}
+url_replacements = {  "github.com" = "xiu.lzg.cc/gh", "gitlab.com" = "xiu.lzg.cc/gl" }
 
 # Regex patterns
 #url_replacements = {
