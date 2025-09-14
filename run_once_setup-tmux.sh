@@ -15,13 +15,13 @@ if [ ! -d ~/.tmux/plugins/tpm ]; then
 fi
 
 # Step 4: Install plugins ONLY if config includes TPM line
-if grep -q "plugins/tpm/tpm" ~/.tmux.conf ~/.tmux.conf.local 2>/dev/null; then
-    echo "📦 Installing tmux plugins via TPM..."
-    ~/.tmux/plugins/tpm/bin/install_plugins
-else
-    echo "⚠️ TPM not configured in tmux.conf — skipping plugin install."
-    echo "💡 Add this to the END of your .tmux.conf.local:"
-    echo "   run '~/.tmux/plugins/tpm/tpm'"
-fi
-
+# if grep -q "plugins/tpm/tpm" ~/.tmux.conf ~/.tmux.conf.local 2>/dev/null; then
+#     echo "📦 Installing tmux plugins via TPM..."
+#     ~/.tmux/plugins/tpm/bin/install_plugins
+# else
+#     echo "⚠️ TPM not configured in tmux.conf — skipping plugin install."
+#     echo "💡 Add this to the END of your .tmux.conf.local:"
+#     echo "   run '~/.tmux/plugins/tpm/tpm'"
+# fi
+#
 echo "✅ oh-my-tmux setup complete!"
