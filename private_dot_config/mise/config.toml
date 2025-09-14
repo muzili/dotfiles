@@ -2,7 +2,6 @@
 bun = "latest"
 go = "1.21"
 node = "20.19.3"
-"npm:prettier" = "latest"
 python = "3.9.21"
 zig = "latest"
 uv = "latest"
@@ -25,6 +24,7 @@ lazygit = "latest"
 mold = "latest"
 tree-sitter = "latest"
 eza = "latest"
+atuin = "latest"
 
 [settings]
 experimental = true
