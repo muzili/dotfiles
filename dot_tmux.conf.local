@@ -4,6 +4,8 @@
 #         without any warranty.
 #         Copyright 2012— Gregory Pakosz (@gpakosz).
 
+set-environment -g TMUX_PLUGIN_MANAGER_PATH "~/.tmux/plugins"
+
 
 # -- navigation ----------------------------------------------------------------
 
