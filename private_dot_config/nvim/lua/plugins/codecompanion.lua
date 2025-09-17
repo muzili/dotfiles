@@ -257,10 +257,6 @@ return {
     -- 配置 claudecode.nvim 集成
     require("claudecode").setup({
       terminal_cmd = "~/bin/claude",
-      env = {
-        -- 设置 Claude Code 环境变量
-        ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_API_KEY") or os.getenv("ZHIPU_API_KEY") or "",
-      },
     })
     
     -- 设置独立的快捷键，避免与 CodeCompanion 冲突
