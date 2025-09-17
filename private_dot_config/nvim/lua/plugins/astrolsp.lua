@@ -10,9 +10,9 @@ return {
   opts = {
     -- Configuration table of features provided by AstroLSP
     features = {
-      codelens = true, -- enable/disable codelens refresh on start
-      inlay_hints = false, -- enable/disable inlay hints on start
-      semantic_tokens = true, -- enable/disable semantic token highlighting
+      codelens = false, -- 禁用 codelens 以提升性能
+      inlay_hints = false, -- 禁用 inlay hints 以提升性能
+      semantic_tokens = false, -- 禁用语义高亮以提升性能
     },
     -- customize lsp formatting options
     formatting = {

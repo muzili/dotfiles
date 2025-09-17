@@ -23,21 +23,23 @@ if not pcall(require, "lazy") then
   vim.cmd.quit()
 end
 
--- 自动选择 Python host program
-local function detect_python()
-  -- 1. 项目级 uv venv
-  local venv = vim.fn.getcwd() .. "/.venv/bin/python"
-  if vim.fn.executable(venv) == 1 then return venv end
-
-  -- 2. mise 提供的 python
-  local mise_python = vim.fn.system("mise which python"):gsub("\n", "")
-  if vim.fn.executable(mise_python) == 1 then return mise_python end
-
-  -- 3. 系统默认 python
-  return vim.fn.exepath "python3"
-end
-
-vim.g.python3_host_prog = detect_python()
+-- 延迟 Python 检测，避免启动时的系统调用
+vim.defer_fn(function()
+  local function detect_python()
+    -- 1. 项目级 uv venv
+    local venv = vim.fn.getcwd() .. "/.venv/bin/python"
+    if vim.fn.executable(venv) == 1 then return venv end
+    
+    -- 2. mise 提供的 python
+    local mise_python = vim.fn.system("mise which python"):gsub("\n", "")
+    if vim.fn.executable(mise_python) == 1 then return mise_python end
+    
+    -- 3. 系统默认 python
+    return vim.fn.exepath "python3"
+  end
+  
+  vim.g.python3_host_prog = detect_python()
+end, 100)
 
 require "lazy_setup"
 require "polish"
