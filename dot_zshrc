@@ -209,3 +209,6 @@ export BUN_INSTALL="$HOME/.bun"
 export PATH="$BUN_INSTALL/bin:$PATH"
 
 . "$HOME/.atuin/bin/env"
+
+# Load API keys from GPG
+[[ -f "$HOME/.config/shell/api-keys.sh" ]] && source "$HOME/.config/shell/api-keys.sh"

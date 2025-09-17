@@ -1,0 +1,120 @@
+#!/bin/bash
+# Setup script for GPG-encrypted API keys
+
+set -e
+
+echo "🔐 API Keys Setup with GPG Encryption"
+echo "======================================"
+
+# Check if GPG is installed
+if ! command -v gpg >/dev/null 2>&1; then
+    echo "❌ GPG is not installed. Please install it first:"
+    echo "   Ubuntu/Debian: sudo apt install gnupg"
+    echo "   Fedora: sudo dnf install gnupg2"
+    echo "   Arch: sudo pacman -S gnupg"
+    exit 1
+fi
+
+# Check if user has GPG keys
+if ! gpg --list-secret-keys >/dev/null 2>&1; then
+    echo "❌ No GPG secret keys found. Please generate one first:"
+    echo "   gpg --full-generate-key"
+    echo "   Follow the prompts to create your key."
+    exit 1
+fi
+
+# List available GPG keys
+echo "📋 Available GPG keys:"
+gpg --list-secret-keys --keyid-format SHORT | grep -E "(sec|uid)"
+
+echo ""
+read -p "🔑 Enter your GPG key ID (the short ID after sec): " GPG_KEY_ID
+
+if [[ -z "$GPG_KEY_ID" ]]; then
+    echo "❌ GPG key ID cannot be empty"
+    exit 1
+fi
+
+# Update the load-api-keys script with the correct GPG key ID
+LOADER_SCRIPT="$HOME/.local/bin/load-api-keys"
+if [[ -f "$LOADER_SCRIPT" ]]; then
+    sed -i "s/GPG_RECIPIENT=\"your-gpg-key-id\"/GPG_RECIPIENT=\"$GPG_KEY_ID\"/" "$LOADER_SCRIPT"
+    echo "✅ Updated loader script with GPG key ID: $GPG_KEY_ID"
+fi
+
+# Function to prompt for API key
+prompt_for_key() {
+    local key_name="$1"
+    local description="$2"
+    local key_value
+    
+    echo ""
+    read -p "🤖 Enter your $description API key (or press Enter to skip): " key_value
+    if [[ -n "$key_value" ]]; then
+        "$LOADER_SCRIPT" set "$key_name" "$key_value"
+        echo "✅ $description API key encrypted and stored"
+    fi
+}
+
+# Setup API keys
+echo ""
+echo "🔧 Setting up API keys..."
+echo "💡 You can run this script multiple times to add more keys later"
+echo ""
+
+# Show available keys
+"$LOADER_SCRIPT" list
+
+echo ""
+echo "🌟 Popular choices to get started:"
+
+# Most commonly used keys
+prompt_for_key "ZHIPU_API_KEY" "Zhipu GLM (智谱)"
+prompt_for_key "OPENAI_API_KEY" "OpenAI"
+prompt_for_key "ANTHROPIC_API_KEY" "Anthropic Claude"
+prompt_for_key "DEEPSEEK_API_KEY" "DeepSeek"
+prompt_for_key "MOONSHOT_API_KEY" "Moonshot Kimi"
+
+echo ""
+read -p "🔧 Do you want to add more API keys? (y/N): " add_more
+
+if [[ "$add_more" =~ ^[Yy]$ ]]; then
+    echo ""
+    echo "📝 Available keys (enter the exact key name):"
+    "$LOADER_SCRIPT" list
+    echo ""
+    
+    while true; do
+        echo ""
+        read -p "🔑 Enter key name (or press Enter to finish): " key_name
+        if [[ -z "$key_name" ]]; then
+            break
+        fi
+        
+        read -p "🔐 Enter API key value: " key_value
+        if [[ -n "$key_value" ]]; then
+            "$LOADER_SCRIPT" set "$key_name" "$key_value"
+            echo "✅ $key_name encrypted and stored"
+        fi
+    done
+fi
+
+echo ""
+echo "🎉 Setup complete!"
+echo ""
+echo "📝 Next steps:"
+echo "1. Restart your shell or run:"
+echo "   • zsh: source ~/.zshrc"
+echo "   • bash: source ~/.bashrc" 
+echo "   • fish: restart fish shell"
+echo ""
+echo "2. Test by running: echo \$ZHIPU_API_KEY"
+echo ""
+echo "3. To add more keys later, run:"
+echo "   ~/.local/bin/load-api-keys set KEY_NAME api_key_value"
+echo ""
+echo "4. To list all available key names:"
+echo "   ~/.local/bin/load-api-keys list"
+echo ""
+echo "🔒 Your API keys are now encrypted with GPG in a single file and will be"
+echo "   automatically loaded when you start a new shell session."

@@ -1,0 +1,167 @@
+#!/bin/bash
+# GPG-based API key loader for multiple shells
+# Usage: source load-api-keys or eval "$(load-api-keys)"
+
+# Configuration
+API_KEYS_FILE="$HOME/.config/api-keys/keys.env.gpg"
+GPG_RECIPIENT="your-gpg-key-id"  # Replace with your GPG key ID
+
+# All supported API keys
+declare -A API_KEYS=(
+    # 🌍 国际主流大模型平台
+    ["OPENAI_API_KEY"]="OpenAI"
+    ["ANTHROPIC_API_KEY"]="Anthropic Claude"
+    ["GEMINI_API_KEY"]="Google Gemini"
+    ["XAI_API_KEY"]="xAI Grok"
+    ["MISTRAL_API_KEY"]="Mistral AI"
+    ["COHERE_API_KEY"]="Cohere"
+    
+    # 🇨🇳 国内大模型平台
+    ["ZHIPU_API_KEY"]="智谱 GLM"
+    ["DASHSCOPE_API_KEY"]="阿里云百炼"
+    ["DEEPSEEK_API_KEY"]="DeepSeek"
+    ["MODELSCOPE_API_KEY"]="魔搭社区"
+    ["MOONSHOT_API_KEY"]="Moonshot Kimi"
+    ["SPARK_API_KEY"]="讯飞星火"
+    ["MINIMAX_API_KEY"]="MiniMax"
+    ["YI_API_KEY"]="零一万物 Yi"
+    ["BAIDU_API_KEY"]="百度千帆"
+    ["VOLCENGINE_API_KEY"]="火山引擎"
+    
+    # 🔗 聚合网关
+    ["OPENROUTER_API_KEY"]="OpenRouter"
+    ["SILICON_API_KEY"]="SiliconFlow"
+)
+
+# Function to load all API keys from encrypted file
+load_all_keys() {
+    if [[ -f "$API_KEYS_FILE" ]]; then
+        local decrypted_content
+        if decrypted_content=$(gpg --quiet --batch --decrypt "$API_KEYS_FILE" 2>/dev/null); then
+            echo "$decrypted_content"
+        else
+            echo "# Warning: Failed to decrypt $API_KEYS_FILE" >&2
+        fi
+    else
+        echo "# Warning: $API_KEYS_FILE not found" >&2
+    fi
+}
+
+# Function to create/update encrypted keys file
+update_keys_file() {
+    local key_name="$1"
+    local key_value="$2"
+    local temp_file="/tmp/api_keys_$"
+    
+    # Create directory if it doesn't exist
+    mkdir -p "$(dirname "$API_KEYS_FILE")"
+    chmod 700 "$(dirname "$API_KEYS_FILE")"
+    
+    # Load existing keys if file exists
+    if [[ -f "$API_KEYS_FILE" ]]; then
+        gpg --quiet --batch --decrypt "$API_KEYS_FILE" 2>/dev/null > "$temp_file" || touch "$temp_file"
+    else
+        touch "$temp_file"
+    fi
+    
+    # Update or add the key
+    if grep -q "^${key_name}=" "$temp_file"; then
+        sed -i "s/^${key_name}=.*/${key_name}=${key_value}/" "$temp_file"
+    else
+        echo "${key_name}=${key_value}" >> "$temp_file"
+    fi
+    
+    # Encrypt and save
+    gpg --quiet --batch --encrypt --armor --recipient "$GPG_RECIPIENT" < "$temp_file" > "$API_KEYS_FILE"
+    chmod 600 "$API_KEYS_FILE"
+    
+    # Clean up
+    rm -f "$temp_file"
+    
+    echo "# Updated $key_name in encrypted keys file"
+}
+
+# Function to list all available keys
+list_keys() {
+    echo "📋 Available API Keys:"
+    echo "====================="
+    for key in "${!API_KEYS[@]}"; do
+        printf "%-25s - %s\n" "$key" "${API_KEYS[$key]}"
+    done | sort
+}
+
+# Detect shell and output appropriate format
+detect_shell() {
+    if [[ -n "$FISH_VERSION" ]]; then
+        echo "fish"
+    elif [[ -n "$ZSH_VERSION" ]]; then
+        echo "zsh"
+    elif [[ -n "$BASH_VERSION" ]]; then
+        echo "bash"
+    else
+        echo "unknown"
+    fi
+}
+
+# Main function
+main() {
+    local shell_type
+    shell_type=$(detect_shell)
+    
+    case "$1" in
+        "create"|"set")
+            if [[ $# -ne 3 ]]; then
+                echo "Usage: $0 set <KEY_NAME> <api_key>" >&2
+                echo "Available keys:" >&2
+                list_keys >&2
+                exit 1
+            fi
+            local key_name="$2"
+            local key_value="$3"
+            
+            # Validate key name
+            if [[ -z "${API_KEYS[$key_name]}" ]]; then
+                echo "❌ Unknown key: $key_name" >&2
+                echo "Available keys:" >&2
+                list_keys >&2
+                exit 1
+            fi
+            
+            update_keys_file "$key_name" "$key_value"
+            ;;
+        "list")
+            list_keys
+            ;;
+        "load"|"")
+            # Load all available API keys
+            local keys_content
+            keys_content=$(load_all_keys)
+            
+            if [[ -n "$keys_content" ]]; then
+                case "$shell_type" in
+                    "fish")
+                        echo "$keys_content" | grep -E '^[A-Z_]+=.+' | sed 's/^/set -gx /' | sed 's/=/ /'
+                        ;;
+                    "zsh"|"bash")
+                        echo "$keys_content" | grep -E '^[A-Z_]+=.+' | sed 's/^/export /'
+                        ;;
+                    *)
+                        echo "# Unsupported shell: $shell_type" >&2
+                        ;;
+                esac
+            fi
+            ;;
+        *)
+            echo "Usage: $0 [load|set <KEY_NAME> <api_key>|list]" >&2
+            echo ""
+            echo "Commands:"
+            echo "  load           - Load all API keys (default)"
+            echo "  set KEY VALUE  - Set an API key"
+            echo "  list           - List available key names"
+            exit 1
+            ;;
+    esac
+}
+
+# Run main function with all arguments
+main "$@"

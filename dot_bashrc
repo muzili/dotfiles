@@ -1,0 +1,12 @@
+# ~/.bashrc: executed by bash(1) for non-login shells.
+
+# If not running interactively, don't do anything
+case $- in
+    *i*) ;;
+      *) return;;
+esac
+
+# Load API keys from GPG
+[[ -f "$HOME/.config/shell/api-keys.sh" ]] && source "$HOME/.config/shell/api-keys.sh"
+
+# Add other bash configurations here as needed
