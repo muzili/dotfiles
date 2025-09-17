@@ -6,6 +6,7 @@ return {
   dependencies = {
     "nvim-lua/plenary.nvim",
     "nvim-treesitter/nvim-treesitter",
+    "coder/claudecode.nvim",  -- 添加 Claude Code 集成
   },
   cmd = {
     "CodeCompanion",
@@ -252,5 +253,21 @@ return {
         vim.opt_local.linebreak = true
       end,
     })
+    
+    -- 配置 claudecode.nvim 集成
+    require("claudecode").setup({
+      terminal_cmd = "~/bin/claude",
+      env = {
+        -- 设置 Claude Code 环境变量
+        ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_API_KEY") or os.getenv("ZHIPU_API_KEY") or "",
+      },
+    })
+    
+    -- 设置独立的快捷键，避免与 CodeCompanion 冲突
+    vim.keymap.set("n", "<leader>cL", "<cmd>ClaudeCode<cr>", { desc = "Claude Code Chat" })
+    vim.keymap.set("n", "<leader>cK", "<cmd>ClaudeCodeFocus<cr>", { desc = "Claude Code Focus" })
+    vim.keymap.set("n", "<leader>cS", "<cmd>ClaudeCodeStop<cr>", { desc = "Stop Claude Code" })
+    vim.keymap.set("v", "<leader>cL", ":ClaudeCodeSend<cr>", { desc = "Claude Code Send Selection" })
+    vim.keymap.set("n", "<leader>cT", "<cmd>ClaudeCodeTreeAdd<cr>", { desc = "Claude Code Add Tree Selection" })
   end,
 }
