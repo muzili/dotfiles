@@ -1,72 +1,84 @@
 # AI Provider Configuration for Neovim CodeCompanion
 
-This configuration provides AI functionality in Neovim using CodeCompanion with support for multiple Chinese AI providers.
+This configuration provides AI functionality in Neovim using CodeCompanion with support for multiple AI providers.
 
 > 📖 **完整使用指南**: 查看 [CODECOMPANION_GUIDE.md](./CODECOMPANION_GUIDE.md) 获取详细的使用说明和最佳实践。
 
 ## Setup Instructions
 
-### 1. Prerequisites
+### 1. Central API Key Management System
 
-- GPG installed and configured with a key pair
-- Neovim with the configured plugins
+This configuration uses a centralized API key management system that:
+- Stores all API keys in a single GPG-encrypted file (`~/.config/api-keys/keys.env.gpg`)
+- Automatically loads keys into environment variables at shell startup
+- Supports multiple AI providers with consistent management
 
-### 2. Run Setup Script
+### 2. First-Time Setup
+
+Run the central setup script:
+
+```bash
+# Install and configure the API key management system
+~/.local/bin/setup-api-keys
+```
+
+The script will:
+1. Check GPG installation and configure encryption
+2. Prompt for your primary AI provider keys
+3. Set up automatic loading of API keys
+
+### 3. Configure AI Providers
+
+After setting up the central system, configure individual providers:
 
 ```bash
 cd ~/.config/chezmoi/private_dot_config/nvim
 ./setup_ai.sh
 ```
 
-The script will help you:
-- Set up GPG-encrypted API keys
-- Configure Zhipu AI (primary provider)
-- Configure Bailian AI (backup provider)
+This script will help you configure:
+- **Zhipu AI** (智谱清言) - Primary Chinese provider
+- **Bailian AI** (百炼) - Backup Chinese provider  
+- **OpenAI** - International fallback
+- **Anthropic Claude** - High-quality conversations
 
-### 3. Manual Setup (Alternative)
+### 4. Manual Key Management (Advanced)
 
-If you prefer manual setup:
-
-#### Create Secrets Directory
-```bash
-mkdir -p ~/.config/chezmoi/private_dot_config/nvim/secrets
-```
-
-#### Encrypt API Keys
-```bash
-# Zhipu AI (Primary)
-echo "your-zhipu-api-key" | gpg --armor --encrypt --recipient your-gpg-key-id --output ~/.config/chezmoi/private_dot_config/nvim/secrets/zhipu.gpg
-
-# Bailian AI (Backup)
-echo "your-bailian-api-key" | gpg --armor --encrypt --recipient your-gpg-key-id --output ~/.config/chezmoi/private_dot_config/nvim/secrets/bailian.gpg
-
-# Bailian App ID (if required)
-echo "your-bailian-app-id" | gpg --armor --encrypt --recipient your-gpg-key-id --output ~/.config/chezmoi/private_dot_config/nvim/secrets/bailian_app_id.gpg
-```
-
-### 4. Environment Variables (Optional)
-
-You can also use environment variables instead of GPG:
+You can also manage keys manually using the load-api-keys command:
 
 ```bash
-export ZHIPU_API_KEY="your-zhipu-api-key"
-export BAILIAN_API_KEY="your-bailian-api-key"
-export BAILIAN_APP_ID="your-bailian-app-id"
+# Set individual API keys
+~/.local/bin/load-api-keys set ZHIPU_API_KEY "your-zhipu-key"
+~/.local/bin/load-api-keys set DASHSCOPE_API_KEY "your-bailian-key"
+~/.local/bin/load-api-keys set BAILIAN_APP_ID "your-app-id"
+
+# List available keys
+~/.local/bin/load-api-keys list
+
+# Test key loading
+~/.local/bin/load-api-keys load
 ```
 
 ## Provider Priority
 
 The system uses providers in this order:
-1. **Zhipu AI** (智谱清言) - Primary
-2. **Bailian AI** (百炼) - Backup
-3. OpenAI - Fallback
-4. Other providers
+1. **Zhipu AI** (智谱清言) - Primary Chinese provider, optimized for Chinese code
+2. **Bailian AI** (百炼) - Backup Chinese provider, Alibaba Cloud service
+3. **OpenAI** - International standard, highest quality but slower
+4. **Anthropic Claude** - High-quality conversations and reasoning
+5. **Ollama** - Local models for privacy-sensitive work
 
-## API Key Sources
+## API Key Management
 
-1. Environment variables (highest priority)
-2. GPG-encrypted files
-3. Fallback to default
+API keys are managed through:
+1. **Central encrypted storage**: All keys in `~/.config/api-keys/keys.env.gpg`
+2. **Automatic loading**: Keys loaded into environment variables via shell configuration
+3. **Environment variables**: CodeCompanion reads from standard environment variables:
+   - `ZHIPU_API_KEY` - For Zhipu GLM models
+   - `DASHSCOPE_API_KEY` - For Bailian/Qwen models  
+   - `OPENAI_API_KEY` - For OpenAI models
+   - `ANTHROPIC_API_KEY` - For Claude models
+   - `BAILIAN_APP_ID` - For Bailian application ID (if required)
 
 ## Keymaps
 
@@ -99,34 +111,47 @@ All AI-related keymaps are under `<leader>c`:
 
 ## Troubleshooting
 
-### GPG Issues
+### API Key Issues
+
 ```bash
-# Check GPG installation
-gpg --version
+# Check if API keys are loaded in environment
+echo $ZHIPU_API_KEY
+echo $DASHSCOPE_API_KEY
 
-# List GPG keys
-gpg --list-keys
+# Test the central key management system
+~/.local/bin/load-api-keys load
+~/.local/bin/load-api-keys list
 
-# Test decryption
-gpg --quiet --decrypt ~/.config/chezmoi/private_dot_config/nvim/secrets/zhipu.gpg
+# Check if keys are properly encrypted and stored
+ls -la ~/.config/api-keys/
 ```
 
-### API Key Issues
-1. Verify your API keys are correct
-2. Check your GPG key ID matches
-3. Ensure the secrets files exist and are readable
+### Common Problems
 
-### Neovim Issues
-1. Check for error messages with `:messages`
-2. Verify plugins are installed with `:Lazy`
-3. Restart Neovim after configuration changes
+1. **Keys not loading**: Ensure your shell configuration includes the API key loader
+2. **GPG errors**: Run `setup-api-keys` to reconfigure GPG encryption
+3. **Provider not working**: Check the provider is configured in `ai_config.lua`
+
+### Debug Commands in Neovim
+
+```vim
+" Check available AI providers
+:lua print(vim.inspect(require("ai_config").list_providers()))
+
+" Test provider configuration
+:lua print(vim.inspect(require("ai_config").get_config("zhipu")))
+
+" Check if provider is configured
+:lua print(require("ai_config").is_configured("zhipu"))
+```
 
 ## Security
 
-- API keys are stored encrypted using GPG
-- Keys are decrypted only when needed
-- No plaintext keys are stored on disk
-- Environment variables are supported for convenience
+- **Central encryption**: All API keys stored in a single GPG-encrypted file
+- **Runtime only**: Keys only decrypted when needed and kept in memory
+- **No plaintext storage**: No API keys stored in plaintext on disk
+- **Automatic loading**: Keys loaded into environment variables automatically
+- **Shell integration**: Integrated with shell startup for seamless operation
 
 ## Provider Documentation
 

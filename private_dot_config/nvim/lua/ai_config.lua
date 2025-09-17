@@ -8,53 +8,12 @@ local M = {}
 -- 缓存已解密的 API 密钥
 local _key_cache = {}
 
--- Function to decrypt GPG-encrypted API key
----@param key_name string
----@return string|nil
-local function get_gpg_api_key(key_name)
-  -- 检查缓存
-  if _key_cache[key_name] ~= nil then
-    return _key_cache[key_name]
-  end
-  
-  local gpg_id = os.getenv("GPG_ID") or "default"
-  local key_file = os.getenv("HOME") .. "/." .. key_name .. ".gpg"
-  
-  -- Check if the key file exists
-  local file = io.open(key_file, "r")
-  if not file then
-    _key_cache[key_name] = false
-    return nil
-  end
-  file:close()
-  
-  -- Decrypt the key using gpg
-  local handle = io.popen(string.format("gpg --quiet --decrypt %s 2>/dev/null", key_file))
-  if not handle then
-    _key_cache[key_name] = false
-    return nil
-  end
-  
-  local api_key = handle:read("*a"):gsub("\n", "")
-  handle:close()
-  
-  local result = api_key ~= "" and api_key or nil
-  _key_cache[key_name] = result
-  return result
-end
-
--- Function to get API key from environment or GPG
+-- Function to get API key from environment variables
 ---@param provider string
 ---@return string|nil
 local function get_api_key(provider)
-  -- First try environment variable
-  local env_key = os.getenv(string.format("%s_API_KEY", provider:upper()))
-  if env_key and env_key ~= "" then
-    return env_key
-  end
-  
-  -- Then try GPG
-  return get_gpg_api_key(provider)
+  -- Get API key directly from environment variable
+  return os.getenv(string.format("%s_API_KEY", provider:upper()))
 end
 
 -- 延迟初始化配置，避免启动时的 GPG 操作

@@ -1,12 +1,11 @@
 #!/bin/bash
 
 # AI Provider Setup Script for Neovim CodeCompanion
-# This script helps set up GPG-encrypted API keys
+# This script helps set up API keys using the central key management system
 
 set -e
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-SECRETS_DIR="$SCRIPT_DIR/secrets"
 
 # Colors for output
 RED='\033[0;31m'
@@ -18,16 +17,17 @@ NC='\033[0m' # No Color
 echo -e "${BLUE}Setting up AI providers for Neovim CodeCompanion${NC}"
 echo "=================================================="
 
-# Create secrets directory if it doesn't exist
-mkdir -p "$SECRETS_DIR"
+echo -e "${YELLOW}Note: This script now uses the central API key management system${NC}"
+echo "API keys are stored in ~/.config/api-keys/keys.env.gpg and loaded automatically"
+echo ""
 
-# Function to setup GPG encrypted key
-setup_gpg_key() {
+# Function to setup API key using central system
+setup_api_key() {
     local provider="$1"
-    local key_name="$2"
+    local env_var_name="$2"
     
     echo -e "\n${YELLOW}Setting up $provider API key${NC}"
-    echo "Enter your $provider API key (will be encrypted with GPG):"
+    echo "Enter your $provider API key:"
     read -s -r api_key
     
     if [ -z "$api_key" ]; then
@@ -35,21 +35,18 @@ setup_gpg_key() {
         return 1
     fi
     
-    # Get GPG recipient
-    echo "Enter your GPG key ID (or press Enter to use default):"
-    read -r gpg_recipient
-    
-    if [ -z "$gpg_recipient" ]; then
-        gpg_recipient="default"
-    fi
-    
-    # Encrypt the API key
-    echo "$api_key" | gpg --armor --encrypt --recipient "$gpg_recipient" --output "$SECRETS_DIR/${key_name}.gpg"
-    
-    if [ $? -eq 0 ]; then
-        echo -e "${GREEN}✓ $provider API key encrypted successfully${NC}"
+    # Use the central API key management system
+    if command -v "$HOME/.local/bin/load-api-keys" >/dev/null 2>&1; then
+        "$HOME/.local/bin/load-api-keys" set "$env_var_name" "$api_key"
+        if [ $? -eq 0 ]; then
+            echo -e "${GREEN}✓ $provider API key stored successfully${NC}"
+        else
+            echo -e "${RED}✗ Failed to store $provider API key${NC}"
+            return 1
+        fi
     else
-        echo -e "${RED}✗ Failed to encrypt $provider API key${NC}"
+        echo -e "${RED}Error: Central API key management system not found${NC}"
+        echo "Please install setup-api-keys and load-api-keys scripts"
         return 1
     fi
 }
@@ -58,14 +55,14 @@ setup_gpg_key() {
 setup_zhipu() {
     echo -e "\n${BLUE}Setting up Zhipu AI (Primary Provider)${NC}"
     echo "Get your API key from: https://open.bigmodel.cn/"
-    setup_gpg_key "Zhipu AI" "zhipu"
+    setup_api_key "Zhipu AI" "ZHIPU_API_KEY"
 }
 
 # Setup Bailian AI (Backup)
 setup_bailian() {
     echo -e "\n${BLUE}Setting up Bailian AI (Backup Provider)${NC}"
     echo "Get your API key from: https://help.aliyun.com/zh/model-studio/call-application-through-api"
-    setup_gpg_key "Bailian AI" "bailian"
+    setup_api_key "Bailian AI" "DASHSCOPE_API_KEY"
     
     # Bailian also needs app_id
     echo -e "\n${YELLOW}Bailian requires an App ID${NC}"
@@ -73,32 +70,26 @@ setup_bailian() {
     read -s -r app_id
     
     if [ -n "$app_id" ]; then
-        echo "$app_id" | gpg --armor --encrypt --recipient "$gpg_recipient" --output "$SECRETS_DIR/bailian_app_id.gpg"
-        echo -e "${GREEN}✓ Bailian App ID encrypted successfully${NC}"
+        "$HOME/.local/bin/load-api-keys" set "BAILIAN_APP_ID" "$app_id"
+        echo -e "${GREEN}✓ Bailian App ID stored successfully${NC}"
     fi
 }
 
-# Test GPG setup
-test_gpg() {
-    echo -e "\n${YELLOW}Testing GPG setup...${NC}"
+# Test API key setup
+test_api_keys() {
+    echo -e "\n${YELLOW}Testing API key setup...${NC}"
     
-    if ! command -v gpg &> /dev/null; then
-        echo -e "${RED}Error: GPG is not installed${NC}"
-        echo "Please install GPG first:"
-        echo "  Ubuntu/Debian: sudo apt-get install gnupg"
-        echo "  macOS: brew install gnupg"
+    if ! command -v "$HOME/.local/bin/load-api-keys" >/dev/null 2>&1; then
+        echo -e "${RED}Error: API key management system not found${NC}"
+        echo "Please install setup-api-keys and load-api-keys scripts first"
         return 1
     fi
     
-    # Test if there are any GPG keys
-    if ! gpg --list-keys &> /dev/null; then
-        echo -e "${RED}Error: No GPG keys found${NC}"
-        echo "Please generate a GPG key first:"
-        echo "  gpg --full-generate-key"
-        return 1
-    fi
+    echo -e "${GREEN}✓ API key management system available${NC}"
     
-    echo -e "${GREEN}✓ GPG setup looks good${NC}"
+    # Show currently configured keys
+    echo -e "\n${YELLOW}Currently configured API keys:${NC}"
+    "$HOME/.local/bin/load-api-keys" list | head -10
 }
 
 # Main menu
@@ -123,23 +114,16 @@ main() {
                 setup_bailian
                 ;;
             4)
-                echo -e "\n${YELLOW}Testing decryption...${NC}"
-                for key_file in "$SECRETS_DIR"/*.gpg; do
-                    if [ -f "$key_file" ]; then
-                        key_name=$(basename "$key_file" .gpg)
-                        echo "Testing $key_name..."
-                        if gpg --quiet --decrypt "$key_file" > /dev/null 2>&1; then
-                            echo -e "${GREEN}✓ $key_name decryption successful${NC}"
-                        else
-                            echo -e "${RED}✗ $key_name decryption failed${NC}"
-                        fi
-                    fi
-                done
+                echo -e "\n${YELLOW}Testing API keys...${NC}"
+                test_api_keys
+                echo -e "\n${YELLOW}Current environment API keys:${NC}"
+                env | grep "_API_KEY=" | head -10
                 ;;
             5) 
                 echo -e "${GREEN}Setup complete!${NC}"
-                echo "Your API keys are encrypted and stored in $SECRETS_DIR/"
-                echo "Restart Neovim to use the AI features."
+                echo "Your API keys are stored in the central encrypted system"
+                echo "Restart your shell or run: source ~/.bashrc (or ~/.zshrc)"
+                echo "Then restart Neovim to use the AI features."
                 exit 0
                 ;;
             *) echo -e "${RED}Invalid choice. Please try again.${NC}" ;;
