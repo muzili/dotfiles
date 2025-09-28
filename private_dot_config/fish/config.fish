@@ -1,7 +1,11 @@
+if [ -d /usr/share/fish ]
+    set -gx __fish_data_dir /usr/share/fish
+    cat /usr/share/fish/functions/alias.fish  | source
+end
+
 if status is-interactive
     # Commands to run in interactive sessions can go here
 end
-
 
 abbr open 'gio open $(fzf)'
 abbr rm 'rm -i'
@@ -47,10 +51,17 @@ set -x IDF_PATH ~/ws/esp-idf
 
 set -gx PATH $HOME/.local/bin $HOME/.cargo/bin $PATH
 
+set -gx ANDROID_HOME /usr/local/android-sdk
+set -gx PATH $PATH $ANDROID_HOME/platform-tools $ANDROID_HOME/cmdline-tools/latest/bin $ANDROID_HOME/emulator
+set -gx PATH $PATH $HOME/flutter/bin
+set -gx FLUTTER_GIT_URL https://xiu.lzg.cc/gh/flutter/flutter.git
+
 #[ -d /opt/conda ] && eval /opt/conda/bin/conda "shell.fish" "hook" $argv | source
 which mise > /dev/null && mise activate fish --shims | source
 which starship > /dev/null &&  starship init fish | source
-#which zoxide > /dev/null &&  zoxide init fish | source
-which atuin > /dev/null &&  atuin init fish | source
+which zoxide > /dev/null &&  zoxide init fish | source
+which atuin > /dev/null &&  atuin init fish | grep -v 'up _atuin_bind_up' | source
 # [ -d ~/venv/.venv ] && source ~/venv/.venv/bin/activate.fish
 set -gx PATH $HOME/bin $PATH
+
+
