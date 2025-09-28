@@ -25,6 +25,7 @@ mold = "latest"
 tree-sitter = "latest"
 eza = "latest"
 atuin = "latest"
+typst = "latest"
 
 [settings]
 experimental = true
