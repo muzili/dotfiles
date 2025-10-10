@@ -26,6 +26,8 @@ tree-sitter = "latest"
 eza = "latest"
 atuin = "latest"
 typst = "latest"
+yq = "latest"
+usage = "latest"
 
 [settings]
 experimental = true
