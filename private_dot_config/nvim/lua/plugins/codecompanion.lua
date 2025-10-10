@@ -32,16 +32,11 @@ return {
     { "<leader>ct", function() require("codecompanion").prompt("Tests") end, mode = { "n", "v" }, desc = "Generate Tests" },
     { "<leader>cf", function() require("codecompanion").prompt("Fix") end, mode = { "n", "v" }, desc = "Fix Code" },
     { "<leader>co", function() require("codecompanion").prompt("Optimize") end, mode = { "n", "v" }, desc = "Optimize Code" },
-    
+
     -- 工作流
     { "<leader>cw", "<cmd>CodeCompanionActions workflow<cr>", mode = { "n", "v" }, desc = "AI Workflows" },
   },
   config = function()
-    -- 使用轻量级 AI 配置，避免启动时的性能影响
-    local function get_ai_config()
-      return require("ai_config_lite")
-    end
-    
     require("codecompanion").setup({
       -- 简化的全局配置
       display = {
@@ -66,17 +61,19 @@ return {
         },
       },
 
-      -- 使用 zhipu 作为默认策略
+      -- 使用 zhipu 和 bailian 作为默认策略，启用 inline completion
       strategies = {
         chat = {
           adapter = "zhipu",
         },
         inline = {
-          adapter = "zhipu",
+          adapter = "bailian",
+          enable_auto_completion = true,
+          auto_completion_trigger = "auto",
         },
       },
 
-      -- 使用 zhipu 作为默认适配器
+      -- 使用 zhipu 和 bailian 作为默认适配器
       adapters = {
         http = {
           zhipu = require("codecompanion.adapters").extend("openai_compatible", {
@@ -91,11 +88,31 @@ return {
             parameters = {
               model = "glm-4.5-flash",
               temperature = 0.1,
-              max_tokens = 4000,
+              max_tokens = 131000,
             },
             schema = {
               model = {
                 default = "glm-4.5-flash",
+              },
+            },
+          }),
+          bailian = require("codecompanion.adapters").extend("openai_compatible", {
+            name = "bailian",
+            url = "https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions",
+            env = {
+              api_key = "DASHSCOPE_API_KEY",
+            },
+            headers = {
+              ["Content-Type"] = "application/json",
+            },
+            parameters = {
+              model = "qwen-flash",
+              temperature = 0.1,
+              max_tokens = 131000,
+            },
+            schema = {
+              model = {
+                default = "qwen-flash",
               },
             },
           }),
@@ -228,7 +245,7 @@ return {
       log_level = "WARN",
       auto_adapters = false,  -- 禁用自动适配器检测
       opts = {
-        system_prompt = "你是专业的 AI 编程助手，提供准确实用的编程建议。",
+        system_prompt = "你是专业的 AI 编程助手，提供准确实用的编程建议。能够根据注释和上下文智能补全代码。",
         send_code = true,
         use_default_actions = false,
         use_default_prompt_library = false,
@@ -237,23 +254,6 @@ return {
       },
     })
 
-    -- 延迟配置通知
-    vim.defer_fn(function()
-      local providers = get_ai_config().list_providers()
-      if #providers > 0 then
-        vim.notify("CodeCompanion 就绪: " .. table.concat(providers, ", "), vim.log.levels.INFO)
-      end
-    end, 2000)
-    
-    -- 简化的自动命令
-    vim.api.nvim_create_autocmd("FileType", {
-      pattern = "codecompanion",
-      callback = function()
-        vim.opt_local.wrap = true
-        vim.opt_local.linebreak = true
-      end,
-    })
-    
     -- 配置 claudecode.nvim 集成
     require("claudecode").setup({
       terminal_cmd = "~/bin/claude",
