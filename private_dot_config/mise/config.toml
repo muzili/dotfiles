@@ -28,6 +28,8 @@ atuin = "latest"
 typst = "latest"
 yq = "latest"
 usage = "latest"
+helix = "latest"
+clangd = "latest"
 
 [settings]
 experimental = true
