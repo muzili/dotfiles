@@ -44,7 +44,24 @@ return {
     -- customize language server configuration options passed to `lspconfig`
     ---@diagnostic disable: missing-fields
     config = {
-      -- clangd = { capabilities = { offsetEncoding = "utf-8" } },
+      clangd =  {
+        cmd = {
+          "clangd",
+          "--enable-config",
+          "--background-index",
+          "--clang-tidy",
+          "--log=verbose",                        -- 输出详细日志（调试用）
+          "--completion-style=detailed",
+          "--header-insertion=never",             -- 不自动插入 #include
+          "--query-driver=/usr/bin/clang++,/usr/bin/g++,**",
+          "--all-scopes-completion",
+          "--cross-file-rename",
+          "--suggest-missing-includes",
+        },
+        filetypes = { "c", "cpp", "objc", "objcpp", "cc", "hpp" },
+        root_dir = require("lspconfig.util").root_pattern("compile_commands.json", ".git"),
+        capabilities = { offsetEncoding = "utf-8" },
+      }
     },
     -- customize how language servers are attached
     handlers = {

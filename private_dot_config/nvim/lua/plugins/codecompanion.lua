@@ -7,14 +7,15 @@ return {
     "nvim-lua/plenary.nvim",
     "nvim-treesitter/nvim-treesitter",
     "coder/claudecode.nvim",  -- 添加 Claude Code 集成
+    "Saghen/blink.cmp",
   },
+  event = "VeryLazy",
   cmd = {
     "CodeCompanion",
     "CodeCompanionActions",
     "CodeCompanionChat",
     "CodeCompanionAdd",
   },
-  event = "VeryLazy",
   keys = {
     -- 主要快捷键
     { "<leader>ca", "<cmd>CodeCompanionActions<cr>", mode = { "n", "v" }, desc = "AI Actions" },
@@ -59,20 +60,29 @@ return {
           show_settings = false,
           show_token_count = false,
         },
+        inline = {
+          diff = {
+            enabled = true, -- 显示建议的 diff
+          },
+        },
       },
 
       -- 使用 zhipu 和 bailian 作为默认策略，启用 inline completion
       strategies = {
         chat = {
-          adapter = "zhipu",
+          adapter = "bailian",
         },
         inline = {
           adapter = "bailian",
-          enable_auto_completion = true,
-          auto_completion_trigger = "auto",
+        },
+        inline_completion = {
+          adapter = "bailian",
         },
       },
 
+      -- completion = {
+      --   blink = true, -- 🚀 开启 blink.cmp 集成
+      -- },
       -- 使用 zhipu 和 bailian 作为默认适配器
       adapters = {
         http = {
@@ -88,7 +98,7 @@ return {
             parameters = {
               model = "glm-4.5-flash",
               temperature = 0.1,
-              max_tokens = 131000,
+              max_tokens = 8192,
             },
             schema = {
               model = {
@@ -108,7 +118,7 @@ return {
             parameters = {
               model = "qwen-flash",
               temperature = 0.1,
-              max_tokens = 131000,
+              max_tokens = 8192,
             },
             schema = {
               model = {
@@ -122,6 +132,7 @@ return {
             proxy = nil,
             show_defaults = false,  -- 不显示默认适配器
             show_model_choices = false,
+            debug = true,  -- ✅ 关键项：记录完整 HTTP 请求信息
           },
         },
       },
@@ -242,7 +253,7 @@ return {
       },
 
       -- 简化的日志和其他配置
-      log_level = "WARN",
+      log_level = "DEBUG",
       auto_adapters = false,  -- 禁用自动适配器检测
       opts = {
         system_prompt = "你是专业的 AI 编程助手，提供准确实用的编程建议。能够根据注释和上下文智能补全代码。",
@@ -258,6 +269,10 @@ return {
     require("claudecode").setup({
       terminal_cmd = "~/bin/claude",
     })
+
+    pcall(function()
+      require("codecompanion.integrations.blink")
+    end)
     
     -- 设置独立的快捷键，避免与 CodeCompanion 冲突
     vim.keymap.set("n", "<leader>cL", "<cmd>ClaudeCode<cr>", { desc = "Claude Code Chat" })
