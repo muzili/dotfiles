@@ -64,4 +64,8 @@ which atuin > /dev/null &&  atuin init fish | grep -v 'up _atuin_bind_up' | sour
 # [ -d ~/venv/.venv ] && source ~/venv/.venv/bin/activate.fish
 set -gx PATH $HOME/bin $PATH
 
+# Fnox configuration
+set -gx FNOX_AGE_KEY_FILE $HOME/.ssh/id_ed25519.fnox
+mise exec fnox -- fnox activate fish | source
+
 

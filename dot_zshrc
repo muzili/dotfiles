@@ -210,5 +210,9 @@ export PATH="$BUN_INSTALL/bin:$PATH"
 
 . "$HOME/.atuin/bin/env"
 
-# Load API keys from GPG
+# Fnox configuration
+export FNOX_AGE_KEY_FILE="$HOME/.ssh/id_ed25519.fnox"
+eval "$(mise exec fnox -- fnox activate zsh)"
+
+# Load API keys from GPG (legacy, will be replaced by fnox)
 [[ -f "$HOME/.config/shell/api-keys.sh" ]] && source "$HOME/.config/shell/api-keys.sh"
