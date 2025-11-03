@@ -30,6 +30,8 @@ yq = "latest"
 usage = "latest"
 helix = "latest"
 clangd = "latest"
+jujutsu = "latest"
+fastfetch = "latest"
 
 [settings]
 experimental = true
