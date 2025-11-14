@@ -10,12 +10,32 @@ git config --global url."https://xiu.lzg.cc/codeberg/".insteadOf "https://codebe
 git config --global url."https://xiu.lzg.cc/sf/".insteadOf "https://sourceforge.net/"
 git config --global url."https://xiu.lzg.cc/aosp/".insteadOf "https://android.googlesource.com/"
 
+# Detect OS distribution and version
+if [ -f /etc/os-release ]; then
+    . /etc/os-release
+    OS=$NAME
+    VERSION=$VERSION_ID
+fi
+
 # https://software.opensuse.org/download.html?project=shells%3Afish&package=fish
 if [ ! -f /etc/apt/sources.list.d/fish.list ]; then
-  echo 'deb http://download.opensuse.org/repositories/shells:/fish/Debian_12/ /' | sudo tee /etc/apt/sources.list.d/fish.list
-  curl -fsSL https://download.opensuse.org/repositories/shells:fish/Debian_12/Release.key | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/shells_fish.gpg > /dev/null
-  sudo apt update
-  sudo apt install fish
+  if [[ "$OS" == *"Ubuntu"* ]]; then
+    echo "🐧 Detected Ubuntu, adding fish shell PPA..."
+    sudo apt update
+    sudo apt install -y software-properties-common
+    sudo add-apt-repository ppa:fish-shell/release-3 -y
+  elif [[ "$OS" == *"Debian"* ]]; then
+    echo "🐧 Detected Debian, adding fish shell repository..."
+    echo 'deb http://download.opensuse.org/repositories/shells:/fish/Debian_12/ /' | sudo tee /etc/apt/sources.list.d/fish.list
+    curl -fsSL https://download.opensuse.org/repositories/shells:fish/Debian_12/Release.key | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/shells_fish.gpg > /dev/null
+  else
+    echo "⚠️  Unsupported OS: $OS. You may need to install fish manually."
+  fi
+
+  if [[ "$OS" == *"Ubuntu"* ]] || [[ "$OS" == *"Debian"* ]]; then
+    sudo apt update
+    sudo apt install fish
+  fi
 fi
 
 echo "🚀 Installing chezmoi..."
