@@ -23,7 +23,7 @@ if [ ! -f /etc/apt/sources.list.d/fish.list ]; then
     echo "🐧 Detected Ubuntu, adding fish shell PPA..."
     sudo apt update
     sudo apt install -y software-properties-common
-    sudo add-apt-repository ppa:fish-shell/release-3 -y
+    sudo add-apt-repository ppa:fish-shell/release-4 -y
   elif [[ "$OS" == *"Debian"* ]]; then
     echo "🐧 Detected Debian, adding fish shell repository..."
     echo 'deb http://download.opensuse.org/repositories/shells:/fish/Debian_12/ /' | sudo tee /etc/apt/sources.list.d/fish.list
