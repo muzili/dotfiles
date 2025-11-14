@@ -3,6 +3,11 @@ set -e
 
 mkdir -p "$HOME/.local/bin"
 
+# Ensure ~/.local/bin is in PATH
+if [[ ":$PATH:" != *":$HOME/.local/bin:"* ]]; then
+    export PATH="$HOME/.local/bin:$PATH"
+fi
+
 git config --global url."https://xiu.lzg.cc/gh/".insteadOf "https://github.com/"
 git config --global url."https://xiu.lzg.cc/gl/".insteadOf "https://gitlab.com/"
 git config --global url."https://xiu.lzg.cc/gitea/".insteadOf "https://gitea.com/"
@@ -25,9 +30,19 @@ if [ ! -f /etc/apt/sources.list.d/fish.list ]; then
     sudo apt install -y software-properties-common
     sudo add-apt-repository ppa:fish-shell/release-4 -y
   elif [[ "$OS" == *"Debian"* ]]; then
-    echo "🐧 Detected Debian, adding fish shell repository..."
-    echo 'deb http://download.opensuse.org/repositories/shells:/fish/Debian_12/ /' | sudo tee /etc/apt/sources.list.d/fish.list
-    curl -fsSL https://download.opensuse.org/repositories/shells:fish/Debian_12/Release.key | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/shells_fish.gpg > /dev/null
+    echo "🐧 Detected Debian, checking version..."
+    if [[ "$VERSION" == "12" ]]; then
+      echo "✅ Debian 12 supported"
+      echo 'deb http://download.opensuse.org/repositories/shells:/fish/Debian_12/ /' | sudo tee /etc/apt/sources.list.d/fish.list
+      curl -fsSL https://download.opensuse.org/repositories/shells:fish/Debian_12/Release.key | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/shells_fish.gpg > /dev/null
+    elif [[ "$VERSION" == "13" ]]; then
+      echo "✅ Debian 13 supported"
+      echo 'deb http://download.opensuse.org/repositories/shells:/fish/Debian_13/ /' | sudo tee /etc/apt/sources.list.d/fish.list
+      curl -fsSL https://download.opensuse.org/repositories/shells:fish/Debian_13/Release.key | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/shells_fish.gpg > /dev/null
+    else
+      echo "❌ Error: Only Debian 12 and 13 are supported. Detected version: $VERSION"
+      exit 1
+    fi
   else
     echo "⚠️  Unsupported OS: $OS. You may need to install fish manually."
   fi
