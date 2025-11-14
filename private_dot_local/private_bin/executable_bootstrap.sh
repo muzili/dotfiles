@@ -60,6 +60,27 @@ chmod +x $HOME/.local/bin/chezmoi
 echo "📥 Initializing dotfiles..."
 chezmoi init --apply https://xiu.lzg.cc/gh/muzili/dotfiles.git
 
+echo "🔍 Checking required system dependencies..."
+missing_deps=()
+for dep in cmake ninja bison yacc; do
+    if ! command -v "$dep" &> /dev/null; then
+        missing_deps+=("$dep")
+    fi
+done
+
+if [ ${#missing_deps[@]} -gt 0 ]; then
+    echo "❌ Missing required dependencies: ${missing_deps[*]}"
+    echo "Please install them first:"
+    if [[ "$OS" == *"Ubuntu"* ]] || [[ "$OS" == *"Debian"* ]]; then
+        echo "  sudo apt install -y cmake ninja-build bison"
+    else
+        echo "  Install cmake, ninja-build, bison (yacc is usually included with bison)"
+    fi
+    exit 1
+fi
+
+echo "✅ All required dependencies are installed"
+
 echo "🧰 Installing mise tools..."
 mise install --missing 2>/dev/null || true
 
