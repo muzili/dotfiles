@@ -48,6 +48,7 @@ set -x RUSTUP_UPDATE_ROOT https://rsproxy.cn/rustup
 set -x RUSTUP_DIST_SERVER https://rsproxy.cn
 set -x REPO_URL 'https://mirrors.tuna.tsinghua.edu.cn/git/git-repo'
 set -x IDF_PATH ~/ws/esp-idf
+set -gx GH_PROXY https://xiu.lzg.cc/gh
 
 set -gx PATH $HOME/.local/bin $HOME/.cargo/bin $PATH
 
