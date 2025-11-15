@@ -1,5 +1,12 @@
 ---@type LazySpec
 return {
+  "williamboman/mason.nvim",
+  opts = {
+    -- Configure Mason to use GitHub proxy for faster downloads in China
+    github = {
+      download_url_template = "https://xiu.lzg.cc/gh/%s/releases/download/%s/%s",
+    },
+  },
   -- use mason-tool-installer for automatically installing Mason packages
   {
     "WhoIsSethDaniel/mason-tool-installer.nvim",
