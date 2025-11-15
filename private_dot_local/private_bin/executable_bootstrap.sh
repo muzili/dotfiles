@@ -5,7 +5,10 @@ mkdir -p "$HOME/.local/bin"
 
 # Ensure ~/.local/bin is in PATH
 if [[ ":$PATH:" != *":$HOME/.local/bin:"* ]]; then
-    export PATH="$HOME/.local/bin:$PATH"
+    export PATH="$HOME/.local/bin:.local/share/mise/shims/nvim:$PATH"
+fi
+if [[ ":$PATH:" != *":$HOME/.local/share/mise/shims:"* ]]; then
+    export PATH="$HOME/.local/share/mise/shims:$PATH"
 fi
 
 export GH_PROXY=https://xiu.lzg.cc/gh
