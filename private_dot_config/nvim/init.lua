@@ -26,10 +26,6 @@ end
 -- 延迟 Python 检测，避免启动时的系统调用
 vim.defer_fn(function()
   local function detect_python()
-    -- 1. 项目级 uv venv
-    local venv = vim.fn.getcwd() .. "/.venv/bin/python"
-    if vim.fn.executable(venv) == 1 then return venv end
-    
     -- 2. mise 提供的 python
     local mise_python = vim.fn.system("mise which python"):gsub("\n", "")
     if vim.fn.executable(mise_python) == 1 then return mise_python end
