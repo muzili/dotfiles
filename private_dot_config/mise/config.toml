@@ -5,7 +5,7 @@ node = "20.19.3"
 python = "3.9.21"
 zig = "latest"
 uv = "latest"
-cmake = "latest"
+# cmake = "latest"
 tmux = "latest"
 neovim = "latest"
 fd = "latest"
@@ -34,6 +34,7 @@ age = "latest"
 fnox = "latest"
 just = "latest"
 hurl = "latest"
+shellcheck = "latest"
 
 [settings]
 experimental = true
