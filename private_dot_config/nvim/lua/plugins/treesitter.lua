@@ -20,6 +20,8 @@ return {
         "html",
         "css",
         "scss",
+        "go",
+        "gomod",
       })
     end
 

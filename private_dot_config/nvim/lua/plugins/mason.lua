@@ -21,6 +21,7 @@ return {
         "html-lsp",
         "css-lsp",
         "eslint-lsp",
+        "gopls",
 
         -- install formatters
         "stylua",
