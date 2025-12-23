@@ -23,6 +23,16 @@ return {
           "go",
           "rust",
           "python",
+          "typescript",
+          "typescriptreact",
+          "javascript",
+          "javascriptreact",
+          "json",
+          "jsonc",
+          "html",
+          "css",
+          "scss",
+          "less",
         },
         ignore_filetypes = { -- disable format on save for specified filetypes
           "cpp",
@@ -61,7 +71,53 @@ return {
         filetypes = { "c", "cpp", "objc", "objcpp", "cc", "hpp" },
         root_dir = require("lspconfig.util").root_pattern("compile_commands.json", ".git"),
         capabilities = { offsetEncoding = "utf-8" },
-      }
+      },
+      -- TypeScript Language Server configuration
+      ts_ls = {
+        root_dir = require("lspconfig.util").root_pattern("tsconfig.json", "jsconfig.json", "package.json", ".git"),
+        single_file_support = false,
+        settings = {
+          typescript = {
+            inlayHints = {
+              includeInlayParameterNameHints = "all",
+              includeInlayParameterNameHintsWhenArgumentMatchesName = false,
+              includeInlayFunctionParameterTypeHints = true,
+              includeInlayVariableTypeHints = false,
+              includeInlayPropertyDeclarationTypeHints = true,
+              includeInlayFunctionLikeReturnTypeHints = true,
+              includeInlayEnumMemberValueHints = true,
+            },
+          },
+          javascript = {
+            inlayHints = {
+              includeInlayParameterNameHints = "all",
+              includeInlayParameterNameHintsWhenArgumentMatchesName = false,
+              includeInlayFunctionParameterTypeHints = true,
+              includeInlayVariableTypeHints = false,
+              includeInlayPropertyDeclarationTypeHints = true,
+              includeInlayFunctionLikeReturnTypeHints = true,
+              includeInlayEnumMemberValueHints = true,
+            },
+          },
+        },
+      },
+      -- ESLint configuration
+      eslint = {
+        root_dir = require("lspconfig.util").root_pattern(".eslintrc", ".eslintrc.js", ".eslintrc.json", ".git"),
+        settings = {
+          validate = "on",
+          packageManager = "npm",
+          codeAction = {
+            disableRuleComment = {
+              enable = true,
+              location = "separateLine",
+            },
+            showDocumentation = {
+              enable = true,
+            },
+          },
+        },
+      },
     },
     -- customize how language servers are attached
     handlers = {

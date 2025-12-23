@@ -16,9 +16,16 @@ return {
       ensure_installed = {
         -- install language servers
         "lua-language-server",
+        "typescript-language-server",
+        "json-lsp",
+        "html-lsp",
+        "css-lsp",
+        "eslint-lsp",
 
         -- install formatters
         "stylua",
+        "prettierd",
+        "dprint",
 
         -- install debuggers
         "debugpy",
