@@ -72,6 +72,9 @@ return {
           desc = "Close buffer from tabline",
         },
 
+        -- trim trailing whitespace
+        ["<Leader>tw"] = { ":%s/\\s\\+$//e<CR>", desc = "Trim trailing whitespace" },
+
         -- tables with just a `desc` key will be registered with which-key if it's installed
         -- this is useful for naming menus
         -- ["<Leader>b"] = { desc = "Buffers" },

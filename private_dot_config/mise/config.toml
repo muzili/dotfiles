@@ -36,6 +36,7 @@ shellcheck = "latest"
 websocat = "latest"
 clang-format = "21.1.8"
 cmake = "4.2.1"
+sccache = "latest"
 
 [settings]
 experimental = true
