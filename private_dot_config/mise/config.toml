@@ -37,6 +37,7 @@ websocat = "latest"
 clang-format = "21.1.8"
 cmake = "4.2.1"
 sccache = "v0.10.0"
+prek = "latest"
 
 [settings]
 experimental = true
