@@ -9,6 +9,10 @@ esac
 # GitHub proxy
 export GH_PROXY=https://xiu.lzg.cc/gh
 
+# Editor
+export EDITOR=nvim
+export VISUAL=nvim
+
 # Load API keys from GPG
 [[ -f "$HOME/.config/shell/api-keys.sh" ]] && source "$HOME/.config/shell/api-keys.sh"
 

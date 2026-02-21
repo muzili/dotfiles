@@ -43,6 +43,10 @@ abbr vi "nvim"
 abbr config '/usr/bin/git --git-dir $HOME/.cfg/ --work-tree $HOME'
 abbr stripcolors 'sed "s/\x1B\[\([0-9]\{1,2\}\(;[0-9]\{1,2\}\)\?\)\?[mGK]//g"'
 
+# Editor
+set -gx EDITOR nvim
+set -gx VISUAL nvim
+
 set -gx HF_ENDPOINT https://hf-mirror.com
 set -x RUSTUP_UPDATE_ROOT https://rsproxy.cn/rustup
 set -x RUSTUP_DIST_SERVER https://rsproxy.cn

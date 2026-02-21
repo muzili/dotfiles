@@ -1,6 +1,7 @@
 export MAILDIR=$HOME/Mail
 export LC_ALL=en_US.UTF-8
 export EDITOR='nvim'
+export VISUAL='nvim'
 export ADB_INSTALL_TIMEOUT=20
 
 PATH=/snap/bin:/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin:${HOME}/bin:${HOME}/.local/bin:$HOME/.cargo/bin:$HOME/code/go/bin
