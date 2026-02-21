@@ -4,7 +4,7 @@
 
 # Configuration
 API_KEYS_FILE="$HOME/.config/api-keys/keys.env.gpg"
-GPG_RECIPIENT="your-gpg-key-id"  # Replace with your GPG key ID
+GPG_RECIPIENT="muzili@gmail.com"  # Replace with your GPG key ID
 
 # All supported API keys
 declare -A API_KEYS=(

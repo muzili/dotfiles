@@ -1,7 +1,7 @@
 [tools]
 bun = "latest"
 go = "1.21"
-node = "20.19.3"
+node = "24"
 python = "3.9.21"
 zig = "latest"
 uv = "latest"
@@ -38,6 +38,7 @@ clang-format = "21.1.8"
 cmake = "4.2.1"
 sccache = "v0.10.0"
 prek = "latest"
+pnpm = "10.30.0"
 
 [settings]
 experimental = true
