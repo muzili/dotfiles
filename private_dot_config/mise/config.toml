@@ -1,12 +1,11 @@
 [tools]
 bun = "latest"
-go = "1.21"
+go = "1.25"
 node = "24"
 python = "3.9.21"
 zig = "latest"
-uv = "latest"
+uv = "0.10.5"
 tmux = "latest"
-neovim = "latest"
 fd = "latest"
 ripgrep = "latest"
 fzf = "latest"
@@ -39,6 +38,10 @@ cmake = "4.2.1"
 sccache = "v0.10.0"
 prek = "latest"
 pnpm = "10.30.0"
+neovim = "latest"
+watchexec = "latest"
+ty = "latest"
+gh = "latest"
 
 [settings]
 experimental = true
