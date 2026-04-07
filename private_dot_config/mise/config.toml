@@ -28,7 +28,6 @@ usage = "latest"
 helix = "latest"
 clangd = "latest"
 age = "latest"
-fnox = "latest"
 just = "latest"
 hurl = "latest"
 shellcheck = "latest"
@@ -42,6 +41,9 @@ neovim = "latest"
 watchexec = "latest"
 ty = "latest"
 gh = "latest"
+s5cmd = "latest"
+rust-analyzer = "latest"
+fnox = "latest"
 
 [settings]
 experimental = true
