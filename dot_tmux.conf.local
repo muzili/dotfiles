@@ -410,6 +410,26 @@ tmux_conf_update_plugins_on_reload=true
 # # /!\ do not remove the previous line
 set-window-option -g xterm-keys on
 
+# 基础终端
 set -g default-terminal screen-256color
 set-option -ga terminal-overrides ",*256col*:Tc" # 这句是关键
 
+# 关键：减少重绘抖动
+set -g redraw-interval 100
+set -g escape-time 0
+
+# 禁用会导致 Warp 抖动的特性
+set -g focus-events off
+set -g aggressive-resize off
+
+# 关键：关闭 alternate screen（Claude 抖动核心原因）
+set -g alternate-screen off
+
+# 禁止 cursor/screen 切换控制
+set -g terminal-overrides 'xterm*:smcup@:rmcup@'
+
+# 提升性能
+set -g history-limit 10000
+
+# 鼠标（可选）
+set -g mouse on
