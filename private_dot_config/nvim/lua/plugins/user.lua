@@ -3,6 +3,16 @@ return {
 
   -- == Examples of Adding Plugins ==
 
+  -- GPG encrypted files editing (symmetric encryption)
+  {
+    "benoror/gpg.nvim",
+    ft = { "gpg", "asc", "pgp" },
+    init = function()
+      vim.filetype.add { extension = { gpg = "gpg", asc = "asc", pgp = "pgp" } }
+      vim.g.gpg_update_tty = true -- terminal pinentry compatibility
+    end,
+  },
+
   "andweeb/presence.nvim",
   {
     "ray-x/lsp_signature.nvim",
