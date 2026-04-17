@@ -49,12 +49,12 @@ return {
     },
     -- enable servers that you already have installed without mason
     servers = {
-      -- "pyright"
+      "clangd",
     },
     -- customize language server configuration options passed to `lspconfig`
     ---@diagnostic disable: missing-fields
     config = {
-      clangd =  {
+      ["clangd"] = {
         cmd = {
           "clangd",
           "--enable-config",
@@ -69,12 +69,12 @@ return {
           "--suggest-missing-includes",
         },
         filetypes = { "c", "cpp", "objc", "objcpp", "cc", "hpp" },
-        root_dir = require("lspconfig.util").root_pattern("compile_commands.json", ".git"),
+        root_dir = vim.fs.root(0, { "compile_commands.json", ".git" }),
         capabilities = { offsetEncoding = "utf-8" },
       },
       -- TypeScript Language Server configuration
-      ts_ls = {
-        root_dir = require("lspconfig.util").root_pattern("tsconfig.json", "jsconfig.json", "package.json", ".git"),
+      ["ts_ls"] = {
+        root_dir = vim.fs.root(0, { "tsconfig.json", "jsconfig.json", "package.json", ".git" }),
         single_file_support = false,
         settings = {
           typescript = {
@@ -102,8 +102,8 @@ return {
         },
       },
       -- ESLint configuration
-      eslint = {
-        root_dir = require("lspconfig.util").root_pattern(".eslintrc", ".eslintrc.js", ".eslintrc.json", ".git"),
+      ["eslint"] = {
+        root_dir = vim.fs.root(0, { ".eslintrc", ".eslintrc.js", ".eslintrc.json", ".git" }),
         settings = {
           validate = "on",
           packageManager = "npm",
