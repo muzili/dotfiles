@@ -16,5 +16,6 @@ return { -- override blink.cmp plugin
 
     -- 添加 codecompanion 作为来源
     table.insert(opts.sources.default, 1, "codecompanion")
-    end,
+    return opts
+  end,
 }
