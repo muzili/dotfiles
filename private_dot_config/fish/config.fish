@@ -63,6 +63,19 @@ set -gx PUB_HOSTED_URL https://mirrors.tuna.tsinghua.edu.cn/dart-pub
 set -gx FLUTTER_STORAGE_BASE_URL https://mirrors.tuna.tsinghua.edu.cn/flutter
 set -gx FLUTTER_GIT_URL https://xiu.lzg.cc/gh/flutter/flutter.git
 
+#set -gx GPG_TTY (tty)
+function gpg-refresh
+    set -gx GPG_TTY (tty)
+end
+
+# 每次 prompt 刷新
+functions --copy fish_prompt __orig_fish_prompt
+
+function fish_prompt
+    gpg-refresh
+    __orig_fish_prompt
+end
+
 #[ -d /opt/conda ] && eval /opt/conda/bin/conda "shell.fish" "hook" $argv | source
 which mise > /dev/null && mise activate fish --shims | source
 which starship > /dev/null &&  starship init fish | source
