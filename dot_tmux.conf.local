@@ -337,8 +337,6 @@ tmux_conf_copy_to_os_clipboard=false
 # force Vi mode
 #   really you should export VISUAL or EDITOR environment variable, see manual
 set -g status-keys vi
-set -g mode-keys vi
-set -g set-clipboard on
 
 
 # replace C-b by C-a instead of using both prefixes
@@ -408,28 +406,49 @@ tmux_conf_update_plugins_on_reload=true
 #
 # "$@"
 # # /!\ do not remove the previous line
+# 终端
+set -g default-terminal screen-256color
+set -ga terminal-overrides ",*256col*:Tc"
+set -ga terminal-overrides ",*:clipboard"
 set-window-option -g xterm-keys on
 
-# 基础终端
-set -g default-terminal screen-256color
-set-option -ga terminal-overrides ",*256col*:Tc" # 这句是关键
-
-# 关键：减少重绘抖动
+# 性能
 set -g redraw-interval 100
 set -g escape-time 0
+set -g history-limit 10000
+set -g buffer-limit 50
 
-# 禁用会导致 Warp 抖动的特性
+# 禁用 alternate screen（解决 Claude/Warp 抖动）
+set -g alternate-screen off
 set -g focus-events off
 set -g aggressive-resize off
 
-# 关键：关闭 alternate screen（Claude 抖动核心原因）
-set -g alternate-screen off
-
-# 禁止 cursor/screen 切换控制
-set -g terminal-overrides 'xterm*:smcup@:rmcup@'
-
-# 提升性能
-set -g history-limit 10000
-
-# 鼠标（可选）
+# Vi 模式 & 鼠标
+setw -g mode-keys vi
 set -g mouse on
+set -g set-clipboard on
+
+##### ===== 剪贴板设置 =====
+# 直接使用 xclip（已确认可用）
+set -g @clipboard "xclip -selection clipboard -in"
+
+# 或者用更可靠的方式：在 tmux 启动时检测并设置
+# run-shell 'tmux set-option -g @clipboard "$(command -v wl-copy >/dev/null 2>&1 && echo wl-copy || command -v xclip >/dev/null 2>&1 && echo "xclip -selection clipboard -in" || echo "cat >/dev/null")"'
+
+##### ===== 复制行为 =====
+
+# 键盘复制（y）
+bind-key -T copy-mode-vi y send -X copy-pipe-and-cancel "#{@clipboard}"
+
+# 鼠标选中即复制
+bind-key -T copy-mode-vi MouseDragEnd1Pane send -X copy-pipe-and-cancel "#{@clipboard}"
+
+# 双击选词复制
+bind-key -T copy-mode-vi DoubleClick1Pane send -X select-word \;\
+  send -X copy-pipe-and-cancel "#{@clipboard}"
+
+# 三击选行复制
+bind-key -T copy-mode-vi TripleClick1Pane send -X select-line \;\
+  send -X copy-pipe-and-cancel "#{@clipboard}"
+
+##### ===== 提升 SSH / 远程体验 =====
