@@ -60,7 +60,8 @@ set -gx ANDROID_HOME /usr/local/android-sdk
 set -gx PATH $PATH $ANDROID_HOME/platform-tools $ANDROID_HOME/cmdline-tools/latest/bin $ANDROID_HOME/emulator
 set -gx PATH $PATH /usr/local/flutter/bin
 set -gx PUB_HOSTED_URL https://mirrors.tuna.tsinghua.edu.cn/dart-pub
-set -gx FLUTTER_STORAGE_BASE_URL https://mirrors.tuna.tsinghua.edu.cn/flutter
+#set -gx FLUTTER_STORAGE_BASE_URL https://mirrors.tuna.tsinghua.edu.cn/flutter
+set -gx FLUTTER_STORAGE_BASE_URL "https://storage.flutter-io.cn"
 set -gx FLUTTER_GIT_URL https://xiu.lzg.cc/gh/flutter/flutter.git
 
 #set -gx GPG_TTY (tty)
