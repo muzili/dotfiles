@@ -42,6 +42,7 @@ gh = "2.89.0"
 s5cmd = "2.3.0"
 rust-analyzer = "latest"
 fnox = "latest"
+buf = "latest"
 
 [settings]
 experimental = true
