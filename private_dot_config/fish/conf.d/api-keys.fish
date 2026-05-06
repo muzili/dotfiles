@@ -11,7 +11,8 @@ function load_api_keys
     end
 end
 
-# Load API keys if GPG is available and we're in an interactive shell
-if command -v gpg >/dev/null 2>&1; and status is-interactive
+# Load API keys if GPG is available
+# Removed is-interactive check for tmux compatibility
+if command -v gpg >/dev/null 2>&1
     load_api_keys
 end
