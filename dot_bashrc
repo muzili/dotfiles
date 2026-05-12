@@ -6,14 +6,82 @@ case $- in
       *) return;;
 esac
 
-# GitHub proxy
-export GH_PROXY=https://xiu.lzg.cc/gh
-
 # Editor
 export EDITOR=nvim
 export VISUAL=nvim
 
+# Environment variables
+export HF_ENDPOINT=https://hf-mirror.com
+export RUSTUP_UPDATE_ROOT=https://rsproxy.cn/rustup
+export RUSTUP_DIST_SERVER=https://rsproxy.cn
+export REPO_URL='https://mirrors.tuna.tsinghua.edu.cn/git/git-repo'
+export GH_PROXY=https://xiu.lzg.cc/gh
+
+# Aliases
+alias open='gio open $(fzf)'
+alias rm='rm -i'
+alias cp='cp -i'
+alias mv='mv -i'
+alias mkdir='mkdir -p'
+alias h='history'
+alias ..='cd ..'
+alias cd..='cd ..'
+alias path='echo -e ${PATH//:/\\n}'
+alias libpath='echo -e ${LD_LIBRARY_PATH//:/\\n}'
+alias du='du -kh'
+alias df='df -kTh'
+alias ll="ls -l --group-directories-first"
+alias ls='ls -hF --color'
+alias la='ls -Al'
+alias lx='ls -lXB'
+alias lk='ls -lSr'
+alias lc='ls -ltcr'
+alias lu='ls -ltur'
+alias lt='ls -ltr'
+alias lm='ls -al |more'
+alias lr='ls -lR'
+alias nc='netcat'
+alias xo='xdg-open'
+alias o='xdg-open'
+alias emacs='emacs --no-site-file'
+alias more='less'
+alias xs='cd'
+alias vf='cd'
+alias kk='ll'
+alias vi="nvim"
+alias config='/usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME'
+alias stripcolors='sed "s/\x1B\[\([0-9]\{1,2\}\(;[0-9]\{1,2\}\)\?\)\?[mGK]//g"'
+
+# PATH
+export PATH="$HOME/.local/bin:$HOME/.cargo/bin:$PATH"
+export PATH="$HOME/bin:$PATH"
+
+# Android SDK
+export ANDROID_HOME=/usr/local/android-sdk
+export PATH="$PATH:$ANDROID_HOME/platform-tools:$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/emulator"
+export PATH="$PATH:/usr/local/flutter/bin"
+export PUB_HOSTED_URL=https://mirrors.tuna.tsinghua.edu.cn/dart-pub
+export FLUTTER_STORAGE_BASE_URL="https://storage.flutter-io.cn"
+export FLUTTER_GIT_URL=https://xiu.lzg.cc/gh/flutter/flutter.git
+
+# GPG TTY refresh
+gpg-refresh() {
+    export GPG_TTY=$(tty)
+}
+PROMPT_COMMAND="gpg-refresh;$PROMPT_COMMAND"
+
+# Nix
+[ -e /home/joshua/.nix-profile/etc/profile.d/nix.sh ] && . /home/joshua/.nix-profile/etc/profile.d/nix.sh
+
 # Load API keys from GPG
 [[ -f "$HOME/.config/shell/api-keys.sh" ]] && source "$HOME/.config/shell/api-keys.sh"
 
-# Add other bash configurations here as needed
+# Tool initializations
+which mise > /dev/null 2>&1 && eval "$(mise activate bash --shims)"
+which starship > /dev/null 2>&1 && eval "$(starship init bash)"
+which zoxide > /dev/null 2>&1 && eval "$(zoxide init bash)"
+which atuin > /dev/null 2>&1 && eval "$(atuin init bash)"
+
+# Fnox configuration
+export FNOX_AGE_KEY_FILE="$HOME/.ssh/id_ed25519.fnox"
+mise exec fnox -- fnox activate bash | source

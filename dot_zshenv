@@ -40,3 +40,9 @@ export RUSTUP_UPDATE_ROOT="https://rsproxy.cn/rustup"
 export RUSTC_WRAPPER=~/.cargo/bin/sccache
 
 if [ -e /home/joshua/.nix-profile/etc/profile.d/nix.sh ]; then . /home/joshua/.nix-profile/etc/profile.d/nix.sh; fi # added by Nix installer
+
+# GitHub proxy
+export GH_PROXY=https://xiu.lzg.cc/gh
+
+# HuggingFace mirror
+export HF_ENDPOINT=https://hf-mirror.com

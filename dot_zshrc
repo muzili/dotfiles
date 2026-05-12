@@ -172,50 +172,21 @@ urlencode() {
 #compinit
 #fpath+=${ZDOTDIR:-~}/.zsh_functions
 
-# >>> conda initialize >>>
-# !! Contents within this block are managed by 'conda init' !!
-__conda_setup="$('/opt/conda/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
-if [ $? -eq 0 ]; then
-    eval "$__conda_setup"
-else
-    if [ -f "/opt/conda/etc/profile.d/conda.sh" ]; then
-# . "/opt/conda/etc/profile.d/conda.sh"  # commented out by conda initialize
-    else
-        export PATH="/opt/conda/bin:$PATH"
-    fi
-fi
-unset __conda_setup
-test -d /opt/conda/envs/vtbase && conda activate vtbase
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 
-# pnpm
-export PNPM_HOME="/home/joshua/.local/share/pnpm"
-export PATH="$PNPM_HOME:$PATH"
-# pnpm end
-#
-# disable Caps Lock key
-#xmodmap -e "remove lock = Caps_Lock"
-setxkbmap -option caps:none
+# GPG TTY refresh
+gpg-refresh() {
+    export GPG_TTY=$(tty)
+}
+precmd_functions+=(gpg-refresh)
 
-eval "$(starship init zsh)"
+# Tool initializations
+which mise > /dev/null 2>&1 && eval "$(mise activate zsh --shims)"
+which starship > /dev/null 2>&1 && eval "$(starship init zsh)"
+which atuin > /dev/null 2>&1 && eval "$(atuin init zsh)"
 
-# bun completions
-[ -s "/home/joshua/.bun/_bun" ] && source "/home/joshua/.bun/_bun"
-
-# bun
-export BUN_INSTALL="$HOME/.bun"
-export PATH="$BUN_INSTALL/bin:$PATH"
-
-. "$HOME/.atuin/bin/env"
-
-# GitHub proxy
-export GH_PROXY=https://xiu.lzg.cc/gh
+# Load API keys from GPG
+[[ -f "$HOME/.config/shell/api-keys.sh" ]] && source "$HOME/.config/shell/api-keys.sh"
 
 # Fnox configuration
 export FNOX_AGE_KEY_FILE="$HOME/.ssh/id_ed25519.fnox"
-eval "$(mise exec fnox -- fnox activate zsh)"
-
-# Load API keys from GPG (legacy, will be replaced by fnox)
-[[ -f "$HOME/.config/shell/api-keys.sh" ]] && source "$HOME/.config/shell/api-keys.sh"
+mise exec fnox -- fnox activate zsh | source
