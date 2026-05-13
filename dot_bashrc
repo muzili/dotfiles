@@ -6,6 +6,11 @@ case $- in
       *) return;;
 esac
 
+# =========================
+# ble.sh: Load early (required by ble.sh)
+# =========================
+[[ $- == *i* ]] && [[ -f "$HOME/.config/bash/ble-config.sh" ]] && source "$HOME/.config/bash/ble-config.sh"
+
 # Editor
 export EDITOR=nvim
 export VISUAL=nvim
@@ -68,7 +73,8 @@ export FLUTTER_GIT_URL=https://xiu.lzg.cc/gh/flutter/flutter.git
 gpg-refresh() {
     export GPG_TTY=$(tty)
 }
-PROMPT_COMMAND="gpg-refresh;$PROMPT_COMMAND"
+# Safely append to PROMPT_COMMAND (avoid double semicolons)
+PROMPT_COMMAND="${PROMPT_COMMAND:+$PROMPT_COMMAND;}gpg-refresh"
 
 # Nix
 [ -e /home/joshua/.nix-profile/etc/profile.d/nix.sh ] && . /home/joshua/.nix-profile/etc/profile.d/nix.sh
@@ -80,8 +86,25 @@ PROMPT_COMMAND="gpg-refresh;$PROMPT_COMMAND"
 which mise > /dev/null 2>&1 && eval "$(mise activate bash --shims)"
 which starship > /dev/null 2>&1 && eval "$(starship init bash)"
 which zoxide > /dev/null 2>&1 && eval "$(zoxide init bash)"
-which atuin > /dev/null 2>&1 && eval "$(atuin init bash)"
+which atuin > /dev/null 2>&1 && eval "$(atuin init bash --disable-up-arrow)"
 
 # Fnox configuration
 export FNOX_AGE_KEY_FILE="$HOME/.ssh/id_ed25519.fnox"
 eval "$(mise exec fnox -- fnox activate bash)"
+
+# =========================
+# Bash Modern Enhancements
+# =========================
+# bash-completion system
+[[ -f "$HOME/.config/bash/bash-completion.sh" ]] && source "$HOME/.config/bash/bash-completion.sh"
+
+# fzf: Enhanced fuzzy finder bindings
+[[ -f "$HOME/.config/bash/fzf-config.sh" ]] && source "$HOME/.config/bash/fzf-config.sh"
+
+# fzf-tab: Fuzzy tab completion
+[[ -f "$HOME/.config/bash/completion-config.sh" ]] && source "$HOME/.config/bash/completion-config.sh"
+
+# =========================
+# ble.sh: Attach at the end (required by ble.sh)
+# =========================
+[[ ! ${BLE_VERSION-} ]] || ble-attach
