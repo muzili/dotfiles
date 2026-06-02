@@ -26,14 +26,13 @@ end
 -- 延迟 Python 检测，避免启动时的系统调用
 vim.defer_fn(function()
   local function detect_python()
-    -- 2. mise 提供的 python
-    local mise_python = vim.fn.system("mise which python"):gsub("\n", "")
-    if vim.fn.executable(mise_python) == 1 then return mise_python end
-    
-    -- 3. 系统默认 python
+    -- 优先使用系统 python
+    if vim.fn.executable "/usr/bin/python3" == 1 then return "/usr/bin/python3" end
+
+    -- 回退到 PATH 中的 python3
     return vim.fn.exepath "python3"
   end
-  
+
   vim.g.python3_host_prog = detect_python()
 end, 100)
 
