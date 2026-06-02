@@ -83,14 +83,11 @@ PROMPT_COMMAND="${PROMPT_COMMAND:+$PROMPT_COMMAND;}gpg-refresh"
 [[ -f "$HOME/.config/shell/api-keys.sh" ]] && source "$HOME/.config/shell/api-keys.sh"
 
 # Tool initializations
-which mise > /dev/null 2>&1 && eval "$(mise activate bash --shims)"
+which mise > /dev/null 2>&1 && eval "$(mise activate bash)"
+which direnv > /dev/null 2>&1 && eval "$(direnv hook bash)"
 which starship > /dev/null 2>&1 && eval "$(starship init bash)"
 which zoxide > /dev/null 2>&1 && eval "$(zoxide init bash)"
 which atuin > /dev/null 2>&1 && eval "$(atuin init bash --disable-up-arrow)"
-
-# Fnox configuration
-export FNOX_AGE_KEY_FILE="$HOME/.ssh/id_ed25519.fnox"
-eval "$(mise exec fnox -- fnox activate bash)"
 
 # =========================
 # Bash Modern Enhancements
@@ -108,3 +105,7 @@ eval "$(mise exec fnox -- fnox activate bash)"
 # ble.sh: Attach at the end (required by ble.sh)
 # =========================
 [[ ! ${BLE_VERSION-} ]] || ble-attach
+
+
+# Added by Antigravity CLI installer
+export PATH="/home/joshua/.local/bin:$PATH"

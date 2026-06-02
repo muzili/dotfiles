@@ -187,6 +187,5 @@ which atuin > /dev/null 2>&1 && eval "$(atuin init zsh)"
 # Load API keys from GPG
 [[ -f "$HOME/.config/shell/api-keys.sh" ]] && source "$HOME/.config/shell/api-keys.sh"
 
-# Fnox configuration
-export FNOX_AGE_KEY_FILE="$HOME/.ssh/id_ed25519.fnox"
-eval "$(mise exec fnox -- fnox activate zsh)"
+# Added by Antigravity CLI installer
+export PATH="/home/joshua/.local/bin:$PATH"

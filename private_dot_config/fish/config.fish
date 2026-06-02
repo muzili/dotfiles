@@ -86,8 +86,5 @@ which atuin > /dev/null &&  atuin init fish | grep -v 'up _atuin_bind_up' | sour
 set -gx PATH $HOME/bin $PATH
 set -gx PATH $PATH $HOME/.librefang/bin
 
-# Fnox configuration
-set -gx FNOX_AGE_KEY_FILE $HOME/.ssh/id_ed25519.fnox
-mise exec fnox -- fnox activate fish | source
-
-
+# Added by Antigravity CLI installer
+set -gx PATH "/home/joshua/.local/bin" $PATH
